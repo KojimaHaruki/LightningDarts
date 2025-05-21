@@ -1,0 +1,536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="LightningDarts.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSelect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Home.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSelect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStart.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ZeroOne.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Cricket.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Mouse.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="colorlib.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinate.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Key.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Home.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSelect.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSelect.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStart.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ZeroOne.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Cricket.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CharImage\John Williams.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="CharImage\Komachi Suzuka.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="CharImage\Michel Ferrari.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="CharImage\Misuzu Suzuka.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\AnotherWindow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Cog.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Down.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Exit.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Home.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Initialize.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\MaximizeWindow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Music.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Mute.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Selected.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Skip.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Speaker.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\TETR4 Icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Up.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\A.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Alt.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\B.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Backspace.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\C.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\CapsLock.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Ctrl.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\D.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Del.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Down.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\E.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Enter.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Esc.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F3.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F4.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F5.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F6.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F7.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F8.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F9.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F10.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F11.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\F12.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\G.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\H.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\I.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Ins.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\J.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\K.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\L.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Left.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\M.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\N.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\O.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\P.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\PauseBreak.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Q.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\R.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Right.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\S.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Shift.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Space.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\T.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\U.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Up.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\V.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\W.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\X.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Y.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Z.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\Tab.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\0.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\1.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\2.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\3.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\4.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\5.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\6.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\7.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\8.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="KeyImage\9.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Start.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Stop.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\AntiClockwise.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Clockwise.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Hold.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Skill.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Cursor.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\HardDrop.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Back.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\SoftDrop.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Left.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Right.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Forward.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Shadow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="CharImage\Yoichi Suzuka.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="CharImage\Moscow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Thunder.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts.jpg">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\dxlib.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\c++.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Restart.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Player.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Icon\Game.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Inner\Black.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Inner\Press.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Inner\Touch.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Inner\White.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Outer\Black.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Outer\Press.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Outer\Touch.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Single\Outer\White.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Double\Blue.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Double\Press.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Double\Red.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Double\Touch.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Triple\Blue.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Triple\Press.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Triple\Red.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Triple\Touch.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Image\Darts\Arrow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ConfigData.dat">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="CharaStatus.dat">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="ShareData.dat">
+      <Filter>リソース ファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="BGM\Detect.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\A.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\B.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\C.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\Clear line.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\D.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\E.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\F.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\G.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\Land.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\Put.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\Speed Up.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="SE\TETRIS.mp3">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+  </ItemGroup>
+</Project>

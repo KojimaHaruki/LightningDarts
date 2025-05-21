@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{B7FE43BB-6897-4943-AA49-A828ECE78DA9}</ProjectGuid>
+    <RootNamespace>GameProg</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>LightningDarts</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\local\boost_1_87_0;C:\local\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\local\boost_1_87_0;C:\local\DxLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./DxLib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>./DxLib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\local\boost_1_87_0;C:\local\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\local\boost_1_87_0;C:\local\DxLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./DxLib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>./DxLib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Cricket.cpp" />
+    <ClCompile Include="ZeroOne.cpp" />
+    <ClCompile Include="GameSelect.cpp" />
+    <ClCompile Include="GameStart.cpp" />
+    <ClCompile Include="Home.cpp" />
+    <ClCompile Include="LightningDarts.cpp" />
+    <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="PlayerSelect.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Box.hpp" />
+    <ClInclude Include="colorlib.hpp" />
+    <ClInclude Include="Config.hpp" />
+    <ClInclude Include="Coordinate.hpp" />
+    <ClInclude Include="Cricket.hpp" />
+    <ClInclude Include="ZeroOne.hpp" />
+    <ClInclude Include="GameSelect.hpp" />
+    <ClInclude Include="GameStart.hpp" />
+    <ClInclude Include="Key.hpp" />
+    <ClInclude Include="Keyboard.hpp" />
+    <ClInclude Include="Mouse.hpp" />
+    <ClInclude Include="PlayerSelect.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="Singleton.hpp" />
+    <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="Home.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CharImage\John Williams.png" />
+    <Image Include="CharImage\Komachi Suzuka.png" />
+    <Image Include="CharImage\Michel Ferrari.png" />
+    <Image Include="CharImage\Misuzu Suzuka.png" />
+    <Image Include="CharImage\Moscow.png" />
+    <Image Include="CharImage\Yoichi Suzuka.png" />
+    <Image Include="Icon\AnotherWindow.png" />
+    <Image Include="Icon\AntiClockwise.png" />
+    <Image Include="Icon\Back.png" />
+    <Image Include="Icon\Clockwise.png" />
+    <Image Include="Icon\Cog.png" />
+    <Image Include="Icon\Cursor.png" />
+    <Image Include="Icon\Down.png" />
+    <Image Include="Icon\Exit.png" />
+    <Image Include="Icon\Forward.png" />
+    <Image Include="Icon\Game.png" />
+    <Image Include="Icon\HardDrop.png" />
+    <Image Include="Icon\Hold.png" />
+    <Image Include="Icon\Home.png" />
+    <Image Include="Icon\Initialize.png" />
+    <Image Include="Icon\Left.png" />
+    <Image Include="Icon\MaximizeWindow.png" />
+    <Image Include="Icon\Music.png" />
+    <Image Include="Icon\Mute.png" />
+    <Image Include="Icon\Player.png" />
+    <Image Include="Icon\Restart.png" />
+    <Image Include="Icon\Right.png" />
+    <Image Include="Icon\Selected.png" />
+    <Image Include="Icon\Shadow.png" />
+    <Image Include="Icon\Skill.png" />
+    <Image Include="Icon\Skip.png" />
+    <Image Include="Icon\SoftDrop.png" />
+    <Image Include="Icon\Speaker.png" />
+    <Image Include="Icon\Start.png" />
+    <Image Include="Icon\Stop.png" />
+    <Image Include="Icon\TETR4 Icon.ico" />
+    <Image Include="Icon\Up.png" />
+    <Image Include="Image\c++.png" />
+    <Image Include="Image\Darts.jpg" />
+    <Image Include="Image\Darts\Arrow.png" />
+    <Image Include="Image\Darts\Double\Blue.png" />
+    <Image Include="Image\Darts\Double\Press.png" />
+    <Image Include="Image\Darts\Double\Red.png" />
+    <Image Include="Image\Darts\Double\Touch.png" />
+    <Image Include="Image\Darts\Single\Inner\Black.png" />
+    <Image Include="Image\Darts\Single\Inner\Press.png" />
+    <Image Include="Image\Darts\Single\Inner\Touch.png" />
+    <Image Include="Image\Darts\Single\Inner\White.png" />
+    <Image Include="Image\Darts\Single\Outer\Black.png" />
+    <Image Include="Image\Darts\Single\Outer\Press.png" />
+    <Image Include="Image\Darts\Single\Outer\Touch.png" />
+    <Image Include="Image\Darts\Single\Outer\White.png" />
+    <Image Include="Image\Darts\Triple\Blue.png" />
+    <Image Include="Image\Darts\Triple\Press.png" />
+    <Image Include="Image\Darts\Triple\Red.png" />
+    <Image Include="Image\Darts\Triple\Touch.png" />
+    <Image Include="Image\dxlib.png" />
+    <Image Include="Image\Thunder.png" />
+    <Image Include="KeyImage\0.png" />
+    <Image Include="KeyImage\1.png" />
+    <Image Include="KeyImage\2.png" />
+    <Image Include="KeyImage\3.png" />
+    <Image Include="KeyImage\4.png" />
+    <Image Include="KeyImage\5.png" />
+    <Image Include="KeyImage\6.png" />
+    <Image Include="KeyImage\7.png" />
+    <Image Include="KeyImage\8.png" />
+    <Image Include="KeyImage\9.png" />
+    <Image Include="KeyImage\A.png" />
+    <Image Include="KeyImage\Alt.png" />
+    <Image Include="KeyImage\B.png" />
+    <Image Include="KeyImage\Backspace.png" />
+    <Image Include="KeyImage\C.png" />
+    <Image Include="KeyImage\CapsLock.png" />
+    <Image Include="KeyImage\Ctrl.png" />
+    <Image Include="KeyImage\D.png" />
+    <Image Include="KeyImage\Del.png" />
+    <Image Include="KeyImage\Down.png" />
+    <Image Include="KeyImage\E.png" />
+    <Image Include="KeyImage\Enter.png" />
+    <Image Include="KeyImage\Esc.png" />
+    <Image Include="KeyImage\F.png" />
+    <Image Include="KeyImage\F1.png" />
+    <Image Include="KeyImage\F10.png" />
+    <Image Include="KeyImage\F11.png" />
+    <Image Include="KeyImage\F12.png" />
+    <Image Include="KeyImage\F2.png" />
+    <Image Include="KeyImage\F3.png" />
+    <Image Include="KeyImage\F4.png" />
+    <Image Include="KeyImage\F5.png" />
+    <Image Include="KeyImage\F6.png" />
+    <Image Include="KeyImage\F7.png" />
+    <Image Include="KeyImage\F8.png" />
+    <Image Include="KeyImage\F9.png" />
+    <Image Include="KeyImage\G.png" />
+    <Image Include="KeyImage\H.png" />
+    <Image Include="KeyImage\I.png" />
+    <Image Include="KeyImage\Ins.png" />
+    <Image Include="KeyImage\J.png" />
+    <Image Include="KeyImage\K.png" />
+    <Image Include="KeyImage\L.png" />
+    <Image Include="KeyImage\Left.png" />
+    <Image Include="KeyImage\M.png" />
+    <Image Include="KeyImage\N.png" />
+    <Image Include="KeyImage\O.png" />
+    <Image Include="KeyImage\P.png" />
+    <Image Include="KeyImage\PauseBreak.png" />
+    <Image Include="KeyImage\Q.png" />
+    <Image Include="KeyImage\R.png" />
+    <Image Include="KeyImage\Right.png" />
+    <Image Include="KeyImage\S.png" />
+    <Image Include="KeyImage\Shift.png" />
+    <Image Include="KeyImage\Space.png" />
+    <Image Include="KeyImage\T.png" />
+    <Image Include="KeyImage\Tab.png" />
+    <Image Include="KeyImage\U.png" />
+    <Image Include="KeyImage\Up.png" />
+    <Image Include="KeyImage\V.png" />
+    <Image Include="KeyImage\W.png" />
+    <Image Include="KeyImage\X.png" />
+    <Image Include="KeyImage\Y.png" />
+    <Image Include="KeyImage\Z.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CharaStatus.dat" />
+    <None Include="ConfigData.dat" />
+    <None Include="ShareData.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="BGM\Detect.mp3" />
+    <Media Include="SE\A.mp3" />
+    <Media Include="SE\B.mp3" />
+    <Media Include="SE\C.mp3" />
+    <Media Include="SE\Clear line.mp3" />
+    <Media Include="SE\D.mp3" />
+    <Media Include="SE\E.mp3" />
+    <Media Include="SE\F.mp3" />
+    <Media Include="SE\G.mp3" />
+    <Media Include="SE\Land.mp3" />
+    <Media Include="SE\Put.mp3" />
+    <Media Include="SE\Speed Up.mp3" />
+    <Media Include="SE\TETRIS.mp3" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,328 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+"resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+"#include ""winres.h""\r\n"
+"\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+"\r\n"
+"\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_PNG1                PNG                     "Image\\Key\\Esc.png"
+
+IDB_PNG2                PNG                     "Image\\Key\\1.png"
+
+IDB_PNG3                PNG                     "Image\\Key\\2.png"
+
+IDB_PNG4                PNG                     "Image\\Key\\3.png"
+
+IDB_PNG5                PNG                     "Image\\Key\\4.png"
+
+IDB_PNG6                PNG                     "Image\\Key\\5.png"
+
+IDB_PNG7                PNG                     "Image\\Key\\6.png"
+
+IDB_PNG8                PNG                     "Image\\Key\\7.png"
+
+IDB_PNG9                PNG                     "Image\\Key\\8.png"
+
+IDB_PNG10               PNG                     "Image\\Key\\9.png"
+
+IDB_PNG11               PNG                     "Image\\Key\\0.png"
+
+IDB_PNG12               PNG                     "Image\\Key\\BackSpace.png"
+
+IDB_PNG13               PNG                     "Image\\Key\\Tab.png"
+
+IDB_PNG14               PNG                     "Image\\Key\\Q.png"
+
+IDB_PNG15               PNG                     "Image\\Key\\W.png"
+
+IDB_PNG16               PNG                     "Image\\Key\\E.png"
+
+IDB_PNG17               PNG                     "Image\\Key\\R.png"
+
+IDB_PNG18               PNG                     "Image\\Key\\T.png"
+
+IDB_PNG19               PNG                     "Image\\Key\\Y.png"
+
+IDB_PNG20               PNG                     "Image\\Key\\U.png"
+
+IDB_PNG21               PNG                     "Image\\Key\\I.png"
+
+IDB_PNG22               PNG                     "Image\\Key\\O.png"
+
+IDB_PNG23               PNG                     "Image\\Key\\P.png"
+
+IDB_PNG24               PNG                     "Image\\Key\\Enter.png"
+
+IDB_PNG25               PNG                     "Image\\Key\\Ctrl.png"
+
+IDB_PNG26               PNG                     "Image\\Key\\A.png"
+
+IDB_PNG27               PNG                     "Image\\Key\\S.png"
+
+IDB_PNG28               PNG                     "Image\\Key\\D.png"
+
+IDB_PNG29               PNG                     "Image\\Key\\F.png"
+
+IDB_PNG30               PNG                     "Image\\Key\\G.png"
+
+IDB_PNG31               PNG                     "Image\\Key\\H.png"
+
+IDB_PNG32               PNG                     "Image\\Key\\J.png"
+
+IDB_PNG33               PNG                     "Image\\Key\\K.png"
+
+IDB_PNG34               PNG                     "Image\\Key\\L.png"
+
+IDB_PNG35               PNG                     "Image\\Key\\Shift.png"
+
+IDB_PNG36               PNG                     "Image\\Key\\Z.png"
+
+IDB_PNG37               PNG                     "Image\\Key\\X.png"
+
+IDB_PNG38               PNG                     "Image\\Key\\C.png"
+
+IDB_PNG39               PNG                     "Image\\Key\\V.png"
+
+IDB_PNG40               PNG                     "Image\\Key\\B.png"
+
+IDB_PNG41               PNG                     "Image\\Key\\N.png"
+
+IDB_PNG42               PNG                     "Image\\Key\\M.png"
+
+IDB_PNG43               PNG                     "Image\\Key\\Shift.png"
+
+IDB_PNG44               PNG                     "Image\\Key\\Alt.png"
+
+IDB_PNG45               PNG                     "Image\\Key\\Space.png"
+
+IDB_PNG46               PNG                     "Image\\Key\\CapsLock.png"
+
+IDB_PNG47               PNG                     "Image\\Key\\F1.png"
+
+IDB_PNG48               PNG                     "Image\\Key\\F2.png"
+
+IDB_PNG49               PNG                     "Image\\Key\\F3.png"
+
+IDB_PNG50               PNG                     "Image\\Key\\F4.png"
+
+IDB_PNG51               PNG                     "Image\\Key\\F5.png"
+
+IDB_PNG52               PNG                     "Image\\Key\\F6.png"
+
+IDB_PNG53               PNG                     "Image\\Key\\F7.png"
+
+IDB_PNG54               PNG                     "Image\\Key\\F8.png"
+
+IDB_PNG55               PNG                     "Image\\Key\\F9.png"
+
+IDB_PNG56               PNG                     "Image\\Key\\F10.png"
+
+IDB_PNG57               PNG                     "Image\\Key\\F11.png"
+
+IDB_PNG58               PNG                     "Image\\Key\\F12.png"
+
+IDB_PNG59               PNG                     "Image\\Key\\Ctrl.png"
+
+IDB_PNG60               PNG                     "Image\\Key\\Alt.png"
+
+IDB_PNG61               PNG                     "Image\\Key\\PauseBreak.png"
+
+IDB_PNG62               PNG                     "Image\\Key\\Up.png"
+
+IDB_PNG63               PNG                     "Image\\Key\\Left.png"
+
+IDB_PNG64               PNG                     "Image\\Key\\Right.png"
+
+IDB_PNG65               PNG                     "Image\\Key\\Down.png"
+
+IDB_PNG66               PNG                     "Image\\Key\\Ins.png"
+
+IDB_PNG67               PNG                     "Image\\Key\\Del.png"
+
+IDB_PNG68               PNG                     "Icon\\Left.png"
+
+IDB_PNG69               PNG                     "Icon\\Right.png"
+
+IDB_PNG70               PNG                     "Icon\\Skill.png"
+
+IDB_PNG71               PNG                     "Icon\\Home.png"
+
+IDB_PNG72               PNG                     "Icon\\Initialize.png"
+
+IDB_PNG73               PNG                     "Icon\\game.png"
+
+IDB_PNG74               PNG                     "Icon\\player.png"
+
+IDB_PNG75               PNG                     "Icon\\Restart.png"
+
+IDB_PNG76               PNG                     "Icon\\Skip.png"
+
+IDB_PNG77               PNG                     "Icon\\Exit.png"
+
+IDB_PNG78               PNG                     "Icon\\Cog.png"
+
+IDB_PNG79               PNG                     "Icon\\Music.png"
+
+IDB_PNG80               PNG                     "Icon\\AnotherWindow.png"
+
+IDB_PNG81               PNG                     "Icon\\MaximizeWindow.png"
+
+IDB_PNG82               PNG                     "Icon\\Mute.png"
+
+IDB_PNG83               PNG                     "Icon\\Speaker.png"
+
+IDB_PNG84               PNG                     "Icon\\Stop.png"
+
+IDB_PNG85               PNG                     "Icon\\Start.png"
+
+IDB_PNG86               PNG                     "Icon\\Back.png"
+
+IDB_PNG87               PNG                     "Icon\\Forward.png"
+
+IDB_PNG88               PNG                     "Icon\\Down.png"
+
+IDB_PNG89               PNG                     "Icon\\Up.png"
+
+IDB_PNG90               PNG                     "Icon\\Selected.png"
+
+IDB_PNG91               PNG                     "Image\\Thunder.png"
+
+IDB_PNG92               PNG                     "Image\\c++.png"
+
+IDB_PNG93               PNG                     "Image\\dxlib.png"
+
+IDB_PNG94               PNG                     "Image\\Darts\\Double\\Blue.png"
+
+IDB_PNG95               PNG                     "Image\\Darts\\Double\\Red.png"
+
+IDB_PNG96               PNG                     "Image\\Darts\\Double\\Touch.png"
+
+IDB_PNG97               PNG                     "Image\\Darts\\Double\\Press.png"
+
+IDB_PNG98               PNG                     "Image\\Darts\\Single\\Outer\\White.png"
+
+IDB_PNG99               PNG                     "Image\\Darts\\Single\\Outer\\Black.png"
+
+IDB_PNG100              PNG                     "Image\\Darts\\Single\\Outer\\Touch.png"
+
+IDB_PNG101              PNG                     "Image\\Darts\\Single\\Outer\\Press.png"
+
+IDB_PNG102              PNG                     "Image\\Darts\\Triple\\Blue.png"
+
+IDB_PNG103              PNG                     "Image\\Darts\\Triple\\Red.png"
+
+IDB_PNG104              PNG                     "Image\\Darts\\Triple\\Touch.png"
+
+IDB_PNG105              PNG                     "Image\\Darts\\Triple\\Press.png"
+
+IDB_PNG106              PNG                     "Image\\Darts\\Single\\Inner\\White.png"
+
+IDB_PNG107              PNG                     "Image\\Darts\\Single\\Inner\\Black.png"
+
+IDB_PNG108              PNG                     "Image\\Darts\\Single\\Inner\\Touch.png"
+
+IDB_PNG109              PNG                     "Image\\Darts\\Single\\Inner\\Press.png"
+
+IDB_PNG110              PNG                     "Image\\Darts\\Arrow.png"
+
+IDB_JPG1                JPG                     "Image\\Darts.jpg"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_WAVE1               MP3                     "SE\\Clear line.mp3"
+
+IDR_WAVE2               MP3                     "SE\\Land.mp3"
+
+IDR_WAVE3               MP3                     "SE\\Speed up.mp3"
+
+IDR_WAVE4               MP3                     "SE\\TETRIS.mp3"
+
+IDR_WAVE5               MP3                     "SE\\C.mp3"
+
+IDR_WAVE6               MP3                     "SE\\D.mp3"
+
+IDR_WAVE7               MP3                     "SE\\E.mp3"
+
+IDR_WAVE8               MP3                     "SE\\F.mp3"
+
+IDR_WAVE9               MP3                     "SE\\G.mp3"
+
+IDR_WAVE10              MP3                     "SE\\A.mp3"
+
+IDR_WAVE11              MP3                     "SE\\B.mp3"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "Icon\\TETR4 Icon.ico"
+
+MAINICON                ICON                    "Icon\\TETR4 Icon.ico"
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
