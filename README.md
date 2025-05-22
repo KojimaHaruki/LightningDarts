@@ -12,7 +12,7 @@ Firstly, I'm sorry that this application is uncompleted, but you can play some g
 
 ## Procedure of Playing Darts Games
 
-Start: Load some materials. This app loads up to 28 character images and 30 tunes from a folder named Image/Player and BGM, respectively.
+Start: Load some materials. This app loads up to 28 character images in 10 groups and 30 tunes from a folder named Image/Player/ and BGM/, respectively.
 
 Title: Type a space key.
 
