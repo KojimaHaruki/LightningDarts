@@ -12,7 +12,7 @@ protected:
     bool isConfig;
 
     // BGM
-    std::string bgmFolderPath = "BGM/";
+    std::string bgmFolderPath = "./BGM/";
     static constexpr int MAX_BGM_NUM = 30;
     struct BGM {
         int handle = 0;
@@ -112,7 +112,7 @@ protected:
     const std::string playModeName[TeamType::NUM] = { "Solo", "Duo", "Tournament" };
 
     // Character
-    const std::string playerFolderPath = "Image/Player/";
+    const std::string playerFolderPath = "./Image/Player/";
     static constexpr int MAX_CHARA_NUM = 28;
     static constexpr int MAX_GROUP_NUM = 10;
     static constexpr int MAX_PLAYER_NUM = 8;
