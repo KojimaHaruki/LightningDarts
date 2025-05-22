@@ -480,21 +480,32 @@ void Scene::changeWindow(int WindowModeFlag) {
         sd.ctrl.pause[i].key.image.handle = sd.key[sd.ctrl.pause[i].key.code].image.handle;
     }
     std::error_code err;
-    int extensionLength = 0;
     sd.charaNum = 0;
-    std::string folderPath;
-    for (int grade = 0; grade < GRADE_NUM; grade++) {
-        sd.gradeCharaNum[grade] = 0;
-        folderPath = playerFolderPath + gradeName[grade];
-        std::filesystem::directory_iterator iter(folderPath), end;
-        for (; iter != end && !err && sd.charaNum < MAX_CHARA_NUM; iter.increment(err)) {
+    std::string groupName[MAX_GROUP_NUM];
+    sd.groupNum = 0;
+    for (std::filesystem::directory_iterator iter(playerFolderPath), end;
+        iter != end && !err && sd.groupNum < MAX_GROUP_NUM; iter.increment(err)) {
+        const std::filesystem::directory_entry entry = *iter;
+        if (entry.is_directory()) { // if found path is folder,
+            groupName[sd.groupNum] = entry.path().filename().string(); // get group name
+            sd.groupNum++;
+        }   
+    }
+    for (int group = 0; group < sd.groupNum; group++) {
+        sd.groupCharaNum[group] = 0;
+        std::string folderPath = playerFolderPath + "/" + groupName[group];
+        for (std::filesystem::directory_iterator iter(folderPath), end;
+            iter != end && !err && sd.charaNum < MAX_CHARA_NUM; iter.increment(err)) {
             const std::filesystem::directory_entry entry = *iter;
-            sd.chara[sd.charaNum].image.handle = LoadGraph(entry.path().string().c_str());
-            sd.chara[sd.charaNum].grade = grade;
-            sd.chara[sd.charaNum].name = entry.path().filename().string();
-            extensionLength = entry.path().filename().extension().string().length();
-            sd.chara[sd.charaNum].name.erase(sd.chara[sd.charaNum].name.length() - extensionLength, extensionLength);
-            sd.charaNum++, sd.gradeCharaNum[grade]++;
+            std::string extension = entry.path().extension().string();
+            if (extension == ".jpg" || extension == ".png") { // if found file is image,
+                sd.chara[sd.charaNum].image.handle = LoadGraph(entry.path().string().c_str());
+                sd.chara[sd.charaNum].groupName = groupName[group];
+                sd.chara[sd.charaNum].name = entry.path().filename().string();
+                sd.chara[sd.charaNum].name.erase(sd.chara[sd.charaNum].name.length() - 4, 4);
+                sd.charaNum++; 
+                sd.groupCharaNum[group]++;
+            }
         }
     }
     if (err) {

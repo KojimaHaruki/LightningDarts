@@ -16,18 +16,16 @@ PlayerSelect::PlayerSelect(ShareData shareData) {
             }
         }
     }
-    for (int charaNo = 0, grade = 0; grade < GRADE_NUM; grade++) {
-        for (int i = 0; i < sd.gradeCharaNum[grade]; i++, charaNo++) {
-            sd.chara[charaNo].image.box.setUpperLeft(
-                sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom() + 100 * grade);
-        }
+    for (int charaNo = 0; charaNo < sd.charaNum; charaNo++) {
+        sd.chara[charaNo].image.box.setUpperLeft(
+            sd.screen.left() + 100 * (charaNo % 7), sd.obj.upperFrame.box.bottom() + 100 * (charaNo / 7));
     }
     for (int playModeNo = 0; playModeNo < TeamType::NUM; playModeNo++) {
         teamTypeBox[playModeNo].setSize(
-            100, sd.obj.lowerFrame.box.top() - sd.obj.upperFrame.box.bottom() - 100 * GRADE_NUM);
+            100, sd.obj.lowerFrame.box.top() - sd.obj.upperFrame.box.bottom() - 400);
         teamTypeBox[playModeNo].setLowerLeft(100 * playModeNo + 400, sd.obj.lowerFrame.box.top());
     }
-    sd.ctrl.yes.icon.box.setSize(100, sd.obj.lowerFrame.box.top() - sd.obj.upperFrame.box.bottom() - 100 * GRADE_NUM);
+    sd.ctrl.yes.icon.box.setSize(100, sd.obj.lowerFrame.box.top() - sd.obj.upperFrame.box.bottom() - 400);
     sd.ctrl.yes.icon.box.setLowerLeft(sd.screen.right() - 200, sd.obj.lowerFrame.box.top());
 }
 void PlayerSelect::reset() {
@@ -69,7 +67,7 @@ void PlayerSelect::draw() {
             sd.chara[chara].image.box.bottom() - sd.font.chara.size - 10,
             sd.chara[chara].name.c_str(), sd.color.w, sd.font.chara.handle);
         DrawStringToHandle(sd.chara[chara].image.box.left(), sd.chara[chara].image.box.top(),
-            gradeName[sd.chara[chara].grade].c_str(), sd.color.w, sd.font.chara.handle);
+            sd.chara[chara].groupName.c_str(), sd.color.w, sd.font.chara.handle);
         if (sd.chara[chara].isPlayer) {
             DrawGraph(sd.chara[chara].image.box.left(), 
                 sd.chara[chara].image.box.center().y() - sd.pic.selected.image.box.height() / 2,
@@ -186,16 +184,26 @@ void PlayerSelect::draw() {
         }
     }
     drawBoxObj(teamTypeBox[sd.teamType], sd.color.gy, TRUE);
-    DrawBox(sd.screen.right() - 200, sd.obj.upperFrame.box.bottom() + 100 * GRADE_NUM,
+    for (int playMode = 0; playMode < 2; playMode++) {
+        DrawStringToHandle(teamTypeBox[playMode].left() + 5 + 4 * max(0, 8 - (int)playModeName[playMode].size()),
+            teamTypeBox[playMode].center().y() - sd.font.normal.size / 2,
+            playModeName[playMode].c_str(), sd.color.w, sd.font.normal.handle);
+    }
+    DrawStringToHandle(teamTypeBox[TeamType::TOURNAMENT].left() + 5,
+        teamTypeBox[TeamType::TOURNAMENT].center().y() - sd.font.normal.size - 4,
+        "Tour-\n nament", sd.color.w, sd.font.normal.handle);
+    DrawBox(sd.screen.right() - 200, sd.obj.upperFrame.box.bottom() + 400,
         sd.screen.right() - 100, sd.obj.lowerFrame.box.top(), sd.color.press, TRUE);
+    DrawStringToHandle(sd.screen.right() - 195, sd.ctrl.yes.icon.box.center().y() - sd.font.normal.size / 2,
+        "OK!!", sd.color.w, sd.font.normal.handle);
     for (int i = 0; i < 4; i++)
         DrawLine(sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom(),
-            sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom() + 100 * GRADE_NUM, sd.color.k);
+            sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom() + 400, sd.color.k);
     for (int i = 4; i < 10; i++)
         DrawLine(sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom(),
             sd.screen.left() + 100 * i, sd.obj.lowerFrame.box.top(), sd.color.k);
     DrawLine(700, 25, 700, 475, sd.color.k, 2);
-    for (int i = 0; i <= GRADE_NUM; i++)
+    for (int i = 0; i <= 4; i++)
         DrawLine(sd.screen.left(), sd.obj.upperFrame.box.bottom() + 100 * i, 
             sd.screen.right(), sd.obj.upperFrame.box.bottom() + 100 * i, sd.color.k);
     DrawLine(teamTypeBox[0].left(), sd.obj.lowerFrame.box.top(), 
@@ -205,16 +213,6 @@ void PlayerSelect::draw() {
     for (int i = 0; i < MAX_PLAYER_NUM; i++) 
         DrawStringToHandle(90 + 40 * i, sd.obj.lowerFrame.box.top() - sd.font.normal.size - 15,
             std::to_string(i + 1).c_str(), sd.color.w, sd.font.normal.handle);
-    for (int playMode = 0; playMode < 2; playMode++) {
-        DrawStringToHandle(teamTypeBox[playMode].left() + 5 + 4 * max(0, 8 - (int)playModeName[playMode].size()),
-            teamTypeBox[playMode].center().y() - sd.font.normal.size / 2,
-            playModeName[playMode].c_str(), sd.color.w, sd.font.normal.handle);
-    }
-    DrawStringToHandle(teamTypeBox[TeamType::TOURNAMENT].left() + 5, 
-        teamTypeBox[TeamType::TOURNAMENT].center().y() - sd.font.normal.size - 4,
-        "Tour-\n nament", sd.color.w, sd.font.normal.handle);
-    DrawStringToHandle(sd.screen.right() - 195, sd.ctrl.yes.icon.box.center().y() - sd.font.normal.size / 2,
-        "OK!!", sd.color.w, sd.font.normal.handle);
     DrawGraph(sd.screen.right() - 140, sd.ctrl.yes.icon.box.center().y() - ICONSIZE_NORMAL.y() / 2,
         sd.ctrl.yes.key.image.handle, TRUE);
     DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,

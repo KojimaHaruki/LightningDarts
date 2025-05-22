@@ -168,7 +168,12 @@ void Cricket::draw() {
 		}
 		int y = sd.chara[sd.teamChara[0][sd.teamType]].image.box.bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
-			if (now.posPoint[pos] > 0) {
+			if (now.posPoint[pos] == 25) { // bull
+				DrawStringToHandle(sd.screen.center().x() + 12,
+					y + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
+					darts.pointName[21].c_str(), sd.color.w, sd.font.chara.handle);
+			}
+			else if (now.posPoint[pos] > 0) { // except bull
 				DrawStringToHandle(sd.screen.center().x() + 12,
 					y + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
 					darts.pointName[now.posPoint[pos]].c_str(), sd.color.w, sd.font.chara.handle);
@@ -239,7 +244,12 @@ void Cricket::draw() {
 		for (int i = 0, chara = 0; i < 2; i++) {
 			chara = sd.teamChara[4 * i][0];
 			for (int pos = 0; pos < selectPos; pos++) {
-				if (now.posPoint[pos] > 0) {
+				if (now.posPoint[pos] == 25) { // bull
+					DrawStringToHandle(sd.screen.center().x() + 12,
+						sd.chara[chara].image.box.bottom() + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
+						darts.pointName[21].c_str(), sd.color.w, sd.font.chara.handle);
+				}
+				else if (now.posPoint[pos] > 0) { // except bull
 					DrawStringToHandle(sd.screen.center().x() + 12,
 						sd.chara[chara].image.box.bottom() + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
 						darts.pointName[now.posPoint[pos]].c_str(), sd.color.w, sd.font.chara.handle);

@@ -112,9 +112,9 @@ protected:
     const std::string playModeName[TeamType::NUM] = { "Solo", "Duo", "Tournament" };
 
     // Character
-    std::string playerFolderPath = "Image/Player/";
+    const std::string playerFolderPath = "Image/Player/";
     static constexpr int MAX_CHARA_NUM = 28;
-    static constexpr int GRADE_NUM = 4;
+    static constexpr int MAX_GROUP_NUM = 10;
     static constexpr int MAX_PLAYER_NUM = 8;
     static constexpr int MAX_TEAM_NUM = 4;
     static constexpr int DUO_MEMBER_NUM = 2;
@@ -125,11 +125,10 @@ protected:
     struct Chara {
         Image image;
         std::string name = {};
-        int grade = 0;
+        std::string groupName = {};
         bool isPlayer = false;
         CharaStatus status;
     };
-    const std::string gradeName[GRADE_NUM] = { "Guest", "B4", "M1", "M2" };
 
     // Key
     static constexpr int VALID_KEY_NUM = 67;
@@ -206,7 +205,8 @@ protected:
             "  6", "  7", "  8", "  9", " 10",
             " 11", " 12", " 13", " 14", " 15",
             " 16", " 17", " 18", " 19", " 20",
-            "Bull", "Inner Bull" };
+            "Bull", "Inner Bull" 
+        };
         static constexpr int POINT_KEY[POINT_NUM] = {
             KEY_INPUT_SPACE,
             KEY_INPUT_1, KEY_INPUT_2, KEY_INPUT_3, KEY_INPUT_4, KEY_INPUT_5,
@@ -241,7 +241,8 @@ protected:
         int game = Game::DEFAULT;
         Chara chara[MAX_CHARA_NUM];
         int charaNum = 0;
-        int gradeCharaNum[GRADE_NUM] = {};
+        int groupNum = 0;
+        int groupCharaNum[MAX_GROUP_NUM] = {};
         int teamChara[MAX_PLAYER_NUM][DUO_MEMBER_NUM] = {};
         int playerNum = 0;
         int teamNum = 0;
