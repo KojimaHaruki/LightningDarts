@@ -493,7 +493,7 @@ void Scene::changeWindow(int WindowModeFlag) {
     }
     for (int group = 0; group < sd.groupNum; group++) {
         sd.groupCharaNum[group] = 0;
-        std::string folderPath = playerFolderPath + "/" + groupName[group];
+        std::string folderPath = playerFolderPath + groupName[group] + "/";
         for (std::filesystem::directory_iterator iter(folderPath), end;
             iter != end && !err && sd.charaNum < MAX_CHARA_NUM; iter.increment(err)) {
             const std::filesystem::directory_entry entry = *iter;
