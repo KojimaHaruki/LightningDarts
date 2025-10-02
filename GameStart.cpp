@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "GameStart.hpp"
 #include <string>
 #include <numbers>
@@ -6,18 +7,18 @@ GameStart::GameStart(ShareData shareData) {
 	mNowScene = GAME_START; 
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
-	double theta = 0.0, phi = std::numbers::pi / (double)MAX_PLAYER_NUM;
+	double theta = 0.0, phi = M_PI / (double)MAX_PLAYER_NUM;
 	switch (sd.teamType) {
 	case TeamType::SOLO:
 		for (int player = 0; player < sd.teamNum; player++) {
-			theta = 2.0 * player * std::numbers::pi / (double)sd.teamNum + std::numbers::pi;
+			theta = 2.0 * player * M_PI / (double)sd.teamNum + M_PI;
 			sd.chara[sd.teamChara[player][0]].image.box.setCenter(
 				sd.screen.center().x() + 150.0 * cos(theta), sd.screen.center().y() - 150.0 * sin(theta));
 		}
 		break;
 	case TeamType::DUO:
 		for (int team = 0; team < sd.teamNum; team++) {
-			theta = 2.0 * team * std::numbers::pi / (double)sd.teamNum + std::numbers::pi;
+			theta = 2.0 * team * M_PI / (double)sd.teamNum + M_PI;
 			sd.chara[sd.teamChara[team][0]].image.box.setCenter(
 				sd.screen.center().x() + 150.0 * cos(theta + phi),
 				sd.screen.center().y() - 150.0 * sin(theta + phi));
@@ -65,8 +66,11 @@ void GameStart::update() {
 		if (sd.game < Game::ZERO_ONE_NUM) {
 			mNextScene = ZERO_ONE;
 		}
-		else {
+		else if (sd.game < Game::CRICKET_COUNT_UP) {
 			mNextScene = CRICKET;
+		}
+		else {
+			mNextScene = COUNT_UP;
 		}
 	}
 	return;

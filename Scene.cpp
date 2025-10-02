@@ -1,13 +1,18 @@
+#if _MSC_VER > 1922 && !defined(_SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING)
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#endif
 #define _CRT_SECURE_NO_WARNINGS
+#define _USE_MATH_DEFINES
 #pragma comment(lib, "winmm.lib")   // MSVC —p
 #include "Scene.hpp"
 #include "resource.h"
 #include "Mouse.hpp"
 #include "colorlib.hpp"
 #include <numbers>
-#include <filesystem>
+#include <experimental/filesystem>
+#include <string>
 namespace cl = colorlib;
-namespace fs = std::filesystem;
+namespace fs = std::experimental::filesystem::v1;
 
 Scene::Scene() : isConfig(false), mNowScene(HOME), mNextScene(NO_CHANGE) {
     ICONSIZE_NORMAL.setXY(25, 25);
@@ -195,10 +200,10 @@ void Scene::draw() {
         sd.color.k, FALSE, 3);
     DrawCircle(sd.screen.right() - 183, sd.obj.lowerFrame.box.center().y() + 1, sd.font.chara.size / 2 + 1, 
         sd.color.w, FALSE, 1);
-    float theta = -std::numbers::pi;
+    float theta = -M_PI;
     // draw icon & darts board
     switch (mNowScene) {
-    case ZERO_ONE: case CRICKET: 
+	case ZERO_ONE: case CRICKET: case COUNT_UP:
         drawImage(sd.ctrl.pause[sd.gameTime.isPaused()].icon);
         drawImage(sd.ctrl.skill.icon);
         if (!isConfig) {
@@ -212,7 +217,7 @@ void Scene::draw() {
             DrawCircleAA(darts.center.x(), darts.center.y(), 226, 100, sd.color.k);
             DrawCircleAA(darts.center.x(), darts.center.y(), DartsRadialPos::Radius[DartsRadialPos::DOUBLE], 100, 
                 sd.color.gy);
-            for (int i = 0; i < 20; i++, theta += 0.1 * std::numbers::pi) {
+            for (int i = 0; i < 20; i++, theta += 0.1 * M_PI) {
                 if (isValidPoint[Darts::BOARD_POINT[i]]) {
                     DrawStringToHandle(
                         darts.center.x() + 212.0 * cos(theta) - 18.0, darts.center.y() - 212.0 * sin(theta) - 10.0,
@@ -221,12 +226,13 @@ void Scene::draw() {
                         if (darts.point == Darts::BOARD_POINT[i] && darts.radialPos == posNo) {
                             switch (Mouse::getInstance()->getClickState()) {
                             case Key::RELEASED:
-                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i,
-                                    sd.dartsBoard[posNo][2], 72.5 - 5.0 * i); break;
+                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i, sd.dartsBoard[posNo][2], 72.5 - 5.0 * i); 
+                                break;
                             case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i,
-                                    sd.dartsBoard[posNo][3], 72.5 - 5.0 * i); break;
-                            default: break;
+                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i, sd.dartsBoard[posNo][3], 72.5 - 5.0 * i); 
+                                break;
+                            default: 
+                                break;
                             }
                             continue;
                         }
@@ -296,8 +302,8 @@ void Scene::draw() {
             for (int posNo = 0; posNo < DartsRadialPos::NUM; posNo++) {
                 DrawCircleAA(darts.center.x(), darts.center.y(), DartsRadialPos::Radius[posNo], 100, 0, FALSE, 2);
             }
-            theta = 0.05 * std::numbers::pi;
-            for (int i = 0; i < 20; i++, theta += 0.1 * std::numbers::pi) {
+            theta = 0.05 * M_PI;
+            for (int i = 0; i < 20; i++, theta += 0.1 * M_PI) {
                 DrawLineAA(darts.center.x() + 22.0 * cos(theta), sd.screen.center().y() + 22.0 * sin(theta),
                     darts.center.x() + 196.85 * cos(theta), sd.screen.center().y() + 196.85 * sin(theta), 0, 2);
             }
@@ -350,7 +356,7 @@ void Scene::update() {
     }
     if (isConfig) {
         switch (mNowScene) {
-        case ZERO_ONE: case CRICKET:
+        case ZERO_ONE: case CRICKET: case COUNT_UP:
         case GAME_START:    
         case PLAYER_SELECT: if (ctrlRQ(sd.ctrl.playerSelect)) { mNextScene = PLAYER_SELECT; return; }
         case GAME_SELECT:   if (ctrlRQ(sd.ctrl.gameSelect))   { mNextScene = GAME_SELECT;   return; }
@@ -361,7 +367,7 @@ void Scene::update() {
     else {
         Coordinate2d<float> cursor;
         switch (mNowScene) {
-        case ZERO_ONE: case CRICKET:
+        case ZERO_ONE: case CRICKET: case COUNT_UP:
             sd.gameTime.update();
             if    (!sd.gameTime.isPaused() && ctrlRQ(sd.ctrl.pause[FALSE])) { sd.gameTime.stop();   return; }
             else if (sd.gameTime.isPaused() && ctrlRQ(sd.ctrl.pause[TRUE])) { sd.gameTime.resume(); return; }
@@ -378,9 +384,19 @@ void Scene::update() {
                 }
             }
             if (darts.point >= 0) {
-                darts.power = 1;
-                darts.radialPos = DartsRadialPos::INNER_SINGLE;
-                darts.totalPoint = darts.point;
+                if (Keyboard::getInstance()->getPressState(KEY_INPUT_D) == Key::PRESSED) {
+                    darts.power = 2;
+                    darts.radialPos = DartsRadialPos::DOUBLE;
+                }
+                else if (Keyboard::getInstance()->getPressState(KEY_INPUT_T) == Key::PRESSED) {
+                    darts.power = 3;
+                    darts.radialPos = DartsRadialPos::TRIPLE;
+                }
+                else {
+                    darts.power = 1;
+                    darts.radialPos = DartsRadialPos::INNER_SINGLE;
+                }
+                darts.totalPoint = darts.power * darts.point;
             }
             else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::INNER_BULL] || // mouse input
                 Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) { // keyboard input
@@ -394,7 +410,7 @@ void Scene::update() {
                 darts.point = 25;
                 darts.power = 1;
                 darts.radialPos = DartsRadialPos::BULL;
-                if (mNowScene == ZERO_ONE) {
+                if (mNowScene == ZERO_ONE || mNowScene == COUNT_UP) {
                     darts.totalPoint = 50;
                 }
                 else {
@@ -402,8 +418,8 @@ void Scene::update() {
                 }
             }
             else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::DOUBLE]) {
-                float theta = -std::numbers::pi + 0.05 * std::numbers::pi;
-                for (int i = 0; i < 21; i++, theta += 0.1 * std::numbers::pi) { // mouse input
+                float theta = -M_PI + 0.05 * M_PI;
+                for (int i = 0; i < 21; i++, theta += 0.1 * M_PI) { // mouse input
                     if (cursorPolar.theta < theta) {
                         darts.point = Darts::BOARD_POINT[i];
                         break;
@@ -483,10 +499,10 @@ void Scene::changeWindow(int WindowModeFlag) {
     sd.charaNum = 0;
     std::string groupName[MAX_GROUP_NUM];
     sd.groupNum = 0;
-    for (std::filesystem::directory_iterator iter(playerFolderPath), end;
+    for (fs::directory_iterator iter(playerFolderPath), end;
         iter != end && !err && sd.groupNum < MAX_GROUP_NUM; iter.increment(err)) {
-        const std::filesystem::directory_entry entry = *iter;
-        if (entry.is_directory()) { // if found path is folder,
+        const fs::directory_entry entry = *iter;
+        if (!entry.path().has_extension()) { // if found path is folder,
             groupName[sd.groupNum] = entry.path().filename().string(); // get group name
             sd.groupNum++;
         }   
@@ -494,9 +510,9 @@ void Scene::changeWindow(int WindowModeFlag) {
     for (int group = 0; group < sd.groupNum; group++) {
         sd.groupCharaNum[group] = 0;
         std::string folderPath = playerFolderPath + groupName[group] + "/";
-        for (std::filesystem::directory_iterator iter(folderPath), end;
+        for (fs::directory_iterator iter(folderPath), end;
             iter != end && !err && sd.charaNum < MAX_CHARA_NUM; iter.increment(err)) {
-            const std::filesystem::directory_entry entry = *iter;
+            const fs::directory_entry entry = *iter;
             std::string extension = entry.path().extension().string();
             if (extension == ".jpg" || extension == ".png") { // if found file is image,
                 sd.chara[sd.charaNum].image.handle = LoadGraph(entry.path().string().c_str());

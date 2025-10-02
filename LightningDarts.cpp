@@ -6,8 +6,11 @@
 #include "GameStart.hpp"
 #include "ZeroOne.hpp"
 #include "Cricket.hpp"
+#include "CountUp.hpp"
 #include "Config.hpp"
 #include "resource.h"
+#include <opencv2/opencv.hpp>
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     if (DxLib_Init()) return -1;
     SetSysCommandOffFlag(TRUE);
@@ -37,6 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         case Scene::GAME_START:    scene = new GameStart(scene->shareData());              break;
         case Scene::ZERO_ONE:      scene = new ZeroOne(scene->shareData());                break;
         case Scene::CRICKET:       scene = new Cricket(scene->shareData());                break;
+        case Scene::COUNT_UP:      scene = new CountUp(scene->shareData());                break;
         case Scene::QUIT:          delete scene; return 0;
         default: return -1;
         }

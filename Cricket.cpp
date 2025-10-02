@@ -70,10 +70,10 @@ void Cricket::reset() {
 				if (!isPointUsed[point]) {
 					if (pointNo == randPointNo) {
 						if (point == 20) {
-							now.posPoint[pos] = -25;
+							now.posScore[pos] = -25;
 						}
 						else {
-							now.posPoint[pos] = -point - 1;
+							now.posScore[pos] = -point - 1;
 						}
 						isPointUsed[point] = true;
 						break;
@@ -93,7 +93,7 @@ void Cricket::reset() {
 			for (int point = 1, pointNo = 0; point <= 20; point++) {
 				if (!isValidPoint[point]) {
 					if (pointNo == randPointNo) {
-						now.posPoint[pos] = point;
+						now.posScore[pos] = point;
 						isValidPoint[point] = true;
 						break;
 					}
@@ -104,7 +104,7 @@ void Cricket::reset() {
 		break;
 	case Game::SELECT_A_CRICKET:
 		for (int pos = 0; pos < POS_NUM; pos++) {
-			now.posPoint[pos] = 0;
+			now.posScore[pos] = 0;
 		}
 		selectPos = 0;
 		for (int point = 0; point <= 20; point++) {
@@ -123,7 +123,7 @@ void Cricket::reset() {
 void Cricket::draw() {
 	Scene::draw();
 	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.box.bottom() + 10,
-		sd.color.w, sd.font.normal.handle, "Turn%3d", now.turn + 1);
+		sd.color.w, sd.font.normal.handle, "Turn%3d", now.round + 1);
 	if (sd.teamNum <= 4) {
 		DrawBox(sd.screen.center().x() + 10, teamBox[0].top(),
 			teamBox[sd.teamNum - 1].right(), teamBox[0].bottom(), sd.obj.upperFrame.color, TRUE);
@@ -146,7 +146,7 @@ void Cricket::draw() {
 				markPart[0].box.setCenter(markPart[2].box.center().x() - 1, markPart[2].box.center().y());
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
-					switch (now.teamPoint[team][pos]) {
+					switch (now.teamPosScore[team][pos]) {
 					case 3: DrawCircleAA(markPart[i].box.center().x(), markPart[i].box.center().y(),
 						(sd.font.normal.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
 					case 2: DrawLine(markPart[i].box.upperRight().x(), markPart[i].box.upperRight().y(),
@@ -168,15 +168,15 @@ void Cricket::draw() {
 		}
 		int y = sd.chara[sd.teamChara[0][sd.teamType]].image.box.bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
-			if (now.posPoint[pos] == 25) { // bull
+			if (now.posScore[pos] == 25) { // bull
 				DrawStringToHandle(sd.screen.center().x() + 12,
 					y + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
 					darts.pointName[21].c_str(), sd.color.w, sd.font.chara.handle);
 			}
-			else if (now.posPoint[pos] > 0) { // except bull
+			else if (now.posScore[pos] > 0) { // except bull
 				DrawStringToHandle(sd.screen.center().x() + 12,
 					y + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
-					darts.pointName[now.posPoint[pos]].c_str(), sd.color.w, sd.font.chara.handle);
+					darts.pointName[now.posScore[pos]].c_str(), sd.color.w, sd.font.chara.handle);
 			}
 		}
 		for (int pointPos = 0, posY = 0; pointPos < POINT_NUM; pointPos++) {
@@ -215,7 +215,7 @@ void Cricket::draw() {
 				markPart[0].box.setCenter(markPart[2].box.center().x() - 1, markPart[2].box.center().y());
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
-					switch (now.teamPoint[team][posNo]) {
+					switch (now.teamPosScore[team][posNo]) {
 					case 3: DrawCircleAA(markPart[i].box.center().x(), markPart[i].box.center().y(),
 						(sd.font.chara.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
 					case 2: DrawLine(markPart[i].box.upperRight().x(), markPart[i].box.upperRight().y(),
@@ -244,15 +244,15 @@ void Cricket::draw() {
 		for (int i = 0, chara = 0; i < 2; i++) {
 			chara = sd.teamChara[4 * i][0];
 			for (int pos = 0; pos < selectPos; pos++) {
-				if (now.posPoint[pos] == 25) { // bull
+				if (now.posScore[pos] == 25) { // bull
 					DrawStringToHandle(sd.screen.center().x() + 12,
 						sd.chara[chara].image.box.bottom() + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
 						darts.pointName[21].c_str(), sd.color.w, sd.font.chara.handle);
 				}
-				else if (now.posPoint[pos] > 0) { // except bull
+				else if (now.posScore[pos] > 0) { // except bull
 					DrawStringToHandle(sd.screen.center().x() + 12,
 						sd.chara[chara].image.box.bottom() + pos * sd.font.chara.size + (2 * pos + 1) * space / 2,
-						darts.pointName[now.posPoint[pos]].c_str(), sd.color.w, sd.font.chara.handle);
+						darts.pointName[now.posScore[pos]].c_str(), sd.color.w, sd.font.chara.handle);
 				}
 			}
 			DrawStringToHandle(sd.screen.center().x() + 12,
@@ -260,7 +260,7 @@ void Cricket::draw() {
 				"Bill", sd.color.w, sd.font.chara.handle);
 		}
 	}
-	int chara = sd.teamChara[now.team][now.turn % (sd.teamType + 1)];
+	int chara = sd.teamChara[now.team][now.round % (sd.teamType + 1)];
 	for (int arrow = 0, x = sd.chara[chara].image.box.right(), y = sd.chara[chara].image.box.top(); 
 		arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, sd.dartsArrow, TRUE);
@@ -280,14 +280,14 @@ void Cricket::draw() {
 void Cricket::update() {
 	Scene::update(); 
 	if (selectPos < POS_NUM) { // select-a-clicket
-		if (now.posPoint[selectPos] > 0) {
+		if (now.posScore[selectPos] > 0) {
 			drawImage(sd.ctrl.forward.icon);
 			if (ctrlRQ(sd.ctrl.forward)) {
-				if (now.posPoint[selectPos] == 25) {
+				if (now.posScore[selectPos] == 25) {
 					isValidPoint[0] = true;
 				}
 				else {
-					isValidPoint[now.posPoint[selectPos]] = true;
+					isValidPoint[now.posScore[selectPos]] = true;
 				}
 				selectPos++;
 				return;
@@ -297,14 +297,14 @@ void Cricket::update() {
 			Keyboard::getInstance()->getPressState(KEY_INPUT_F12) == Key::PRESSEDtoRELEASED) {
 			if (darts.point == 25) {
 				if (!isValidPoint[0]) {
-					now.posPoint[selectPos] = darts.point;
+					now.posScore[selectPos] = darts.point;
 					isValidPoint[0] = true;
 					selectPos++;
 				}
 			}
 			else if (darts.point > 0) {
 				if (!isValidPoint[darts.point]) {
-					now.posPoint[selectPos] = darts.point;
+					now.posScore[selectPos] = darts.point;
 					isValidPoint[darts.point] = true;
 					selectPos++;
 				}
@@ -338,23 +338,23 @@ void Cricket::update() {
 		now.arrow--;
 		int cricketPos = -1;
 		for (int posNo = 0; posNo < POS_NUM; posNo++) {
-			if (darts.point == abs(now.posPoint[posNo])) {
+			if (darts.point == abs(now.posScore[posNo])) {
 				cricketPos = posNo;
 				break;
 			}
 		}
 		if (cricketPos >= 0 && cricketPos < POS_NUM) { 
-			if (now.posPoint[cricketPos] < 0) { // hidden cricket
-				now.posPoint[cricketPos] *= -1;
+			if (now.posScore[cricketPos] < 0) { // hidden cricket
+				now.posScore[cricketPos] = -now.posScore[cricketPos];
 				darts.power++;
 			}
-			now.teamPoint[now.team][cricketPos] += darts.power;
-			if (now.teamPoint[now.team][cricketPos] > 3) {
-				int damage = POS_POINT[cricketPos] * (now.teamPoint[now.team][cricketPos] - 3);
-				now.teamPoint[now.team][cricketPos] = 3;
+			now.teamPosScore[now.team][cricketPos] += darts.power;
+			if (now.teamPosScore[now.team][cricketPos] > 3) {
+				int damage = POS_POINT[cricketPos] * (now.teamPosScore[now.team][cricketPos] - 3);
+				now.teamPosScore[now.team][cricketPos] = 3;
 				if (sd.teamNum <= 2) {
 					int opponent = (now.team + 1) % sd.teamNum;
-					if (now.teamPoint[opponent][cricketPos] < 3) {
+					if (now.teamPosScore[opponent][cricketPos] < 3) {
 						now.teamBill[now.team] += damage;
 					}
 					if (now.teamBill[now.team] > now.teamBill[opponent]) {
@@ -365,7 +365,7 @@ void Cricket::update() {
 				else {
 					for (int opponent = (now.team + 1) % sd.teamNum; opponent != now.team; 
 						opponent = (opponent + 1) % sd.teamNum) {
-						if (now.teamPoint[opponent][cricketPos] < 3) {
+						if (now.teamPosScore[opponent][cricketPos] < 3) {
 							now.teamBill[opponent] += damage;
 						}
 					}
@@ -373,7 +373,7 @@ void Cricket::update() {
 			}
 			now.isTeamFin[now.team] = true;
 			for (int posNo = 0; posNo < POS_NUM; posNo++) {
-				if (now.teamPoint[now.team][posNo] < 3) {
+				if (now.teamPosScore[now.team][posNo] < 3) {
 					now.isTeamFin[now.team] = false;
 					break; 
 				}
@@ -438,7 +438,7 @@ void Cricket::update() {
 				now.team++;
 				if (now.team >= sd.teamNum) {
 					now.team = 0;
-					now.turn++;
+					now.round++;
 				}
 				if (!now.isTeamFin[now.team]) {
 					now.arrow = 3;
@@ -456,11 +456,11 @@ void Cricket::update() {
 		}
 		else if (sd.game == Game::SELECT_A_CRICKET && selectPos > 0) {
 			selectPos--;
-			if (now.posPoint[selectPos] == 25) {
+			if (now.posScore[selectPos] == 25) {
 				isValidPoint[0] = false;
 			}
 			else {
-				isValidPoint[now.posPoint[selectPos]] = false;
+				isValidPoint[now.posScore[selectPos]] = false;
 			}
 		}
 		else {

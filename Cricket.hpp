@@ -20,9 +20,9 @@ private:
 	struct RecordData {
 		int team = 0;
 		int arrow = 3;
-		int turn = 0;
-		int posPoint[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
-		int teamPoint[MAX_PLAYER_NUM][POS_NUM] = {};
+		int round = 0;
+		int posScore[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
+		int teamPosScore[MAX_PLAYER_NUM][POS_NUM] = {};
 		int teamBill[MAX_PLAYER_NUM] = {};
 		int rank[MAX_PLAYER_NUM];
 		bool isTeamFin[MAX_PLAYER_NUM] = {};

@@ -170,6 +170,7 @@ protected:
         static constexpr int SELECT_A_CRICKET   =  9;
         static constexpr int ALL_NUMBER_CRICKET = 10;
         static constexpr int CRICKET_COUNT_UP   = 11;
+        static constexpr int COUNT_UP           = 12;
     };
     struct DartsRadialPos {
 		static constexpr int OUTSIDE      = -1;
@@ -292,7 +293,8 @@ public:
     static constexpr int GAME_START    =  4;
     static constexpr int ZERO_ONE      =  5;
     static constexpr int CRICKET       =  6;
-    static constexpr int OTHER_GAME    =  7;
-    static constexpr int QUIT          =  8;
+    static constexpr int COUNT_UP      =  7;
+    static constexpr int OTHER_GAME    =  8;
+    static constexpr int QUIT          =  9;
     ShareData shareData() { return sd; }
 };
