@@ -7,7 +7,7 @@ bool Mouse::update() {
     int nowButtonState = GetMouseInput();
     int inX = 0, inY = 0;
     GetMousePoint(&inX, &inY);
-    pos.setXY(inX, inY);
+    pos._Val[0] = inX; pos._Val[1] = inY;
     for (int i = 0; i < KEY_NUM; i++) {
         if (nowButtonState & i) { // if key is pressed,
             if (key[i].pressCount < 0) { // if key is released before,
@@ -39,7 +39,7 @@ int Mouse::getPressState(int keyCode) {
     if (!isValidKey(keyCode)) return 0; return key[keyCode].pressState; 
 }
 bool Mouse::isCursorInBox(int x1, int y1, int x2, int y2) {
-    return pos.x() > x1 && pos.y() > y1 && pos.x() < x2 && pos.y() < y2;
+    return real(pos) > x1 && imag(pos) > y1 && real(pos) < x2 && imag(pos) < y2;
 }
 int Mouse::getClickBoxCount(Box box) {
     if (!isCursorInBox(box)) return 0; return getClickCount();

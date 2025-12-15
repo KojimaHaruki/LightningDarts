@@ -22,7 +22,7 @@ void GameSelect::draw() {
     Scene::draw();
     for (int mainGameNo = 0; mainGameNo < MAIN_GAME_NUM; mainGameNo++)
         DrawStringToHandle(mainGameBox[mainGameNo].left() + 5,
-            mainGameBox[mainGameNo].center().y() - sd.font.title.size / 2,
+            imag(mainGameBox[mainGameNo].center()) - sd.font.title.size / 2,
             mainGameName[mainGameNo].c_str(), sd.color.w, sd.font.title.handle);
     for (int gameNo = 0; gameNo < GAME_NUM; gameNo++) {
         switch (Mouse::getInstance()->getClickBoxState(gameBox[gameNo])) {
@@ -34,11 +34,11 @@ void GameSelect::draw() {
             sd.game = gameNo; mNextScene = PLAYER_SELECT; break;
         default: break;
         }
-        DrawStringToHandle(gameBox[gameNo].left() + 15, gameBox[gameNo].center().y() - sd.font.normal.size / 2,
+        DrawStringToHandle(gameBox[gameNo].left() + 15, imag(gameBox[gameNo].center()) - sd.font.normal.size / 2,
             gameName[gameNo].c_str(), sd.color.w, sd.font.normal.handle);
     }
     DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
-        sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2, "Game Select", sd.color.w, sd.font.normal.handle);
+        imag(sd.obj.upperFrame.box.center()) - sd.font.normal.size / 2, "Game Select", sd.color.w, sd.font.normal.handle);
     return;
 }
 void GameSelect::update() {

@@ -4,7 +4,7 @@
 #include <numbers>
 GameStart::GameStart(ShareData shareData) {
 	sd = shareData;
-	mNowScene = GAME_START; 
+	mNowScene = GAME_START;
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
 	double theta = 0.0, phi = M_PI / (double)MAX_PLAYER_NUM;
@@ -13,24 +13,24 @@ GameStart::GameStart(ShareData shareData) {
 		for (int player = 0; player < sd.teamNum; player++) {
 			theta = 2.0 * player * M_PI / (double)sd.teamNum + M_PI;
 			sd.chara[sd.teamChara[player][0]].image.box.setCenter(
-				sd.screen.center().x() + 150.0 * cos(theta), sd.screen.center().y() - 150.0 * sin(theta));
+				real(sd.screen.center()) + 150.0 * cos(theta), imag(sd.screen.center()) - 150.0 * sin(theta));
 		}
 		break;
 	case TeamType::DUO:
 		for (int team = 0; team < sd.teamNum; team++) {
 			theta = 2.0 * team * M_PI / (double)sd.teamNum + M_PI;
 			sd.chara[sd.teamChara[team][0]].image.box.setCenter(
-				sd.screen.center().x() + 150.0 * cos(theta + phi),
-				sd.screen.center().y() - 150.0 * sin(theta + phi));
+				real(sd.screen.center()) + 150.0 * cos(theta + phi),
+				imag(sd.screen.center()) - 150.0 * sin(theta + phi));
 			sd.chara[sd.teamChara[team][1]].image.box.setCenter(
-				sd.screen.center().x() + 150.0 * cos(theta - phi),
-				sd.screen.center().y() - 150.0 * sin(theta - phi));
+				real(sd.screen.center()) + 150.0 * cos(theta - phi),
+				imag(sd.screen.center()) - 150.0 * sin(theta - phi));
 		}
 		break;
 	default:
 		break;
 	}
-	
+
 }
 void GameStart::reset() {
 	Scene::reset(); startTime = time(NULL) + timeFromEntryToStart;
@@ -48,18 +48,18 @@ void GameStart::draw() {
 				sd.chara[chara].name.c_str(), sd.color.w, sd.font.chara.handle);
 		}
 	}
-	DrawStringToHandle(sd.screen.center().x() - 10, sd.screen.center().y() - sd.font.normal.size / 2, "VS",
+	DrawStringToHandle(real(sd.screen.center()) - 10, imag(sd.screen.center()) - sd.font.normal.size / 2, "VS",
 		sd.color.w, sd.font.normal.handle);
 	DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
-		sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2,
-		(gameName[sd.game] + " < " + std::to_string(sd.teamNum) + " player / " 
+		imag(sd.obj.upperFrame.box.center()) - sd.font.normal.size / 2,
+		(gameName[sd.game] + " < " + std::to_string(sd.teamNum) + " player / "
 			+ playModeName[sd.teamType] + " < Game Start").c_str(), sd.color.w, sd.font.normal.handle);
 	return;
 }
 void GameStart::update() {
 	Scene::update(); nowTime = time(NULL);
 	if (ctrlRQ(sd.ctrl.back)) mNextScene = PLAYER_SELECT;
-	else if (ctrlRQ(sd.ctrl.skip) || nowTime >= startTime) { 
+	else if (ctrlRQ(sd.ctrl.skip) || nowTime >= startTime) {
 		// set timer
 		sd.gameTime.reset();
 		sd.gameTime.start();

@@ -1,7 +1,7 @@
 #pragma once
-#include "Coordinate.hpp"
+#include <complex>
 struct PixelBox {
-    Coordinate2d<int> mSize, mCenter, mUpperLeft, mLowerLeft, mLowerRight, mUpperRight;
+    std::complex<int> mSize, mCenter, mUpperLeft, mLowerLeft, mLowerRight, mUpperRight;
 };
 class Box {
 private:
@@ -9,31 +9,31 @@ private:
 public:
     Box();
     ~Box();
-    inline void setSize(int x, int y) { mBox.mSize.setXY(x, y); return; }
-    inline void setSize(Coordinate2d<int> xy) { mBox.mSize = xy; return; }
+    const void setSize(int x, int y) { mBox.mSize._Val[0] = x; mBox.mSize._Val[1] = y; return; }
+    const void setSize(std::complex<int> xy) { mBox.mSize = xy; return; }
     void setBox(int x1, int y1, int x2, int y2);
     void setCenter(int x, int y);
-    void setCenter(Coordinate2d<int> xy) { setCenter(xy.x(), xy.y()); return; }
+    void setCenter(std::complex<int> xy) { setCenter(real(xy), imag(xy)); return; }
     void setUpperLeft(int x, int y);
-    void setUpperLeft(Coordinate2d<int> xy) { setUpperLeft(xy.x(), xy.y()); return; }
+    void setUpperLeft(std::complex<int> xy) { setUpperLeft(real(xy), imag(xy)); return; }
     void setLowerLeft(int x, int y);
-    void setLowerLeft(Coordinate2d<int> xy) { setLowerLeft(xy.x(), xy.y()); return; }
+    void setLowerLeft(std::complex<int> xy) { setLowerLeft(real(xy), imag(xy)); return; }
     void setLowerRight(int x, int y);
-    void setLowerRight(Coordinate2d<int> xy) { setLowerRight(xy.x(), xy.y()); return; }
+    void setLowerRight(std::complex<int> xy) { setLowerRight(real(xy), imag(xy)); return; }
     void setUpperRight(int x, int y);
-    void setUpperRight(Coordinate2d<int> xy) { setUpperRight(xy.x(), xy.y()); return; }
-    inline PixelBox box() { return mBox; }
-    inline Coordinate2d<int> size() { return mBox.mSize; }
-    inline Coordinate2d<int> center() { return mBox.mCenter; }
-    inline Coordinate2d<int> upperLeft() { return mBox.mUpperLeft; }
-    inline Coordinate2d<int> lowerLeft() { return mBox.mLowerLeft; }
-    inline Coordinate2d<int> lowerRight() { return mBox.mLowerRight; }
-    inline Coordinate2d<int> upperRight() { return mBox.mUpperRight; }
-    inline int width() { return mBox.mSize.x(); }
-    inline int height() { return mBox.mSize.y(); }
-    inline int top() { return mBox.mUpperLeft.y(); }
-    inline int bottom() { return mBox.mLowerLeft.y(); }
-    inline int left() { return mBox.mUpperLeft.x(); }
-    inline int right() { return mBox.mUpperRight.x(); }
-    bool isInBox(Coordinate2d<int> P);
+    void setUpperRight(std::complex<int> xy) { setUpperRight(real(xy), imag(xy)); return; }
+    const PixelBox box() { return mBox; }
+    const std::complex<int> size() { return mBox.mSize; }
+    const std::complex<int> center() { return mBox.mCenter; }
+    const std::complex<int> upperLeft() { return mBox.mUpperLeft; }
+    const std::complex<int> lowerLeft() { return mBox.mLowerLeft; }
+    const std::complex<int> lowerRight() { return mBox.mLowerRight; }
+    const std::complex<int> upperRight() { return mBox.mUpperRight; }
+    const int width() { return real(mBox.mSize); }
+    const int height() { return imag(mBox.mSize); }
+    const int top() { return imag(mBox.mUpperLeft); }
+    const int bottom() { return imag(mBox.mLowerLeft); }
+    const int left() { return real(mBox.mUpperLeft); }
+    const int right() { return real(mBox.mUpperRight); }
+    bool isInBox(std::complex<int> P);
 };

@@ -1,6 +1,7 @@
 #if _MSC_VER > 1922 && !defined(_SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING)
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #endif
+#define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
 #define _CRT_SECURE_NO_WARNINGS
 #define _USE_MATH_DEFINES
 #pragma comment(lib, "winmm.lib")   // MSVC —p
@@ -15,7 +16,7 @@ namespace cl = colorlib;
 namespace fs = std::experimental::filesystem::v1;
 
 Scene::Scene() : isConfig(false), mNowScene(HOME), mNextScene(NO_CHANGE) {
-    ICONSIZE_NORMAL.setXY(25, 25);
+    ICONSIZE_NORMAL._Val[0] = 25; ICONSIZE_NORMAL._Val[1] = 25;
 }
 void Scene::initCtrlKey() {
     sd.ctrl.home.key.code = KEY_INPUT_H;      sd.ctrl.back.key.code = KEY_INPUT_BACK;
@@ -39,15 +40,15 @@ void Scene::initScreenSize() {
     sd.screen.setSize(900, 500); sd.screen.setUpperLeft(0, 0);
     changeWindow(sd.window);
     // set frame
-    sd.obj.upperFrame.box.setSize(sd.screen.width(), ICONSIZE_NORMAL.y());
+    sd.obj.upperFrame.box.setSize(sd.screen.width(), imag(ICONSIZE_NORMAL));
     sd.obj.upperFrame.box.setUpperLeft(sd.screen.upperLeft());
     sd.obj.upperFrame.color = cl::srgb("CocoaBrown");
-    sd.obj.lowerFrame.box.setSize(sd.screen.width(), ICONSIZE_NORMAL.y());
+    sd.obj.lowerFrame.box.setSize(sd.screen.width(), imag(ICONSIZE_NORMAL));
     sd.obj.lowerFrame.box.setLowerLeft(sd.screen.lowerLeft());
     sd.obj.lowerFrame.color = cl::srgb("CocoaBrown");
     // set icon
     sd.ctrl.home.icon.box.setSize(30, 25); sd.ctrl.home.icon.box.setUpperLeft(sd.screen.upperLeft());
-    sd.ctrl.back.icon.box.setSize(ICONSIZE_NORMAL); 
+    sd.ctrl.back.icon.box.setSize(ICONSIZE_NORMAL);
     sd.ctrl.back.icon.box.setUpperLeft(sd.ctrl.home.icon.box.upperRight());
     sd.ctrl.forward.icon.box.setSize(ICONSIZE_NORMAL);
     sd.ctrl.forward.icon.box.setUpperLeft(sd.ctrl.back.icon.box.upperRight());
@@ -152,12 +153,12 @@ void Scene::init() {
             DrawGraph(500, 100 + sd.font.title.size, dxlib, TRUE);
             if (sd.bgm[bgmNo].handle == -1) {
                 DrawFormatStringToHandle(sd.screen.right() - 620, sd.screen.bottom() - sd.font.normal.size - 10,
-                    sd.color.w, sd.font.normal.handle, "loading BGM(%2d/%2d) %s failed!!", 
+                    sd.color.w, sd.font.normal.handle, "loading BGM(%2d/%2d) %s failed!!",
                     bgmNo + 1, sd.bgmNum, sd.bgm[bgmNo].name.c_str());
             }
             else {
                 DrawFormatStringToHandle(sd.screen.right() - 620, sd.screen.bottom() - sd.font.normal.size - 10,
-                    sd.color.w, sd.font.normal.handle, "loading BGM(%2d/%2d) %s", 
+                    sd.color.w, sd.font.normal.handle, "loading BGM(%2d/%2d) %s",
                     bgmNo + 1, sd.bgmNum, sd.bgm[bgmNo].name.c_str());
             }
             ScreenFlip();
@@ -176,7 +177,7 @@ void Scene::init() {
     // set game
     sd.game = -1;
     // set player
-    sd.teamNum = 0; 
+    sd.teamNum = 0;
     sd.teamType = TeamType::SOLO;
     for (int team = 0; team < MAX_PLAYER_NUM; team++) {
         for (int member = 0; member < DUO_MEMBER_NUM; member++) {
@@ -190,122 +191,123 @@ void Scene::init() {
 void Scene::reset() {
 }
 void Scene::draw() {
-    drawImage(sd.pic.darts.image); 
+    drawImage(sd.pic.darts.image);
     drawImage(sd.pic.thunder.image);
-    DrawStringToHandle(sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.box.center().y() - sd.font.normal.size / 2, 
+    DrawStringToHandle(sd.ctrl.bgm.icon.box.right(), imag(sd.obj.lowerFrame.box.center()) - sd.font.normal.size / 2,
         sd.bgm[sd.playingBGM].name.c_str(), sd.color.w, sd.font.normal.handle);
-    DrawStringToHandle(sd.screen.right() - 330, sd.obj.lowerFrame.box.center().y() - sd.font.chara.size / 2, 
+    DrawStringToHandle(sd.screen.right() - 330, imag(sd.obj.lowerFrame.box.center()) - sd.font.chara.size / 2,
         "Lightning Darts C 2025 Haruki Kojima", sd.color.w, sd.font.chara.handle);
-    DrawCircle(sd.screen.right() - 183, sd.obj.lowerFrame.box.center().y() + 1, sd.font.chara.size / 2 + 1, 
+    DrawCircle(sd.screen.right() - 183, imag(sd.obj.lowerFrame.box.center()) + 1, sd.font.chara.size / 2 + 1,
         sd.color.k, FALSE, 3);
-    DrawCircle(sd.screen.right() - 183, sd.obj.lowerFrame.box.center().y() + 1, sd.font.chara.size / 2 + 1, 
+    DrawCircle(sd.screen.right() - 183, imag(sd.obj.lowerFrame.box.center()) + 1, sd.font.chara.size / 2 + 1,
         sd.color.w, FALSE, 1);
     float theta = -M_PI;
     // draw icon & darts board
     switch (mNowScene) {
-	case ZERO_ONE: case CRICKET: case COUNT_UP:
+    case ZERO_ONE: case CRICKET: case COUNT_UP:
         drawImage(sd.ctrl.pause[sd.gameTime.isPaused()].icon);
         drawImage(sd.ctrl.skill.icon);
         if (!isConfig) {
             sd.gameTime.drawLapseTime(sd.screen.left(), sd.obj.upperFrame.box.bottom() + 10,
                 sd.color.w, sd.font.chara.handle, Timer::Mode::HMSmS);
             DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
-                sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2,
+                imag(sd.obj.upperFrame.box.center()) - sd.font.normal.size / 2,
                 (gameName[sd.game] + " / " + std::to_string(sd.teamNum) + " player / " + playModeName[sd.teamType]).c_str(),
                 sd.color.w, sd.font.normal.handle);
             // draw darts board
-            DrawCircleAA(darts.center.x(), darts.center.y(), 226, 100, sd.color.k);
-            DrawCircleAA(darts.center.x(), darts.center.y(), DartsRadialPos::Radius[DartsRadialPos::DOUBLE], 100, 
+            DrawCircleAA(real(darts.center), imag(darts.center), 226, 100, sd.color.k);
+            DrawCircleAA(real(darts.center), imag(darts.center), DartsRadialPos::Radius[DartsRadialPos::DOUBLE], 100,
                 sd.color.gy);
             for (int i = 0; i < 20; i++, theta += 0.1 * M_PI) {
                 if (isValidPoint[Darts::BOARD_POINT[i]]) {
                     DrawStringToHandle(
-                        darts.center.x() + 212.0 * cos(theta) - 18.0, darts.center.y() - 212.0 * sin(theta) - 10.0,
+                        real(darts.center) + 212.0 * cos(theta) - 18.0, imag(darts.center) - 212.0 * sin(theta) - 10.0,
                         darts.pointName[Darts::BOARD_POINT[i]].c_str(), sd.color.w, sd.font.normal.handle);
                     for (int posNo = DartsRadialPos::DOUBLE; posNo <= DartsRadialPos::INNER_SINGLE; posNo++) {
                         if (darts.point == Darts::BOARD_POINT[i] && darts.radialPos == posNo) {
                             switch (Mouse::getInstance()->getClickState()) {
                             case Key::RELEASED:
-                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i, sd.dartsBoard[posNo][2], 72.5 - 5.0 * i); 
+                                DrawCircleGauge(real(darts.center), imag(darts.center), 77.5 - 5.0 * i, sd.dartsBoard[posNo][2], 72.5 - 5.0 * i);
                                 break;
                             case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                                DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i, sd.dartsBoard[posNo][3], 72.5 - 5.0 * i); 
+                                DrawCircleGauge(real(darts.center), imag(darts.center), 77.5 - 5.0 * i, sd.dartsBoard[posNo][3], 72.5 - 5.0 * i);
                                 break;
-                            default: 
+                            default:
                                 break;
                             }
                             continue;
                         }
-                        DrawCircleGauge(darts.center.x(), darts.center.y(),
+                        DrawCircleGauge(real(darts.center), imag(darts.center),
                             77.5 - 5.0 * i, sd.dartsBoard[posNo][i % 2], 72.5 - 5.0 * i);
                     }
                     continue;
                 }
                 DrawStringToHandle(
-                    darts.center.x() + 212.0 * cos(theta) - 18.0, darts.center.y() - 212.0 * sin(theta) - 10.0,
+                    real(darts.center) + 212.0 * cos(theta) - 18.0, imag(darts.center) - 212.0 * sin(theta) - 10.0,
                     darts.pointName[Darts::BOARD_POINT[i]].c_str(), sd.color.gy, sd.font.normal.handle);
             }
             if (!isValidPoint[0]) {
-                DrawCircle(darts.center.x(), darts.center.y(), 22, sd.color.gy);
+                DrawCircle(real(darts.center), imag(darts.center), 22, sd.color.gy);
             }
             else {
                 if (darts.radialPos == DartsRadialPos::BULL) {
                     if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) {
-                        DrawCircleAA(darts.center.x(), darts.center.y(), 
+                        DrawCircleAA(real(darts.center), imag(darts.center),
                             DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.press);
                     }
                     else {
                         switch (Mouse::getInstance()->getClickState()) {
                         case Key::RELEASED:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.touch); break;
                         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.press); break;
                         default:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.r); break;
                         }
                     }
                     DrawStringToHandle(sd.screen.left(), sd.obj.lowerFrame.box.top() - sd.font.normal.size - 5,
                         darts.pointName[Darts::BULL].c_str(), sd.color.w, sd.font.normal.handle);
                 }
-                else { 
-                    DrawCircleAA(darts.center.x(), darts.center.y(), 
+                else {
+                    DrawCircleAA(real(darts.center), imag(darts.center),
                         DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.r);
                 }
                 if (darts.radialPos == DartsRadialPos::INNER_BULL) {
                     if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) {
-                        DrawCircle(darts.center.x(), darts.center.y(), 
+                        DrawCircle(real(darts.center), imag(darts.center),
                             DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], sd.color.press);
                     }
                     else {
                         switch (Mouse::getInstance()->getClickState()) {
                         case Key::RELEASED:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.touch); break;
                         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.press); break;
                         default:
-                            DrawCircleAA(darts.center.x(), darts.center.y(), 
+                            DrawCircleAA(real(darts.center), imag(darts.center),
                                 DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.k); break;
                         }
                     }
                     DrawStringToHandle(sd.screen.left(), sd.obj.lowerFrame.box.top() - sd.font.normal.size - 5,
                         darts.pointName[Darts::INNER_BULL].c_str(), sd.color.w, sd.font.normal.handle);
                 }
-                else { 
-                    DrawCircleAA(darts.center.x(), darts.center.y(), 
-                        DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.k); }
+                else {
+                    DrawCircleAA(real(darts.center), imag(darts.center),
+                        DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.k);
+                }
             }
             for (int posNo = 0; posNo < DartsRadialPos::NUM; posNo++) {
-                DrawCircleAA(darts.center.x(), darts.center.y(), DartsRadialPos::Radius[posNo], 100, 0, FALSE, 2);
+                DrawCircleAA(real(darts.center), imag(darts.center), DartsRadialPos::Radius[posNo], 100, 0, FALSE, 2);
             }
             theta = 0.05 * M_PI;
             for (int i = 0; i < 20; i++, theta += 0.1 * M_PI) {
-                DrawLineAA(darts.center.x() + 22.0 * cos(theta), sd.screen.center().y() + 22.0 * sin(theta),
-                    darts.center.x() + 196.85 * cos(theta), sd.screen.center().y() + 196.85 * sin(theta), 0, 2);
+                DrawLineAA(real(darts.center) + 22.0 * cos(theta), imag(sd.screen.center()) + 22.0 * sin(theta),
+                    real(darts.center) + 196.85 * cos(theta), imag(sd.screen.center()) + 196.85 * sin(theta), 0, 2);
             }
             if (darts.radialPos > DartsRadialPos::OUTSIDE && darts.radialPos < DartsRadialPos::BULL) {
                 DrawStringToHandle(sd.screen.left(), sd.obj.lowerFrame.box.top() - sd.font.normal.size - 5,
@@ -318,13 +320,13 @@ void Scene::draw() {
                     sd.color.w, sd.font.normal.handle);
             }
         }
-    case GAME_START:    
-    case PLAYER_SELECT: 
-        drawImage(sd.ctrl.playerSelect.icon); 
-    case GAME_SELECT:   
-        drawImage(sd.ctrl.gameSelect.icon); 
+    case GAME_START:
+    case PLAYER_SELECT:
+        drawImage(sd.ctrl.playerSelect.icon);
+    case GAME_SELECT:
+        drawImage(sd.ctrl.gameSelect.icon);
         drawImage(sd.ctrl.skip.icon);
-    default: 
+    default:
         drawImage(sd.ctrl.home.icon);
         drawImage(sd.ctrl.back.icon);
         drawImage(sd.ctrl.mute[sd.sound].icon);
@@ -348,35 +350,34 @@ void Scene::update() {
     else if (ctrlRQ(sd.ctrl.quit)) mNextScene = QUIT;
     else if (ctrlRQ(sd.ctrl.mute[sd.sound])) changeSound((sd.sound + 1) % 2);
     else if (ctrlRQ(sd.ctrl.window[sd.window])) changeWindow((sd.window + 1) % 2);
-    else if (ctrlRQ(sd.ctrl.bgm)) { 
-        if (Keyboard::getInstance()->getPressState(KEY_INPUT_LSHIFT) == Key::PRESSED) { 
-            playBGM((sd.playingBGM - 1 + sd.bgmNum) % sd.bgmNum); 
+    else if (ctrlRQ(sd.ctrl.bgm)) {
+        if (Keyboard::getInstance()->getPressState(KEY_INPUT_LSHIFT) == Key::PRESSED) {
+            playBGM((sd.playingBGM - 1 + sd.bgmNum) % sd.bgmNum);
         }
         else { playBGM((sd.playingBGM + 1) % sd.bgmNum); }
     }
     if (isConfig) {
         switch (mNowScene) {
         case ZERO_ONE: case CRICKET: case COUNT_UP:
-        case GAME_START:    
+        case GAME_START:
         case PLAYER_SELECT: if (ctrlRQ(sd.ctrl.playerSelect)) { mNextScene = PLAYER_SELECT; return; }
-        case GAME_SELECT:   if (ctrlRQ(sd.ctrl.gameSelect))   { mNextScene = GAME_SELECT;   return; }
-        case HOME:          if (ctrlRQ(sd.ctrl.home))         { mNextScene = HOME;          return; }
+        case GAME_SELECT:   if (ctrlRQ(sd.ctrl.gameSelect)) { mNextScene = GAME_SELECT;   return; }
+        case HOME:          if (ctrlRQ(sd.ctrl.home)) { mNextScene = HOME;          return; }
         default:            break;
         }
     }
     else {
-        Coordinate2d<float> cursor;
+        std::complex<float> cursorPolar(Mouse::getInstance()->x() - real(darts.center), imag(darts.center) - Mouse::getInstance()->y());
+        float cursorR = std::abs(cursorPolar), cursorTheta = std::arg(cursorPolar);
         switch (mNowScene) {
         case ZERO_ONE: case CRICKET: case COUNT_UP:
             sd.gameTime.update();
-            if    (!sd.gameTime.isPaused() && ctrlRQ(sd.ctrl.pause[FALSE])) { sd.gameTime.stop();   return; }
+            if (!sd.gameTime.isPaused() && ctrlRQ(sd.ctrl.pause[FALSE])) { sd.gameTime.stop();   return; }
             else if (sd.gameTime.isPaused() && ctrlRQ(sd.ctrl.pause[TRUE])) { sd.gameTime.resume(); return; }
             // update darts
-            cursor.setXY(Mouse::getInstance()->x() - darts.center.x(), darts.center.y() - Mouse::getInstance()->y());
             darts.point = -1;
             darts.power = 0;
             darts.radialPos = DartsRadialPos::OUTSIDE;
-            Polar<float> cursorPolar = cursor.polar();
             for (int point = 1; point <= 20; point++) { // keyboard input
                 if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[point]) != Key::RELEASED) {
                     darts.point = point;
@@ -398,14 +399,14 @@ void Scene::update() {
                 }
                 darts.totalPoint = darts.power * darts.point;
             }
-            else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::INNER_BULL] || // mouse input
+            else if (cursorR < DartsRadialPos::Radius[DartsRadialPos::INNER_BULL] || // mouse input
                 Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) { // keyboard input
                 darts.point = 25;
                 darts.power = 2;
                 darts.radialPos = DartsRadialPos::INNER_BULL;
                 darts.totalPoint = 50;
             }
-            else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::BULL] || // mouse input
+            else if (cursorR < DartsRadialPos::Radius[DartsRadialPos::BULL] || // mouse input
                 Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) { // keyboard input
                 darts.point = 25;
                 darts.power = 1;
@@ -417,16 +418,16 @@ void Scene::update() {
                     darts.totalPoint = 25;
                 }
             }
-            else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::DOUBLE]) {
+            else if (cursorR < DartsRadialPos::Radius[DartsRadialPos::DOUBLE]) {
                 float theta = -M_PI + 0.05 * M_PI;
                 for (int i = 0; i < 21; i++, theta += 0.1 * M_PI) { // mouse input
-                    if (cursorPolar.theta < theta) {
+                    if (cursorTheta < theta) {
                         darts.point = Darts::BOARD_POINT[i];
                         break;
                     }
                 }
                 for (int radialPosNo = DartsRadialPos::INNER_SINGLE; radialPosNo > DartsRadialPos::OUTSIDE; radialPosNo--) {
-                    if (cursorPolar.r < DartsRadialPos::Radius[radialPosNo]) {
+                    if (cursorR < DartsRadialPos::Radius[radialPosNo]) {
                         darts.power = DartsRadialPos::Power[radialPosNo];
                         darts.radialPos = radialPosNo;
                         darts.totalPoint = darts.point * darts.power;
@@ -434,15 +435,15 @@ void Scene::update() {
                     }
                 }
             }
-            else if (cursorPolar.r < 226 || // mouse input
+            else if (cursorR < 226 || // mouse input
                 Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::OUTSIDE]) != Key::RELEASED) { // keyboard input
                 darts.point = 0;
                 darts.totalPoint = 0;
             }
         case GAME_START:    if (ctrlRQ(sd.ctrl.playerSelect)) { mNextScene = PLAYER_SELECT;           return; }
-        case PLAYER_SELECT: if (ctrlRQ(sd.ctrl.gameSelect))   { mNextScene = GAME_SELECT;             return; }
-        case GAME_SELECT:   if (ctrlRQ(sd.ctrl.home))         { mNextScene = HOME;                    return; }
-        case HOME:          if (ctrlRQ(sd.ctrl.config))       { mNextScene = CONFIG; sd.gameTime.stop();  return; }
+        case PLAYER_SELECT: if (ctrlRQ(sd.ctrl.gameSelect)) { mNextScene = GAME_SELECT;             return; }
+        case GAME_SELECT:   if (ctrlRQ(sd.ctrl.home)) { mNextScene = HOME;                    return; }
+        case HOME:          if (ctrlRQ(sd.ctrl.config)) { mNextScene = CONFIG; sd.gameTime.stop();  return; }
         default:            break;
         }
     }
@@ -505,7 +506,7 @@ void Scene::changeWindow(int WindowModeFlag) {
         if (!entry.path().has_extension()) { // if found path is folder,
             groupName[sd.groupNum] = entry.path().filename().string(); // get group name
             sd.groupNum++;
-        }   
+        }
     }
     for (int group = 0; group < sd.groupNum; group++) {
         sd.groupCharaNum[group] = 0;
@@ -519,7 +520,7 @@ void Scene::changeWindow(int WindowModeFlag) {
                 sd.chara[sd.charaNum].groupName = groupName[group];
                 sd.chara[sd.charaNum].name = entry.path().filename().string();
                 sd.chara[sd.charaNum].name.erase(sd.chara[sd.charaNum].name.length() - 4, 4);
-                sd.charaNum++; 
+                sd.charaNum++;
                 sd.groupCharaNum[group]++;
             }
         }
@@ -606,26 +607,26 @@ int Scene::drawBoxObj(Box box, int color, int fill) {
 int Scene::drawBoxObj(BoxObj obj) {
     return DrawBox(obj.box.left(), obj.box.top(), obj.box.right(), obj.box.bottom(), obj.color, obj.fill);
 }
-int Scene::drawImage(Image image) { 
+int Scene::drawImage(Image image) {
     return DrawGraph(image.box.left(), image.box.top(), image.handle, image.trans);
 }
-bool Scene::isClicked(Box box) { 
-    return Mouse::getInstance()->getClickBoxState(box) == Key::PRESSEDtoRELEASED; 
+bool Scene::isClicked(Box box) {
+    return Mouse::getInstance()->getClickBoxState(box) == Key::PRESSEDtoRELEASED;
 }
 bool Scene::isBoxClicked(int x1, int y1, int x2, int y2) {
     return Mouse::getInstance()->getClickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
 }
-bool Scene::isClicked(Image image) { 
-    return isClicked(image.box); 
+bool Scene::isClicked(Image image) {
+    return isClicked(image.box);
 }
-bool Scene::isKeyTyped(int keyCode) { 
-    return Keyboard::getInstance()->getPressState(keyCode) == Key::RELEASEDtoPRESSED; 
+bool Scene::isKeyTyped(int keyCode) {
+    return Keyboard::getInstance()->getPressState(keyCode) == Key::RELEASEDtoPRESSED;
 }
 bool Scene::isTyped(CtrlKey key) {
-    return isKeyTyped(key.code); 
+    return isKeyTyped(key.code);
 }
-bool Scene::ctrlRQ(Ctrl ctrl) { 
-    return isClicked(ctrl.icon) || isTyped(ctrl.key); 
+bool Scene::ctrlRQ(Ctrl ctrl) {
+    return isClicked(ctrl.icon) || isTyped(ctrl.key);
 }
 Scene::~Scene() {
     FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file

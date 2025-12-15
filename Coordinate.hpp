@@ -1,27 +1,19 @@
 #pragma once
 #include <cmath>
-template<typename T> struct XY {
-    T x, y;
-};
-template<typename T> struct Polar {
-    T r, theta;
-};
+
 template<typename T> class Coordinate2d {
 private:
-    XY<T> mXY;
-    Polar<T> mPolar;
+    T mX, mY;
 public:
-	Coordinate2d() : mXY(), mPolar() {};
-    Coordinate2d(T x, T y) : mPolar() { mXY.x = x; mXY.y; };
-	~Coordinate2d () {};
-    inline void setXY(T x, T y) { mXY.x = x; mXY.y = y; return; }
-    inline void setPolar(T r, T theta) { mXY.x = r * cos(theta); mXY.y = r * sin(theta); return; }
-    inline void setX(T x) { mXY.x = x; return; }
-    inline void setY(T y) { mXY.y = y; return; }
-    inline XY<T> xy() { return mXY; }
-    inline T x() { return mXY.x; }
-    inline T y() { return mXY.y; }
-    Polar<T> polar() { 
-        mPolar.r = sqrt(mXY.x * mXY.x + mXY.y * mXY.y); mPolar.theta = atan2(mXY.y, mXY.x); return mPolar; 
-    }
+	Coordinate2d() : mX(0), mY(0) {}
+    Coordinate2d(T x, T y) { mX = x; mY = y; }
+	~Coordinate2d () {}
+    void setXY(T x, T y) { mX = x; mY = y; return; }
+    void setPolar(T r, T theta) { mX = r * cos(theta); mY = r * sin(theta); return; }
+    void setX(T x) { mX = x; return; }
+    void setY(T y) { mY = y; return; }
+    T x() { return mX; }
+    T y() { return mY; }
+    T getR() { return sqrt(mX * mX + mY * mY); }
+    T getTheta() { return atan2(mY, mX); }
 };

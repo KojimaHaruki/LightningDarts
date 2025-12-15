@@ -176,7 +176,6 @@
     <ClInclude Include="Box.hpp" />
     <ClInclude Include="colorlib.hpp" />
     <ClInclude Include="Config.hpp" />
-    <ClInclude Include="Coordinate.hpp" />
     <ClInclude Include="CountUp.hpp" />
     <ClInclude Include="Cricket.hpp" />
     <ClInclude Include="ZeroOne.hpp" />

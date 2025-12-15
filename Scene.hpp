@@ -53,7 +53,7 @@ protected:
         int handle = 0;
         int trans = TRUE;
     };
-    Coordinate2d<int> ICONSIZE_NORMAL;
+    std::complex<int> ICONSIZE_NORMAL;
 
     // Key for control
     struct CtrlKey {
@@ -187,7 +187,7 @@ protected:
     bool isValidPoint[21];
     const std::string rankName[MAX_PLAYER_NUM] = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th" };
     struct Darts {
-        Coordinate2d<float> center;
+        std::complex<float> center;
         int point = 0;
         int power = 0;
         int radialPos = 0;

@@ -70,7 +70,7 @@ void PlayerSelect::draw() {
             sd.chara[chara].groupName.c_str(), sd.color.w, sd.font.chara.handle);
         if (sd.chara[chara].isPlayer) {
             DrawGraph(sd.chara[chara].image.box.left(), 
-                sd.chara[chara].image.box.center().y() - sd.pic.selected.image.box.height() / 2,
+                imag(sd.chara[chara].image.box.center()) - sd.pic.selected.image.box.height() / 2,
                 sd.pic.selected.image.handle, TRUE);
         }
     }
@@ -186,15 +186,15 @@ void PlayerSelect::draw() {
     drawBoxObj(teamTypeBox[sd.teamType], sd.color.gy, TRUE);
     for (int playMode = 0; playMode < 2; playMode++) {
         DrawStringToHandle(teamTypeBox[playMode].left() + 5 + 4 * max(0, 8 - (int)playModeName[playMode].size()),
-            teamTypeBox[playMode].center().y() - sd.font.normal.size / 2,
+            imag(teamTypeBox[playMode].center()) - sd.font.normal.size / 2,
             playModeName[playMode].c_str(), sd.color.w, sd.font.normal.handle);
     }
     DrawStringToHandle(teamTypeBox[TeamType::TOURNAMENT].left() + 5,
-        teamTypeBox[TeamType::TOURNAMENT].center().y() - sd.font.normal.size - 4,
+        imag(teamTypeBox[TeamType::TOURNAMENT].center()) - sd.font.normal.size - 4,
         "Tour-\n nament", sd.color.w, sd.font.normal.handle);
     DrawBox(sd.screen.right() - 200, sd.obj.upperFrame.box.bottom() + 400,
         sd.screen.right() - 100, sd.obj.lowerFrame.box.top(), sd.color.press, TRUE);
-    DrawStringToHandle(sd.screen.right() - 195, sd.ctrl.yes.icon.box.center().y() - sd.font.normal.size / 2,
+    DrawStringToHandle(sd.screen.right() - 195, imag(sd.ctrl.yes.icon.box.center()) - sd.font.normal.size / 2,
         "OK!!", sd.color.w, sd.font.normal.handle);
     for (int i = 0; i < 4; i++)
         DrawLine(sd.screen.left() + 100 * i, sd.obj.upperFrame.box.bottom(),
@@ -213,10 +213,10 @@ void PlayerSelect::draw() {
     for (int i = 0; i < MAX_PLAYER_NUM; i++) 
         DrawStringToHandle(90 + 40 * i, sd.obj.lowerFrame.box.top() - sd.font.normal.size - 15,
             std::to_string(i + 1).c_str(), sd.color.w, sd.font.normal.handle);
-    DrawGraph(sd.screen.right() - 140, sd.ctrl.yes.icon.box.center().y() - ICONSIZE_NORMAL.y() / 2,
+    DrawGraph(sd.screen.right() - 140, imag(sd.ctrl.yes.icon.box.center()) - imag(ICONSIZE_NORMAL) / 2,
         sd.ctrl.yes.key.image.handle, TRUE);
     DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
-        sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2,
+        imag(sd.obj.upperFrame.box.center()) - sd.font.normal.size / 2,
         (gameName[sd.game] + " < Player Select").c_str(), sd.color.w, sd.font.normal.handle);
     return;
 }

@@ -8,7 +8,7 @@ Config::Config(int priorScene, ShareData shareData) {
 }
 void Config::draw(Ctrl ctrl) {
     drawImage(ctrl.icon);
-    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - sd.font.normal.size / 2, 
+    DrawStringToHandle(ctrl.icon.box.right() + 5, imag(ctrl.icon.box.center()) - sd.font.normal.size / 2, 
         ctrl.name.c_str(), sd.color.w, sd.font.normal.handle);
     drawImage(ctrl.key.image);
     return;
@@ -20,7 +20,7 @@ void Config::set() {
     ctrl = sd.ctrl;
     ctrl.bgm.icon.box.setUpperLeft(10, 210);
     ctrl.bgm.key.image.box.setUpperLeft(200, 210);
-    int iconX[2] = { sd.screen.center().x() + 5, sd.screen.center().x() + 5 + sd.screen.width() / 4 };
+    int iconX[2] = { real(sd.screen.center()) + 5, real(sd.screen.center()) + 5 + sd.screen.width() / 4 };
     int keyX[2] = {};
     for (int i = 0; i < 2; i++) keyX[i] = iconX[i] + 150;
     ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.box.bottom() + sd.font.title.size + 5);
@@ -75,7 +75,7 @@ void Config::draw() {
     draw(ctrl.forward);
     // music setting 
     DrawStringToHandle(5, 25, "Sound", sd.color.w, sd.font.title.handle);
-    DrawStringToHandle(sd.screen.center().x(), 25, "System", sd.color.w, sd.font.title.handle);
+    DrawStringToHandle(real(sd.screen.center()), 25, "System", sd.color.w, sd.font.title.handle);
     DrawStringToHandle(10, 180, ("Play mode: " + BGMModeName[sd.bgmMode]).c_str() , sd.color.w, sd.font.normal.handle);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
@@ -111,8 +111,8 @@ void Config::draw() {
             changeSoundVol(i, sd.soundVol[i] + 4);
         }
     }
-    DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.upperRight().x(),
-        sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2, "Config", sd.color.w, sd.font.normal.handle);
+    DrawStringToHandle(real(sd.ctrl.mute[sd.sound].icon.box.upperRight()),
+        imag(sd.obj.upperFrame.box.center()) - sd.font.normal.size / 2, "Config", sd.color.w, sd.font.normal.handle);
     return;
 }
 void Config::update() {
