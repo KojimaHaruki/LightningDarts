@@ -8,8 +8,8 @@ Config::Config(int priorScene, ShareData shareData) {
 }
 void Config::draw(Ctrl ctrl) {
     drawImage(ctrl.icon);
-    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - sd.font.normal.size / 2, 
-        ctrl.name.c_str(), sd.color.w, sd.font.normal.handle);
+    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - sd.font.m.size / 2, 
+        ctrl.name.c_str(), sd.color.w, sd.font.m.handle);
     drawImage(ctrl.key.image);
     return;
 }
@@ -23,7 +23,7 @@ void Config::set() {
     int iconX[2] = { sd.screen.center().x() + 5, sd.screen.center().x() + 5 + sd.screen.width() / 4 };
     int keyX[2] = {};
     for (int i = 0; i < 2; i++) keyX[i] = iconX[i] + 150;
-    ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.box.bottom() + sd.font.title.size + 5);
+    ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.box.bottom() + sd.font.xl.size + 5);
     ctrl.home.key.image.box.setUpperLeft(keyX[0], ctrl.home.icon.box.top());
     ctrl.skill.icon.box.setUpperLeft(iconX[0], ctrl.home.icon.box.bottom() + 5);
     ctrl.skill.key.image.box.setUpperLeft(keyX[0], ctrl.skill.icon.box.top());
@@ -74,16 +74,16 @@ void Config::draw() {
     draw(ctrl.back); 
     draw(ctrl.forward);
     // music setting 
-    DrawStringToHandle(5, 25, "Sound", sd.color.w, sd.font.title.handle);
-    DrawStringToHandle(sd.screen.center().x(), 25, "System", sd.color.w, sd.font.title.handle);
-    DrawStringToHandle(10, 180, ("Play mode: " + BGMModeName[sd.bgmMode]).c_str() , sd.color.w, sd.font.normal.handle);
+    DrawStringToHandle(5, 25, "Sound", sd.color.w, sd.font.xl.handle);
+    DrawStringToHandle(sd.screen.center().x(), 25, "System", sd.color.w, sd.font.xl.handle);
+    DrawStringToHandle(10, 180, ("Play mode: " + BGMModeName[sd.bgmMode]).c_str() , sd.color.w, sd.font.m.handle);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
     for (int i = 0; i < Sound::NUM; i++) {
-        DrawStringToHandle(10, 90 + 30 * i, SoundName[i].c_str(), sd.color.w, sd.font.normal.handle);
+        DrawStringToHandle(10, 90 + 30 * i, SoundName[i].c_str(), sd.color.w, sd.font.m.handle);
         DrawBox(100, 95 + 30 * i, 100 + sd.soundVol[i], 105 + 30 * i, sd.color.w, TRUE);
         DrawBox(100 + sd.soundVol[i], 95 + 30 * i, 300, 105 + 30 * i, sd.color.k, TRUE);
-        DrawFormatStringToHandle(315, 90 + 30 * i, sd.color.w, sd.font.normal.handle, "%3d", sd.soundVol[i]);
+        DrawFormatStringToHandle(315, 90 + 30 * i, sd.color.w, sd.font.m.handle, "%3d", sd.soundVol[i]);
         DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle, TRUE);
         DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle, TRUE);
         switch (Mouse::getInstance()->getClickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
@@ -112,7 +112,7 @@ void Config::draw() {
         }
     }
     DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.upperRight().x(),
-        sd.obj.upperFrame.box.center().y() - sd.font.normal.size / 2, "Config", sd.color.w, sd.font.normal.handle);
+        sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Config", sd.color.w, sd.font.m.handle);
     return;
 }
 void Config::update() {

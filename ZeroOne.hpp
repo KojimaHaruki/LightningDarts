@@ -27,6 +27,6 @@ private:
 	int space;
 	static constexpr int pointArray[21] = { 11, 8, 16, 7, 19, 3, 17, 2, 15, 10, 6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11 };
 	static constexpr int initPoint[6] = { 301, 501, 701, 901, 1101, 1501 };
-	int roundNum;
-	int scoreNum;
+	int nRound;
+	int nScore;
 };

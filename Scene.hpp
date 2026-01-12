@@ -4,6 +4,7 @@
 #include "Keyboard.hpp"
 #include "Timer.hpp"
 #include <iostream>
+#include <vector>
 
 class Scene {
 protected:
@@ -11,11 +12,18 @@ protected:
     int mNowScene, mNextScene;
     bool isConfig;
 
+    // Time
+    const std::string wday[7] = { "Sun","Mon","Tue","Wed","Thu", "Fri","Sat" };
+    time_t nowTime;
+    tm nowLocalTime;
+    errno_t timeError;
+
     // BGM
     std::string bgmFolderPath = "./BGM/";
-    static constexpr int MAX_BGM_NUM = 30;
+    static constexpr int MAX_BGM_NUM = 100;
+	static constexpr int MAX_ARTIST_NUM = 50;
     struct BGM {
-        int handle = 0;
+        std::string path = {};
         std::string name = {};
     };
     struct BGMMode {
@@ -102,14 +110,15 @@ protected:
         "Count-up", "Eagle's eye", "Half-it", "Shoot out", "Sevens heaven", "Big bull"
     };
 
-    // Play mode
+    // Team type
+	static constexpr int TEAM_TYPE_NUM = 2;
     struct TeamType {
         static constexpr int SOLO       = 0;
         static constexpr int DUO        = 1;
-        static constexpr int TOURNAMENT = 2;
-        static constexpr int NUM        = 3;
     };
-    const std::string playModeName[TeamType::NUM] = { "Solo", "Duo", "Tournament" };
+    const std::string teamTypeName[TEAM_TYPE_NUM] = { "Solo", "Duo" };
+    static constexpr int SOLO_MEMBER_NUM = 1;
+    static constexpr int DUO_MEMBER_NUM = 2;
 
     // Character
     const std::string playerFolderPath = "./Image/Player/";
@@ -117,17 +126,19 @@ protected:
     static constexpr int MAX_GROUP_NUM = 10;
     static constexpr int MAX_PLAYER_NUM = 8;
     static constexpr int MAX_TEAM_NUM = 4;
-    static constexpr int DUO_MEMBER_NUM = 2;
     struct CharaStatus {
         double winRate = 0;
         int rank = 0;
     };
     struct Chara {
-        Image image;
         std::string name = {};
-        std::string groupName = {};
-        bool isPlayer = false;
+        Image image;
+        std::string group = {};
         CharaStatus status;
+    };
+    struct Group {
+        std::string name = {};
+        std::vector<Chara> members = {};
     };
 
     // Key
@@ -149,9 +160,9 @@ protected:
         int handle = 0;
     };
     struct FontKind {
-        Font title = { "Brush Script MT Italic", 5, 60, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
-            normal = { "Calisto MT Bold", 5, 18, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
-            chara = { "Calisto MT Bold", 1, 16, DX_FONTTYPE_ANTIALIASING_EDGE, 0 };
+        Font xl = { "Pristina", 5, 60, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
+            m = { "Times New Roman Bold", 5, 18, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
+            s = { "Times New Roman Bold", 1, 14, DX_FONTTYPE_ANTIALIASING_EDGE, 0 };
     };
 
     // Color
@@ -181,7 +192,7 @@ protected:
 		static constexpr int BULL         =  4;
 		static constexpr int INNER_BULL   =  5;
         static constexpr int NUM          =  6;
-        static constexpr float Radius[NUM] = { 196.85, 178.85, 126.77, 108.77, 22, 8 };
+        static constexpr float Radius[NUM] = { 196.85f, 178.85f, 126.77f, 108.77f, 22.0f, 8.0f };
         static constexpr int Power[NUM] = { 2, 1, 3, 1, 1, 2 };
     };
     bool isValidPoint[21];
@@ -221,11 +232,11 @@ protected:
     struct ShareData {
         Timer gameTime;
         int sound = TRUE;
-        BGM bgm[MAX_BGM_NUM];
+        std::vector<BGM> bgms;
         int se[SE_NUM] = {};
         int comboSE[COMBO_SE_NUM] = {};
-        int bgmNum = 0;
-        int playingBGM = 0;
+        int playingBGMNo = 0;
+        int playingBGMHandle = 0;
         int bgmVol = 0;
         int seVol = 0;
         int soundVol[Sound::NUM] = {}; // SoundVol[SoundNo] SoundNo 0: Total, 1: BGM, 2: SE
@@ -240,16 +251,11 @@ protected:
         KeyImage key[Keyboard::KEY_NUM];
         FontKind font;
         int game = Game::DEFAULT;
-        Chara chara[MAX_CHARA_NUM];
-        int charaNum = 0;
-        int groupNum = 0;
-        int groupCharaNum[MAX_GROUP_NUM] = {};
-        int teamChara[MAX_PLAYER_NUM][DUO_MEMBER_NUM] = {};
-        int playerNum = 0;
-        int teamNum = 0;
+        std::vector<Group> groups, teams;
         int teamType = TeamType::SOLO;
         int SkillMode = TRUE;
         ColorHandle color;
+		
     }; ShareData sd;
     const char* ShareDataFileName = "ShareData.dat";
     // SaveData

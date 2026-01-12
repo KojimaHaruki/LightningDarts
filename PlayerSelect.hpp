@@ -7,9 +7,9 @@ public:
     void reset();
     void draw();
     void update();
-    bool chTeamType(int teamType);
+    void chTeamType(int teamType);
 private:
-    int teamTypeMem;
-    int playerChara[MAX_PLAYER_NUM];
-    Box teamTypeBox[TeamType::NUM];
+    Box playerBox[MAX_PLAYER_NUM], teamTypeBox[TEAM_TYPE_NUM];
+	std::vector<Chara> players;
+    int nSelectedPlayer = 0;
 };

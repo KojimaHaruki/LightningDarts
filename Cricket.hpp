@@ -19,6 +19,7 @@ private:
 	static constexpr int POS_POINT[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
 	struct RecordData {
 		int team = 0;
+		int member = 0;
 		int arrow = 3;
 		int round = 0;
 		int posScore[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
