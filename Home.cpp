@@ -23,7 +23,7 @@ void Home::draw() {
             nowLocalTime.tm_year + 1900, nowLocalTime.tm_mon + 1, nowLocalTime.tm_mday,
             wday[nowLocalTime.tm_wday].c_str(), nowLocalTime.tm_hour, nowLocalTime.tm_min, nowLocalTime.tm_sec);
     }
-    DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.upperRight().x(),
+    DrawStringToHandle(sd.ctrl.mute[0].icon.box.upperRight().x(),
         sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Home", sd.color.w, sd.font.m.handle);
     return;
 }

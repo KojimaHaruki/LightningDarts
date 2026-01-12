@@ -7,9 +7,9 @@ public:
     void reset();
     void draw();
     void update();
-    void chTeamType(int teamType);
+    void setTeamType(int teamType);
 private:
     Box playerBox[MAX_PLAYER_NUM], teamTypeBox[TEAM_TYPE_NUM];
-	std::vector<Chara> players;
-    int nSelectedPlayer = 0;
+    BoxObj shuffle;
+	std::vector<Chara> players, playersMem;
 };

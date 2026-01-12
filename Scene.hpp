@@ -18,40 +18,6 @@ protected:
     tm nowLocalTime;
     errno_t timeError;
 
-    // BGM
-    std::string bgmFolderPath = "./BGM/";
-    static constexpr int MAX_BGM_NUM = 100;
-	static constexpr int MAX_ARTIST_NUM = 50;
-    struct BGM {
-        std::string path = {};
-        std::string name = {};
-    };
-    struct BGMMode {
-        static constexpr int LOOP    = 0;
-        static constexpr int ASCEND  = 1;
-        static constexpr int DESCEND = 2;
-        static constexpr int RANDAM  = 3;
-        static constexpr int NUM     = 4;
-    };
-    const std::string BGMModeName[BGMMode::NUM] = { "Loop", "Ascending order", "Descending order", "Random" };
-
-    // SE
-    static constexpr int SE_NUM = 4;
-    static constexpr int COMBO_SE_NUM = 7;
-
-    // Sound
-    struct Sound {
-        static constexpr int TOTAL = 0;
-        static constexpr int BGM   = 1;
-        static constexpr int SE    = 2;
-        static constexpr int NUM   = 3;
-    };
-    struct SoundVol {
-        static constexpr int MIN =   0;
-        static constexpr int MAX = 200;
-    };
-    const std::string SoundName[Sound::NUM] = { "Total", "BGM", "SE" };
-
     // Skill
     std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
 
@@ -121,7 +87,7 @@ protected:
     static constexpr int DUO_MEMBER_NUM = 2;
 
     // Character
-    const std::string playerFolderPath = "./Image/Player/";
+    const std::string playerFolderPath = "./Image/Player";
     static constexpr int MAX_CHARA_NUM = 28;
     static constexpr int MAX_GROUP_NUM = 10;
     static constexpr int MAX_PLAYER_NUM = 8;
@@ -167,8 +133,8 @@ protected:
 
     // Color
     struct ColorHandle {
-        unsigned int w = 0, k = 0, gy = 0, r = 0, g = 0, b = 0, touch = 0, press = 0;
-        unsigned int team[MAX_PLAYER_NUM] = {};
+        unsigned int w = 0, k = 0, gy = 0, r = 0, g = 0, b = 0, m = 0, c = 0, y = 0, 
+            touch = 0, press = 0, execute = 0, team[MAX_PLAYER_NUM] = {};
     };
 
     // Darts
@@ -231,16 +197,6 @@ protected:
 
     struct ShareData {
         Timer gameTime;
-        int sound = TRUE;
-        std::vector<BGM> bgms;
-        int se[SE_NUM] = {};
-        int comboSE[COMBO_SE_NUM] = {};
-        int playingBGMNo = 0;
-        int playingBGMHandle = 0;
-        int bgmVol = 0;
-        int seVol = 0;
-        int soundVol[Sound::NUM] = {}; // SoundVol[SoundNo] SoundNo 0: Total, 1: BGM, 2: SE
-        int bgmMode = BGMMode::RANDAM;           // BGMStyle 0: Loop, 1: Ascending order, 2: Decending order, 3: Random
         int window = FALSE;
         Box screen;
         CtrlKind ctrl;
@@ -255,7 +211,6 @@ protected:
         int teamType = TeamType::SOLO;
         int SkillMode = TRUE;
         ColorHandle color;
-		
     }; ShareData sd;
     const char* ShareDataFileName = "ShareData.dat";
     // SaveData
@@ -266,11 +221,7 @@ protected:
 
     void initCtrlKey();
     void initScreenSize();
-    void initSoundVol();
     void changeWindow(int WindowModeFlag);
-    bool changeSound(int SoundModeFlag);
-    bool changeSoundVol(int SoundNo, int Vol);
-    bool playBGM(int BGMNo);
     int drawBoxObj(Box box, int color, int fill = TRUE);
     int drawBoxObj(BoxObj obj);
     int drawImage(Image imag);

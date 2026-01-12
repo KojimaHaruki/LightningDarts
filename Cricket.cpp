@@ -22,26 +22,26 @@ Cricket::Cricket(ShareData shareData) : attempt(0), maxAttempt(0), selectPos(POS
 			team < sd.teams.size(); team++, x += 100, y = sd.obj.upperFrame.box.bottom() + space) {
 			teamBox[team].setSize(100, 100 + sd.teamType * 100 + POINT_NUM * (sd.font.s.size + space));
 			teamBox[team].setUpperLeft(x, y);
-			for (int member = 0; member < sd.teams[team].members.size(); member++, y += 100) {
-				sd.teams[team].members[member].image.box.setUpperLeft(x, y);
+			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
+				sd.teams.at(team).members[member].image.box.setUpperLeft(x, y);
 			}
 		}
 	}
 	else {
 		space = 2;
 		for (int player = 0; player < sd.teams.size(); player++) {
-			sd.teams[player].members[0].image.box.setSize(100, 70);
+			sd.teams.at(player).members.at(0).image.box.setSize(100, 70);
 			teamBox[player].setSize(100,
-				sd.teams[player].members[0].image.box.size().y() + POINT_NUM * (sd.font.s.size + space));
+				sd.teams.at(player).members.at(0).image.box.size().y() + POINT_NUM * (sd.font.s.size + space));
 		}
 		for (int player = 0; player < 4; player++) {
-			sd.teams[player].members[0].image.box.setUpperLeft(
+			sd.teams.at(player).members.at(0).image.box.setUpperLeft(
 				sd.screen.right() + 100 * (player - 4), sd.obj.upperFrame.box.bottom() + space);
-			teamBox[player].setUpperLeft(sd.teams[player].members[0].image.box.upperLeft());
+			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box.upperLeft());
 			if (player + 4 < sd.teams.size()) {
-				sd.teams[player + 4].members[0].image.box.setUpperLeft(
+				sd.teams.at(player + 4).members.at(0).image.box.setUpperLeft(
 					teamBox[player].left(), teamBox[player].bottom() + sd.font.m.size + space);
-				teamBox[player + 4].setUpperLeft(sd.teams[player + 4].members[0].image.box.upperLeft());
+				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box.upperLeft());
 			}
 		}
 	}
@@ -130,8 +130,8 @@ void Cricket::draw() {
 			teamBox[now.team].right(), teamBox[now.team].bottom(), sd.color.w, TRUE);
 		for (int team = 0; team < sd.teams.size(); team++) {
 			markPart[2].color = sd.color.team[team];
-			for (int member = 0; member <= sd.teamType; member++) {
-				chara = sd.teams[team].members[member];
+			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
+				chara = sd.teams.at(team).members[member];
 				drawImage(chara.image);
 				DrawStringToHandle(chara.image.box.left() + 5 * max(0, 10 - chara.name.size()),
 					chara.image.box.bottom() - sd.font.s.size - 6, chara.name.c_str(),
@@ -146,17 +146,17 @@ void Cricket::draw() {
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
 					switch (now.teamPosScore[team][pos]) {
-					case 3: 
+					case 3:
 						DrawCircleAA(markPart[i].box.center().x(), markPart[i].box.center().y(),
-						(sd.font.m.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
-					case 2: 
+							(sd.font.m.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
+					case 2:
 						DrawLine(markPart[i].box.upperRight().x(), markPart[i].box.upperRight().y(),
-						markPart[i].box.lowerLeft().x(), markPart[i].box.lowerLeft().y(),
-						markPart[i].color, markPart[i].lineWidth);
-					case 1: 
+							markPart[i].box.lowerLeft().x(), markPart[i].box.lowerLeft().y(),
+							markPart[i].color, markPart[i].lineWidth);
+					case 1:
 						DrawLine(markPart[i].box.upperLeft().x(), markPart[i].box.upperLeft().y(),
-						markPart[i].box.lowerRight().x(), markPart[i].box.lowerRight().y(),
-						markPart[i].color, markPart[i].lineWidth);
+							markPart[i].box.lowerRight().x(), markPart[i].box.lowerRight().y(),
+							markPart[i].color, markPart[i].lineWidth);
 					default:
 						break;
 					}
@@ -168,7 +168,7 @@ void Cricket::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), sd.color.k);
 		}
-		int y = sd.teams[0].members[sd.teamType].image.box.bottom();
+		int y = sd.teams.at(0).members[sd.teamType].image.box.bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
 			if (now.posScore[pos] == 25) { // bull
 				DrawStringToHandle(sd.screen.center().x() + 12,
@@ -203,7 +203,7 @@ void Cricket::draw() {
 			teamBox[now.team].right(), teamBox[now.team].bottom(), sd.color.w, TRUE);
 		for (int team = 0; team < sd.teams.size(); team++) {
 			markPart[2].color = sd.color.team[team];
-			chara = sd.teams[team].members[0];
+			chara = sd.teams.at(team).members.at(0);
 			DrawRotaGraph(chara.image.box.center().x(), chara.image.box.center().y(),
 				0.7, 0.0, chara.image.handle, TRUE);
 			DrawStringToHandle(chara.image.box.left(), chara.image.box.top(),
@@ -218,14 +218,17 @@ void Cricket::draw() {
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
 					switch (now.teamPosScore[team][posNo]) {
-					case 3: DrawCircleAA(markPart[i].box.center().x(), markPart[i].box.center().y(),
-						(sd.font.s.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
-					case 2: DrawLine(markPart[i].box.upperRight().x(), markPart[i].box.upperRight().y(),
-						markPart[i].box.lowerLeft().x(), markPart[i].box.lowerLeft().y(),
-						markPart[i].color, markPart[i].lineWidth);
-					case 1: DrawLine(markPart[i].box.upperLeft().x(), markPart[i].box.upperLeft().y(),
-						markPart[i].box.lowerRight().x(), markPart[i].box.lowerRight().y(),
-						markPart[i].color, markPart[i].lineWidth);
+					case 3: 
+						DrawCircleAA(markPart[i].box.center().x(), markPart[i].box.center().y(),
+							(sd.font.s.size) / 2.0 - 2.0, 100, markPart[i].color, FALSE, markPart[i].lineWidth);
+					case 2: 
+						DrawLine(markPart[i].box.upperRight().x(), markPart[i].box.upperRight().y(),
+							markPart[i].box.lowerLeft().x(), markPart[i].box.lowerLeft().y(),
+							markPart[i].color, markPart[i].lineWidth);
+					case 1: 
+						DrawLine(markPart[i].box.upperLeft().x(), markPart[i].box.upperLeft().y(),
+							markPart[i].box.lowerRight().x(), markPart[i].box.lowerRight().y(),
+							markPart[i].color, markPart[i].lineWidth);
 					default:
 						break;
 					}
@@ -238,13 +241,13 @@ void Cricket::draw() {
 				teamBox[team].left(), teamBox[team].bottom(), sd.color.k);
 		}
 		for (int pointPos = 0, y = 0; pointPos < POINT_NUM; pointPos++) {
-			y = sd.teams[0].members[0].image.box.bottom() + pointPos * (sd.font.s.size + space);
+			y = sd.teams.at(0).members.at(0).image.box.bottom() + pointPos * (sd.font.s.size + space);
 			DrawLine(sd.screen.center().x() + 10, y, teamBox[3].right(), y, sd.color.k);
-			y = sd.teams[4].members[0].image.box.bottom() + pointPos * (sd.font.s.size + space);
+			y = sd.teams.at(4).members.at(0).image.box.bottom() + pointPos * (sd.font.s.size + space);
 			DrawLine(sd.screen.center().x() + 10, y, teamBox[sd.teams.size() - 1].right(), y, sd.color.k);
 		}
 		for (int i = 0; i < 2; i++) {
-			chara = sd.teams[4 * i].members[0];
+			chara = sd.teams.at(4 * i).members.at(0);
 			for (int pos = 0; pos < selectPos; pos++) {
 				if (now.posScore[pos] == 25) { // bull
 					DrawStringToHandle(sd.screen.center().x() + 12,
@@ -264,13 +267,13 @@ void Cricket::draw() {
 	}
 	DrawBox(sd.screen.center().x() + 10, teamBox[0].bottom(),
 		sd.screen.right(), teamBox[0].bottom() + 2 * space + sd.font.m.size, sd.color.press, TRUE);
-	chara = sd.teams[now.team].members[now.member];
+	chara = sd.teams.at(now.team).members.at(now.member);
 	for (int arrow = 0, x = chara.image.box.right(), y = chara.image.box.top();
 		arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, sd.dartsArrow, TRUE);
 	if (selectPos < POS_NUM) {
 		DrawStringToHandle(sd.screen.center().x() + 120, teamBox[0].bottom() + space,
-			(sd.teams[now.team].members[now.member].name + ", throw a dart!").c_str(),
+			(sd.teams.at(now.team).members.at(now.member).name + ", throw a dart!").c_str(),
 			sd.color.w, sd.font.m.handle);
 		return;
 	}
@@ -294,15 +297,15 @@ void Cricket::update() {
 				return;
 			}
 		}
-		if (Mouse::getInstance()->getClickState() == Key::PRESSEDtoRELEASED ||
-			Keyboard::getInstance()->getPressState(KEY_INPUT_F12) == Key::PRESSEDtoRELEASED) {
+		if (Mouse::instance()->getClickState() == Key::PRESSEDtoRELEASED ||
+			Keyboard::instance()->getPressState(KEY_INPUT_F12) == Key::PRESSEDtoRELEASED) {
 			now.arrow--;
 			if (darts.point == 25) {
 				if (!isValidPoint[0]) {
 					now.posScore[selectPos] = darts.point;
 					isValidPoint[0] = true;
 					selectPos++;
-					
+
 				}
 			}
 			else if (darts.point > 0) {
@@ -320,7 +323,7 @@ void Cricket::update() {
 				now.team = 0;
 				now.member++;
 			}
-			if (now.member >= sd.teams[now.team].members.size()) {
+			if (now.member >= sd.teams.at(now.team).members.size()) {
 				now.member = 0;
 			}
 			if (selectPos == POS_NUM) {
@@ -342,12 +345,12 @@ void Cricket::update() {
 	}
 	bool keyboardInput = false;
 	for (int point = 0; point < Darts::POINT_NUM; point++) {
-		if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[point]) == Key::PRESSEDtoRELEASED) {
+		if (Keyboard::instance()->getPressState(Darts::POINT_KEY[point]) == Key::PRESSEDtoRELEASED) {
 			keyboardInput = true;
 			break;
 		}
 	}
-	if (darts.point >= 0 && Mouse::getInstance()->getClickState() == Key::PRESSEDtoRELEASED || keyboardInput) {
+	if (darts.point >= 0 && Mouse::instance()->getClickState() == Key::PRESSEDtoRELEASED || keyboardInput) {
 		if (attempt < MAX_ATTEMPT - 1) {
 			attempt++;
 			maxAttempt = attempt;
@@ -458,7 +461,7 @@ void Cricket::update() {
 					now.round++;
 					now.member++;
 				}
-				if (now.member >= sd.teams[now.team].members.size()) {
+				if (now.member >= sd.teams.at(now.team).members.size()) {
 					now.member = 0;
 				}
 				if (!now.isTeamFin[now.team]) {
@@ -495,7 +498,7 @@ void Cricket::fin() {
 	sd.ctrl.skip.icon.box.setLowerRight(sd.screen.right(), sd.obj.lowerFrame.box.top());
 	if (sd.teams.size() > 4) {
 		for (int player = 0; player < sd.teams.size(); player++) {
-			sd.teams[player].members[0].image.box.setSize(100, 100);
+			sd.teams.at(player).members.at(0).image.box.setSize(100, 100);
 		}
 	}
 }

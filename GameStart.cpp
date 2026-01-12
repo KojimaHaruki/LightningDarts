@@ -43,7 +43,7 @@ void GameStart::draw() {
 	}
 	DrawStringToHandle(sd.screen.center().x() - 10, sd.screen.center().y() - sd.font.m.size / 2, "VS",
 		sd.color.w, sd.font.m.handle);
-	DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
+	DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
 		sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2,
 		(gameName[sd.game] + " / " + teamTypeName[sd.teamType] + " < Game Start").c_str(), 
 		sd.color.w, sd.font.m.handle);

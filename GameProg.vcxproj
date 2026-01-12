@@ -163,6 +163,7 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CountUp.cpp" />
     <ClCompile Include="Cricket.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="ZeroOne.cpp" />
     <ClCompile Include="GameSelect.cpp" />
     <ClCompile Include="GameStart.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Coordinate.hpp" />
     <ClInclude Include="CountUp.hpp" />
     <ClInclude Include="Cricket.hpp" />
+    <ClInclude Include="Sound.hpp" />
     <ClInclude Include="ZeroOne.hpp" />
     <ClInclude Include="GameSelect.hpp" />
     <ClInclude Include="GameStart.hpp" />

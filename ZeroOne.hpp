@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.hpp"
+
 class ZeroOne : public Scene {
 public:
 	ZeroOne(ShareData shareData);
@@ -14,6 +15,7 @@ private:
 	int attempt, maxAttempt;
 	struct RecordData {
 		int team = 0;
+		int member = 0;
 		int arrow = 3;
 		int round = 0;
 		int teamRoundScore[MAX_PLAYER_NUM][MAX_ROUND] = {};

@@ -1,11 +1,14 @@
 #include "Config.hpp"
 #include "Mouse.hpp"
+#include "Sound.hpp"
+
 Config::Config(int priorScene, ShareData shareData) {
     sd = shareData;
     mNowScene = priorScene;
     isConfig = true; 
     set();
 }
+
 void Config::draw(Ctrl ctrl) {
     drawImage(ctrl.icon);
     DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - sd.font.m.size / 2, 
@@ -13,9 +16,14 @@ void Config::draw(Ctrl ctrl) {
     drawImage(ctrl.key.image);
     return;
 }
+
 void Config::reset() {
-    Scene::reset(); initCtrlKey(); initScreenSize(); initSoundVol(); return;
+    Scene::reset(); 
+    initCtrlKey(); 
+    initScreenSize(); 
+    Sound::instance()->initSoundVol(); return;
 }
+
 void Config::set() {
     ctrl = sd.ctrl;
     ctrl.bgm.icon.box.setUpperLeft(10, 210);
@@ -55,11 +63,12 @@ void Config::set() {
     ctrl.forward.key.image.box.setUpperLeft(keyX[1], ctrl.back.icon.box.top());
     return;
 }
+
 void Config::draw() {
     Scene::draw();
     // control setting
     draw(ctrl.home); 
-    draw(ctrl.mute[sd.sound]); 
+    draw(ctrl.mute[Sound::instance()->isBGMPlayed()]);
     draw(ctrl.playerSelect); 
     draw(ctrl.gameSelect);
     draw(ctrl.skill); 
@@ -76,52 +85,60 @@ void Config::draw() {
     // music setting 
     DrawStringToHandle(5, 25, "Sound", sd.color.w, sd.font.xl.handle);
     DrawStringToHandle(sd.screen.center().x(), 25, "System", sd.color.w, sd.font.xl.handle);
-    DrawStringToHandle(10, 180, ("Play mode: " + BGMModeName[sd.bgmMode]).c_str() , sd.color.w, sd.font.m.handle);
+    DrawStringToHandle(10, 180, ("Play mode: " + Sound::instance()->bgmPlayModeName()).c_str(), 
+        sd.color.w, sd.font.m.handle);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
-    for (int i = 0; i < Sound::NUM; i++) {
-        DrawStringToHandle(10, 90 + 30 * i, SoundName[i].c_str(), sd.color.w, sd.font.m.handle);
-        DrawBox(100, 95 + 30 * i, 100 + sd.soundVol[i], 105 + 30 * i, sd.color.w, TRUE);
-        DrawBox(100 + sd.soundVol[i], 95 + 30 * i, 300, 105 + 30 * i, sd.color.k, TRUE);
-        DrawFormatStringToHandle(315, 90 + 30 * i, sd.color.w, sd.font.m.handle, "%3d", sd.soundVol[i]);
+    for (int i = 0; i < Sound::Kind::NUM; i++) {
+        DrawStringToHandle(10, 90 + 30 * i, 
+            Sound::instance()->name(i).c_str(), sd.color.w, sd.font.m.handle);
+		int vol = Sound::instance()->vol(i);
+        DrawBox(100, 95 + 30 * i, 100 + vol, 105 + 30 * i, sd.color.w, TRUE);
+        DrawBox(100 + vol, 95 + 30 * i, 300, 105 + 30 * i, sd.color.k, TRUE);
+        DrawFormatStringToHandle(315, 90 + 30 * i, sd.color.w, sd.font.m.handle, "%3d", vol);
         DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle, TRUE);
         DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle, TRUE);
-        switch (Mouse::getInstance()->getClickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
+        switch (Mouse::instance()->getClickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
         case Key::RELEASED:
-            DrawBox(95 + sd.soundVol[i], 90 + 30 * i, 105 + sd.soundVol[i], 110 + 30 * i, sd.color.touch, TRUE);
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.touch, TRUE);
             break;
         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-            DrawBox(95 + sd.soundVol[i], 90 + 30 * i, 105 + sd.soundVol[i], 110 + 30 * i, sd.color.press, TRUE);
-            changeSoundVol(i, Mouse::getInstance()->x() - 100);
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.press, TRUE);
+            Sound::instance()->setVol(i, Mouse::instance()->x() - 100);
             break;
         default: 
-            DrawBox(95 + sd.soundVol[i], 90 + 30 * i, 105 + sd.soundVol[i], 110 + 30 * i, sd.color.gy, TRUE);
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.gy, TRUE);
             break;
         }
-        if (Mouse::getInstance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) > 10) {
-            changeSoundVol(i, sd.soundVol[i] - 1);
+        if (Mouse::instance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) > 10) {
+            Sound::instance()->setVol(i, vol - 1);
         }
-        else if (Mouse::getInstance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) > 10) {
-            changeSoundVol(i, sd.soundVol[i] + 1);
+        else if (Mouse::instance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) > 10) {
+            Sound::instance()->setVol(i, vol + 1);
         }
-        else if (Mouse::getInstance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) == -1) {
-            changeSoundVol(i, sd.soundVol[i] - 4);
+        else if (Mouse::instance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) == -1) {
+            Sound::instance()->setVol(i, vol - 4);
         }
-        else if (Mouse::getInstance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) == -1) {
-            changeSoundVol(i, sd.soundVol[i] + 4);
+        else if (Mouse::instance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) == -1) {
+            Sound::instance()->setVol(i, vol + 4);
         }
     }
-    DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.upperRight().x(),
+    DrawStringToHandle(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
         sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Config", sd.color.w, sd.font.m.handle);
     return;
 }
+
 void Config::update() {
     Scene::update();
     if (isBoxClicked(355, 175, 380, 200)) {
-        PlaySoundMem(sd.se[1], DX_PLAYTYPE_BACK); sd.bgmMode = (sd.bgmMode - 1 + BGMMode::NUM) % BGMMode::NUM;
+		Sound::instance()->playSE(1);
+        Sound::instance()->setBgmPlayMode(
+			(Sound::instance()->bgmPlayMode() - 1 + Sound::PlayMode::NUM) % Sound::PlayMode::NUM);
     }
     else if (isBoxClicked(380, 175, 405, 200)) {
-        PlaySoundMem(sd.se[1], DX_PLAYTYPE_BACK); sd.bgmMode = (sd.bgmMode + 1) % BGMMode::NUM;
+        Sound::instance()->playSE(1);
+		Sound::instance()->setBgmPlayMode(
+			(Sound::instance()->bgmPlayMode() + 1) % Sound::PlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
     else if (ctrlRQ(sd.ctrl.back)) mNextScene = mNowScene;
@@ -129,6 +146,6 @@ void Config::update() {
     else if (ctrlRQ(sd.ctrl.reset)) reset();
     return;
 }
-Config::~Config() {
 
+Config::~Config() {
 }

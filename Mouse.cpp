@@ -1,13 +1,11 @@
 #include <DxLib.h>
 #include "Mouse.hpp"
 
-Mouse::Mouse() {
-}
 bool Mouse::update() {
     int nowButtonState = GetMouseInput();
     int inX = 0, inY = 0;
     GetMousePoint(&inX, &inY);
-    pos.setXY(inX, inY);
+    cursor.setXY(inX, inY);
     for (int i = 0; i < KEY_NUM; i++) {
         if (nowButtonState & i) { // if key is pressed,
             if (key[i].pressCount < 0) { // if key is released before,
@@ -39,7 +37,7 @@ int Mouse::getPressState(int keyCode) {
     if (!isValidKey(keyCode)) return 0; return key[keyCode].pressState; 
 }
 bool Mouse::isCursorInBox(int x1, int y1, int x2, int y2) {
-    return pos.x() > x1 && pos.y() > y1 && pos.x() < x2 && pos.y() < y2;
+    return cursor.x() > x1 && cursor.y() > y1 && cursor.x() < x2 && cursor.y() < y2;
 }
 int Mouse::getClickBoxCount(Box box) {
     if (!isCursorInBox(box)) return 0; return getClickCount();

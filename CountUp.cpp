@@ -2,6 +2,7 @@
 #include <string>
 #include <numbers>
 #include "Mouse.hpp"
+
 CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = COUNT_UP;
 	sd = shareData;
@@ -9,30 +10,30 @@ CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	reset();
 	if (sd.teams.size() <= 4) {
 		space = 4;
-		for (int team = 0, x = sd.screen.right() - 400, y = sd.obj.upperFrame.box.bottom() + space; 
+		for (int team = 0, x = sd.screen.right() - 400, y = sd.obj.upperFrame.box.bottom() + space;
 			team < sd.teams.size(); team++, x += 100, y = sd.obj.upperFrame.box.bottom() + space) {
 			teamBox[team].setSize(100, 100 + sd.teamType * 100 + SCORE_NUM * (sd.font.m.size + space));
 			teamBox[team].setUpperLeft(x, y);
-			for (int member = 0; member < sd.teams[team].members.size(); member++, y += 100) {
-				sd.teams[team].members[member].image.box.setUpperLeft(x, y);
+			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
+				sd.teams.at(team).members.at(member).image.box.setUpperLeft(x, y);
 			}
 		}
 	}
 	else {
 		space = 2;
 		for (int player = 0; player < sd.teams.size(); player++) {
-			sd.teams[player].members[0].image.box.setSize(100, 70);
-			teamBox[player].setSize(100, 
-				sd.teams[player].members[0].image.box.size().y() + SCORE_NUM * (sd.font.s.size + space));
+			sd.teams.at(player).members.at(0).image.box.setSize(100, 70);
+			teamBox[player].setSize(100,
+				sd.teams.at(player).members.at(0).image.box.size().y() + SCORE_NUM * (sd.font.s.size + space));
 		}
 		for (int player = 0; player < 4; player++) {
-			sd.teams[player].members[0].image.box.setUpperLeft(
+			sd.teams.at(player).members.at(0).image.box.setUpperLeft(
 				sd.screen.right() + 100 * (player - 4), sd.obj.upperFrame.box.bottom() + space);
-			teamBox[player].setUpperLeft(sd.teams[player].members[0].image.box.upperLeft());
+			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box.upperLeft());
 			if (player + 4 < sd.teams.size()) {
-				sd.teams[player + 4].members[0].image.box.setUpperLeft(
+				sd.teams.at(player + 4).members.at(0).image.box.setUpperLeft(
 					teamBox[player].left(), teamBox[player].bottom() + sd.font.m.size + space);
-				teamBox[player + 4].setUpperLeft(sd.teams[player + 4].members[0].image.box.upperLeft());
+				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box.upperLeft());
 			}
 		}
 	}
@@ -54,12 +55,12 @@ void CountUp::reset() {
 			isValidPoint[i] = false;
 		}
 		isValidPoint[20] = true; // 20 is initially valid in Cricket Countup
-		break;
+		return;
 	default:
 		for (int point = 0; point < 21; point++) {
 			isValidPoint[point] = true;
 		}
-		break;
+		return;
 	}
 }
 
@@ -74,8 +75,8 @@ void CountUp::draw() {
 		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
 			teamBox[now.team].right(), teamBox[now.team].bottom(), sd.color.w, TRUE);
 		for (int team = 0; team < sd.teams.size(); team++) {
-			for (int member = 0; member <= sd.teamType; member++) {
-				chara = sd.teams[team].members[member];
+			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
+				chara = sd.teams.at(team).members.at(member);
 				drawImage(chara.image);
 				DrawStringToHandle(chara.image.box.left() + 5 * max(0, 10 - (int)chara.name.size()),
 					chara.image.box.bottom() - sd.font.s.size - 6, chara.name.c_str(),
@@ -97,7 +98,7 @@ void CountUp::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), sd.color.k);
 		}
-		int y = sd.teams[0].members[sd.teamType].image.box.bottom();
+		int y = sd.teams.at(0).members.at(sd.teamType).image.box.bottom();
 		for (int round = 0; round < ROUND_NUM; round++) {
 			DrawFormatStringToHandle(sd.screen.center().x() + 16,
 				y + space / 2 + round * (sd.font.m.size + space),
@@ -116,7 +117,7 @@ void CountUp::draw() {
 		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
 			teamBox[now.team].right(), teamBox[now.team].bottom(), sd.color.w, TRUE);
 		for (int team = 0; team < sd.teams.size(); team++) {
-			chara = sd.teams[team].members[0];
+			chara = sd.teams.at(team).members.at(0);
 			DrawRotaGraph(chara.image.box.center().x(), chara.image.box.center().y(),
 				0.7, 0.0, chara.image.handle, TRUE);
 			DrawStringToHandle(chara.image.box.left(), chara.image.box.top(),
@@ -139,20 +140,20 @@ void CountUp::draw() {
 				teamBox[team].left(), teamBox[team].bottom(), sd.color.k);
 		}
 		for (int pointNo = 0, y = 0; pointNo < SCORE_NUM; pointNo++) {
-			y = sd.teams[0].members[0].image.box.bottom() + pointNo * (sd.font.s.size + space);
+			y = sd.teams.at(0).members.at(0).image.box.bottom() + pointNo * (sd.font.s.size + space);
 			DrawLine(sd.screen.center().x() + 10, y, teamBox[3].right(), y, sd.color.k);
-			y = sd.teams[4].members[0].image.box.bottom() + pointNo * (sd.font.s.size + space);
+			y = sd.teams.at(4).members.at(0).image.box.bottom() + pointNo * (sd.font.s.size + space);
 			DrawLine(sd.screen.center().x() + 10, y, teamBox[sd.teams.size() - 1].right(), y, sd.color.k);
 		}
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0, recordNo = 0; recordNo <= now.round; j++, recordNo++) {
 				DrawFormatStringToHandle(sd.screen.center().x() + 12,
-					sd.teams[4 * i].members[0].image.box.bottom() + space / 2 + j * (sd.font.s.size + space),
+					sd.teams.at(4 * i).members.at(0).image.box.bottom() + space / 2 + j * (sd.font.s.size + space),
 					sd.color.w, sd.font.s.handle, "%2d", recordNo + 1);
 			}
 		}
 	}
-	chara = sd.teams[now.team].members[now.round % (sd.teamType + 1)];
+	chara = sd.teams.at(now.team).members.at(now.member);
 	for (int arrow = 0, x = chara.image.box.right(), y = chara.image.box.top();
 		arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, sd.dartsArrow, TRUE);
@@ -175,12 +176,12 @@ void CountUp::update() {
 	if (!now.isGameFin) {
 		bool keyboardInput = false;
 		for (int point = 0; point < Darts::POINT_NUM; point++) {
-			if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[point]) == Key::PRESSEDtoRELEASED) {
+			if (Keyboard::instance()->getPressState(Darts::POINT_KEY[point]) == Key::PRESSEDtoRELEASED) {
 				keyboardInput = true;
 				break;
 			}
 		}
-		if (darts.point >= 0 && Mouse::getInstance()->getClickState() == Key::PRESSEDtoRELEASED || keyboardInput) {
+		if (darts.point >= 0 && Mouse::instance()->getClickState() == Key::PRESSEDtoRELEASED || keyboardInput) {
 			if (attempt < MAX_ATTEMPT - 1) {
 				attempt++;
 				maxAttempt = attempt;
@@ -223,6 +224,7 @@ void CountUp::update() {
 				}
 				else {
 					now.team = 0;
+					now.member++;
 					now.round++;
 					if (sd.game == Game::CRICKET_COUNT_UP) {
 						isValidPoint[CRICKET_NUMBER_SCORE[now.round - 1]] = false;
@@ -236,6 +238,9 @@ void CountUp::update() {
 						}
 					}
 				}
+			}
+			if (now.member >= sd.teams.at(now.team).members.size()) {
+				now.member = 0;
 			}
 			record[attempt] = now;
 			return;
@@ -267,7 +272,7 @@ void CountUp::fin() {
 	sd.ctrl.skip.icon.box.setLowerRight(sd.screen.right(), sd.obj.lowerFrame.box.top());
 	if (sd.teams.size() > 4) {
 		for (int player = 0; player < sd.teams.size(); player++) {
-			sd.teams[player].members[0].image.box.setSize(100, 100);
+			sd.teams.at(player).members.at(0).image.box.setSize(100, 100);
 		}
 	}
 }

@@ -4,8 +4,10 @@
 #include "Scene.hpp"
 #include "resource.h"
 #include "Mouse.hpp"
+#include "Sound.hpp"
 #include "colorlib.hpp"
 #include <numbers>
+#include <random>
 #include <filesystem>
 #include <string>
 namespace cl = colorlib;
@@ -86,11 +88,7 @@ void Scene::initScreenSize() {
     sd.pic.thunder.image.box.setUpperLeft(-50, -200);
     return;
 }
-void Scene::initSoundVol() {
-    for (int i = 0; i < Sound::NUM; i++) sd.soundVol[i] = SoundVol::MAX;
-    changeSoundVol(Sound::TOTAL, SoundVol::MAX);
-    return;
-}
+
 void Scene::init() {
     //FILE* isdf; errno_t error = fopen_s(&isdf, ShareDataFileName, "rb"); // open data file
     //if (!error) { fread(&sd, sizeof(sd), 1, isdf); fclose(isdf); }
@@ -109,12 +107,14 @@ void Scene::init() {
         DrawStringToHandle(sd.screen.right() - 180, sd.screen.bottom() - sd.font.m.size - 10, "now loading...",
             sd.color.w, sd.font.m.handle);
         ScreenFlip();
-        sd.color.touch = cl::srgb("y"); sd.color.k = cl::srgb("k");
+        sd.color.k = cl::srgb("k"); sd.color.gy = cl::srgb("AshGrey");
         sd.color.r = cl::srgb("r"); sd.color.g = cl::srgb("g"); sd.color.b = cl::srgb("b");
-        sd.color.press = cl::srgb("Strawberry"); sd.color.gy = cl::srgb("AshGrey");
+		sd.color.m = cl::srgb("m"); sd.color.c = cl::srgb("c"); sd.color.y = cl::srgb("y");
+		sd.color.touch = sd.color.y; sd.color.press = cl::srgb("Strawberry"); 
+        sd.color.execute = cl::srgb("Violet");
         sd.color.team[0] = sd.color.b; sd.color.team[1] = sd.color.r; sd.color.team[2] = sd.color.g;
-        sd.color.team[3] = sd.color.touch; sd.color.team[4] = cl::srgb("c"); sd.color.team[5] = cl::srgb("m");
-        sd.color.team[6] = cl::srgb("Violet"); sd.color.team[7] = cl::srgb("Marigold");
+        sd.color.team[3] = sd.color.y; sd.color.team[4] = sd.color.c; sd.color.team[5] = sd.color.m;
+        sd.color.team[6] = sd.color.execute; sd.color.team[7] = cl::srgb("Marigold");
         sd.ctrl.home.name = "Home"; sd.ctrl.back.name = "Back"; sd.ctrl.forward.name = "Forward";
         sd.ctrl.mute[0].name = "Unmute"; sd.ctrl.mute[1].name = "Mute"; sd.ctrl.quit.name = "Quit";
         sd.ctrl.window[0].name = "Another window"; sd.ctrl.window[1].name = "Maximize window";
@@ -123,47 +123,11 @@ void Scene::init() {
         sd.ctrl.skill.name = "Skill"; sd.ctrl.skip.name = "Skip"; sd.ctrl.init.name = "Initialize";
         sd.ctrl.reset.name = "Reset the current scene"; sd.ctrl.bgm.name = "Change BGM";
         // load BGM
-        InitSoundMem();
-        std::error_code err;
-        std::vector<std::string> artistName;
-        for (fs::directory_iterator iter(bgmFolderPath), end;
-            iter != end && !err && artistName.size() < MAX_ARTIST_NUM; iter.increment(err)) {
-            const fs::directory_entry entry = *iter;
-            if (!entry.path().has_extension()) { // if found path is folder,
-                artistName.push_back(entry.path().filename().string()); // get group name
-            }
-        }
-		artistName.shrink_to_fit();
-		sd.bgms.clear();
-        for (int artist = 0; artist < artistName.size(); artist++) {
-            std::string folderPath = bgmFolderPath + artistName[artist] + "/";
-            for (fs::directory_iterator iter(folderPath), end;
-                iter != end && !err && sd.bgms.size() < MAX_BGM_NUM; iter.increment(err)) {
-                const fs::directory_entry entry = *iter;
-                std::string extension = entry.path().extension().string();
-                if (extension == ".wav" || extension == ".mp3" || extension == ".ogg") {
-					std::string name = artistName[artist] + " - " + entry.path().filename().string();
-					name.erase(name.length() - extension.length(), extension.length());
-                    sd.bgms.push_back(BGM(entry.path().string(), name));
-                }
-            }
-			sd.bgms.shrink_to_fit();
-        }
-        if (err) {
-            std::cout << err.value() << std::endl;
-            std::cout << err.message() << std::endl;
-        }
-        // load sound effect
-        for (int i = 0; i < SE_NUM; i++) {
-            sd.se[i] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_WAVE1 + i), "MP3");
-        }
-        for (int i = 0; i < COMBO_SE_NUM; i++) {
-            sd.comboSE[i] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_WAVE5 + i), "MP3");
-        }
+		Sound::instance()->loadBGM();
     }
-    initSoundVol();
-    PlaySound(NULL, 0, 0);
-    playBGM(GetRand(sd.bgms.size() - 1));
+	Sound::instance()->initSoundVol();
+    StopSound();
+    Sound::instance()->playBGM(0);
     // set game
     sd.game = -1;
     // set player
@@ -217,7 +181,7 @@ void Scene::changeWindow(int WindowModeFlag) {
     std::error_code err;
 	sd.groups.clear();
     sd.groups.push_back(Group("Guest"));
-    for (fs::directory_iterator iter(playerFolderPath), end;
+    for (fs::directory_iterator iter(playerFolderPath + "/"), end;
         iter != end && !err && sd.groups.size() < MAX_GROUP_NUM; iter.increment(err)) {
         const fs::directory_entry entry = *iter;
         // if found path is valid folder,
@@ -228,8 +192,7 @@ void Scene::changeWindow(int WindowModeFlag) {
     }
     for (int group = 0, chara = 0; group < sd.groups.size(); group++) {
 		sd.groups[group].members.clear();
-        std::string folderPath = playerFolderPath + sd.groups[group].name + "/";
-        for (fs::directory_iterator iter(folderPath), end;
+        for (fs::directory_iterator iter(playerFolderPath + "/" + sd.groups[group].name + "/"), end;
             iter != end && !err && chara < MAX_CHARA_NUM; iter.increment(err), chara++) {
             const fs::directory_entry entry = *iter;
             std::string extension = entry.path().extension().string();
@@ -282,12 +245,13 @@ void Scene::changeWindow(int WindowModeFlag) {
 
 void Scene::reset() {
 }
+
 void Scene::draw() {
     drawImage(sd.pic.darts.image); 
     drawImage(sd.pic.thunder.image);
     DrawStringToHandle(
-        sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.box.center().y() - sd.font.s.size / 2, 
-        sd.bgms[sd.playingBGMNo].name.c_str(), sd.color.w, sd.font.s.handle);
+        sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.box.center().y() - sd.font.s.size / 2,
+        Sound::instance()->playingBGMName().c_str(), sd.color.w, sd.font.s.handle);
     DrawStringToHandle(sd.screen.right() - 340, sd.obj.lowerFrame.box.center().y() - sd.font.s.size / 2, 
         "Lightning Darts C 2025 Haruki Kojima", sd.color.touch, sd.font.s.handle);
     DrawCircleAA(sd.screen.right() - 210.5f, (float)sd.obj.lowerFrame.box.center().y(), 
@@ -308,7 +272,7 @@ void Scene::draw() {
         if (!isConfig) {
             sd.gameTime.drawLapseTime(sd.screen.left(), sd.obj.upperFrame.box.bottom() + 10,
                 sd.color.w, sd.font.s.handle, Timer::Mode::HMSmS);
-            DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
+            DrawStringToHandle(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon.box.right() + 5,
                 sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2,
                 (gameName[sd.game] + " / " + teamTypeName[sd.teamType]).c_str(),
                 sd.color.w, sd.font.m.handle);
@@ -323,7 +287,7 @@ void Scene::draw() {
                         darts.pointName[Darts::BOARD_POINT[i]].c_str(), sd.color.w, sd.font.m.handle);
                     for (int posNo = DartsRadialPos::DOUBLE; posNo <= DartsRadialPos::INNER_SINGLE; posNo++) {
                         if (darts.point == Darts::BOARD_POINT[i] && darts.radialPos == posNo) {
-                            switch (Mouse::getInstance()->getClickState()) {
+                            switch (Mouse::instance()->getClickState()) {
                             case Key::RELEASED:
                                 DrawCircleGauge(darts.center.x(), darts.center.y(), 77.5 - 5.0 * i, sd.dartsBoard[posNo][2], 72.5 - 5.0 * i); 
                                 break;
@@ -349,12 +313,12 @@ void Scene::draw() {
             }
             else {
                 if (darts.radialPos == DartsRadialPos::BULL) {
-                    if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) {
+                    if (Keyboard::instance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) {
                         DrawCircleAA(darts.center.x(), darts.center.y(), 
                             DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.press);
                     }
                     else {
-                        switch (Mouse::getInstance()->getClickState()) {
+                        switch (Mouse::instance()->getClickState()) {
                         case Key::RELEASED:
                             DrawCircleAA(darts.center.x(), darts.center.y(), 
                                 DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.touch); break;
@@ -374,12 +338,12 @@ void Scene::draw() {
                         DartsRadialPos::Radius[DartsRadialPos::BULL], 100, sd.color.r);
                 }
                 if (darts.radialPos == DartsRadialPos::INNER_BULL) {
-                    if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) {
+                    if (Keyboard::instance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) {
                         DrawCircle(darts.center.x(), darts.center.y(), 
                             DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], sd.color.press);
                     }
                     else {
-                        switch (Mouse::getInstance()->getClickState()) {
+                        switch (Mouse::instance()->getClickState()) {
                         case Key::RELEASED:
                             DrawCircleAA(darts.center.x(), darts.center.y(), 
                                 DartsRadialPos::Radius[DartsRadialPos::INNER_BULL], 100, sd.color.touch); break;
@@ -426,7 +390,7 @@ void Scene::draw() {
     default: 
         drawImage(sd.ctrl.home.icon);
         drawImage(sd.ctrl.back.icon);
-        drawImage(sd.ctrl.mute[sd.sound].icon);
+        drawImage(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon);
         drawImage(sd.ctrl.config.icon);
         drawImage(sd.ctrl.window[sd.window].icon);
         drawImage(sd.ctrl.quit.icon);
@@ -440,19 +404,29 @@ void Scene::draw() {
 void Scene::fin() {
 }
 void Scene::update() {
-    Mouse::getInstance()->update();
-    Keyboard::getInstance()->update();
-    nowTime = time(NULL); timeError = localtime_s(&nowLocalTime, &nowTime);
+    Mouse::instance()->update();
+    Keyboard::instance()->update();
+	Sound::instance()->update();
+    nowTime = time(NULL); 
+    timeError = localtime_s(&nowLocalTime, &nowTime);
     if (ctrlRQ(sd.ctrl.init)) init();
     else if (ctrlRQ(sd.ctrl.reset)) reset();
     else if (ctrlRQ(sd.ctrl.quit)) mNextScene = QUIT;
-    else if (ctrlRQ(sd.ctrl.mute[sd.sound])) changeSound((sd.sound + 1) % 2);
+    else if (ctrlRQ(sd.ctrl.mute[Sound::instance()->isBGMPlayed()])) {
+        if (Sound::instance()->isBGMPlayed()) {
+            Sound::instance()->mute();
+            return;
+        }
+        Sound::instance()->unmute();
+    }
     else if (ctrlRQ(sd.ctrl.window[sd.window])) changeWindow((sd.window + 1) % 2);
     else if (ctrlRQ(sd.ctrl.bgm)) { 
-        if (Keyboard::getInstance()->getPressState(KEY_INPUT_LSHIFT) == Key::PRESSED) { 
-            playBGM((sd.playingBGMNo - 1 + sd.bgms.size()) % sd.bgms.size()); 
+        if (Keyboard::instance()->getPressState(KEY_INPUT_LSHIFT) == Key::PRESSED) { 
+            Sound::instance()->playLastBGM(); 
         }
-        else { playBGM((sd.playingBGMNo + 1) % sd.bgms.size()); }
+        else { 
+            Sound::instance()->playNextBGM();
+        }
     }
     if (isConfig) {
         switch (mNowScene) {
@@ -470,7 +444,7 @@ void Scene::update() {
     }
     else {
         Coordinate2d<float> cursor;
-        cursor.setXY(Mouse::getInstance()->x() - darts.center.x(), darts.center.y() - Mouse::getInstance()->y());
+        cursor.setXY(Mouse::instance()->x() - darts.center.x(), darts.center.y() - Mouse::instance()->y());
         Polar<float> cursorPolar = cursor.polar();
         switch (mNowScene) {
         case ZERO_ONE: case CRICKET: case COUNT_UP:
@@ -483,17 +457,17 @@ void Scene::update() {
             darts.radialPos = DartsRadialPos::OUTSIDE;
             
             for (int point = 1; point <= 20; point++) { // keyboard input
-                if (Keyboard::getInstance()->getPressState(Darts::POINT_KEY[point]) != Key::RELEASED) {
+                if (Keyboard::instance()->getPressState(Darts::POINT_KEY[point]) != Key::RELEASED) {
                     darts.point = point;
                     break;
                 }
             }
             if (darts.point >= 0) {
-                if (Keyboard::getInstance()->getPressState(KEY_INPUT_D) == Key::PRESSED) {
+                if (Keyboard::instance()->getPressState(KEY_INPUT_D) == Key::PRESSED) {
                     darts.power = 2;
                     darts.radialPos = DartsRadialPos::DOUBLE;
                 }
-                else if (Keyboard::getInstance()->getPressState(KEY_INPUT_T) == Key::PRESSED) {
+                else if (Keyboard::instance()->getPressState(KEY_INPUT_T) == Key::PRESSED) {
                     darts.power = 3;
                     darts.radialPos = DartsRadialPos::TRIPLE;
                 }
@@ -504,14 +478,14 @@ void Scene::update() {
                 darts.totalPoint = darts.power * darts.point;
             }
             else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::INNER_BULL] || // mouse input
-                Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) { // keyboard input
+                Keyboard::instance()->getPressState(Darts::POINT_KEY[Darts::INNER_BULL]) != Key::RELEASED) { // keyboard input
                 darts.point = 25;
                 darts.power = 2;
                 darts.radialPos = DartsRadialPos::INNER_BULL;
                 darts.totalPoint = 50;
             }
             else if (cursorPolar.r < DartsRadialPos::Radius[DartsRadialPos::BULL] || // mouse input
-                Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) { // keyboard input
+                Keyboard::instance()->getPressState(Darts::POINT_KEY[Darts::BULL]) != Key::RELEASED) { // keyboard input
                 darts.point = 25;
                 darts.power = 1;
                 darts.radialPos = DartsRadialPos::BULL;
@@ -540,7 +514,7 @@ void Scene::update() {
                 }
             }
             else if (cursorPolar.r < 226 || // mouse input
-                Keyboard::getInstance()->getPressState(Darts::POINT_KEY[Darts::OUTSIDE]) != Key::RELEASED) { // keyboard input
+                Keyboard::instance()->getPressState(Darts::POINT_KEY[Darts::OUTSIDE]) != Key::RELEASED) { // keyboard input
                 darts.point = 0;
                 darts.totalPoint = 0;
             }
@@ -556,91 +530,44 @@ void Scene::update() {
             break;
         }
     }
-    if (sd.sound && !CheckSoundMem(sd.playingBGMHandle)) {
-        switch (sd.bgmMode) {
-        case BGMMode::ASCEND:  
-            playBGM((sd.playingBGMNo + 1) % sd.bgms.size());
-            break;
-        case BGMMode::DESCEND: 
-            playBGM((sd.playingBGMNo - 1 + sd.bgms.size()) % sd.bgms.size());          
-            break;
-        case BGMMode::RANDAM:  
-            playBGM((sd.playingBGMNo + 1 + GetRand(sd.bgms.size() - 2)) % sd.bgms.size()); 
-            break;
-        default:               
-            playBGM(sd.playingBGMNo);                                            
-            break;
-        }
-    } return;
 }
-bool Scene::changeSound(int sound) {
-    if (sound == FALSE) StopSoundMem(sd.playingBGMHandle); // if mute is selected, stop BGM
-    else { // if unmute is selected
-        ChangeVolumeSoundMem(sd.bgmVol, sd.playingBGMHandle); // set BGM volume
-        // play BGM
-        PlaySoundMem(sd.playingBGMHandle, DX_PLAYTYPE_BACK | DX_PLAYTYPE_LOOP, 0);
-    } sd.sound = CheckSoundMem(sd.playingBGMHandle); // check mute mode
-    return true;
-}
-bool Scene::changeSoundVol(int SoundNo, int Vol) {
-    if (SoundNo < 0 || SoundNo >= Sound::NUM) return false; // if sound doesn't exist, exit
-    if (Vol > SoundVol::MAX) { // if sound's volume is above maximum volume,
-        sd.soundVol[SoundNo] = SoundVol::MAX; // set maximum volume
-    }
-    else if (Vol < SoundVol::MIN) { // if sound's volume is below minimum volume,
-        sd.soundVol[SoundNo] = SoundVol::MIN; // set minimum volume
-    }
-    else sd.soundVol[SoundNo] = Vol; // othewise set sound's volume
-    if (SoundNo != Sound::SE) { // if sound is BGMs or total sounds,
-        sd.bgmVol = (int)(0.0064 * sd.soundVol[Sound::TOTAL] * sd.soundVol[Sound::BGM]); // set BGMs' volume
-        ChangeVolumeSoundMem(sd.bgmVol, sd.playingBGMHandle); // change volume of BGM which is now playing
-    }
-    if (SoundNo != Sound::BGM) { // if sound is SEs or total sounds,
-        sd.seVol = (int)(0.0064 * sd.soundVol[Sound::TOTAL] * sd.soundVol[Sound::SE]); // set SEs' volume
-        // change SEs'volume
-        for (int i = 0; i < SE_NUM; i++) { ChangeVolumeSoundMem(sd.seVol, sd.se[i]); }
-        for (int i = 0; i < COMBO_SE_NUM; i++) { ChangeVolumeSoundMem(sd.seVol, sd.comboSE[i]); }
-    } return true;
-}
-bool Scene::playBGM(int BGMNo) {
-    if (BGMNo < 0 || BGMNo >= sd.bgms.size()) // if BGM doesn't exist,
-        return false; // exit
-    int nextBGMHandle = LoadSoundMem(sd.bgms[BGMNo].path.c_str());
-    if (sd.playingBGMHandle != -1) StopSoundMem(sd.playingBGMHandle);  // stop BGM which is now playing
-	sd.playingBGMHandle = nextBGMHandle; // set new BGM's handle
-    ChangeVolumeSoundMem(sd.bgmVol, sd.playingBGMHandle); // set new BGM's volume
-    if (sd.sound == TRUE) // if sounds aren't muted, 
-        PlaySoundMem(sd.playingBGMHandle, DX_PLAYTYPE_BACK); // play new BGM
-    sd.playingBGMNo = BGMNo; // set BGM
-    return true;
-}
+
 int Scene::drawBoxObj(Box box, int color, int fill) {
     return DrawBox(box.left(), box.top(), box.right(), box.bottom(), color, fill);
 }
+
 int Scene::drawBoxObj(BoxObj obj) {
     return DrawBox(obj.box.left(), obj.box.top(), obj.box.right(), obj.box.bottom(), obj.color, obj.fill);
 }
+
 int Scene::drawImage(Image image) { 
     return DrawGraph(image.box.left(), image.box.top(), image.handle, image.trans);
 }
+
 bool Scene::isClicked(Box box) { 
-    return Mouse::getInstance()->getClickBoxState(box) == Key::PRESSEDtoRELEASED; 
+    return Mouse::instance()->getClickBoxState(box) == Key::PRESSEDtoRELEASED; 
 }
+
 bool Scene::isBoxClicked(int x1, int y1, int x2, int y2) {
-    return Mouse::getInstance()->getClickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
+    return Mouse::instance()->getClickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
 }
+
 bool Scene::isClicked(Image image) { 
     return isClicked(image.box); 
 }
+
 bool Scene::isKeyTyped(int keyCode) { 
-    return Keyboard::getInstance()->getPressState(keyCode) == Key::RELEASEDtoPRESSED; 
+    return Keyboard::instance()->getPressState(keyCode) == Key::RELEASEDtoPRESSED; 
 }
+
 bool Scene::isTyped(CtrlKey key) {
     return isKeyTyped(key.code); 
 }
+
 bool Scene::ctrlRQ(Ctrl ctrl) { 
     return isClicked(ctrl.icon) || isTyped(ctrl.key); 
 }
+
 Scene::~Scene() {
     FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file
     if (!error) { fwrite(&sd, sizeof(sd), 1, osdf); fclose(osdf); }

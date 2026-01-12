@@ -25,7 +25,7 @@ void GameSelect::draw() {
             mainGameBox[mainGameNo].center().y() - sd.font.xl.size / 2,
             mainGameName[mainGameNo].c_str(), sd.color.w, sd.font.xl.handle);
     for (int gameNo = 0; gameNo < GAME_NUM; gameNo++) {
-        switch (Mouse::getInstance()->getClickBoxState(gameBox[gameNo])) {
+        switch (Mouse::instance()->getClickBoxState(gameBox[gameNo])) {
         case Key::RELEASED: 
             DrawStringToHandle(gameBox[gameNo].left() + 20, gameBox[gameNo].center().y() - sd.font.m.size / 2,
                 gameName[gameNo].c_str(), sd.color.touch, sd.font.m.handle);
@@ -42,7 +42,7 @@ void GameSelect::draw() {
             break;
         }
     }
-    DrawStringToHandle(sd.ctrl.mute[sd.sound].icon.box.right() + 5,
+    DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
         sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Game Select", sd.color.w, sd.font.m.handle);
     return;
 }
