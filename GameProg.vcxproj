@@ -160,9 +160,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CountUp.cpp" />
-    <ClCompile Include="Cricket.cpp" />
+    <ClCompile Include="StandardCricket.cpp" />
+    <ClCompile Include="Darts.cpp" />
+    <ClCompile Include="HiddenCricket.cpp" />
+    <ClCompile Include="HiddenCricket.hpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="ZeroOne.cpp" />
     <ClCompile Include="GameSelect.cpp" />
@@ -177,11 +181,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.hpp" />
+    <ClInclude Include="Color.hpp" />
     <ClInclude Include="colorlib.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Coordinate.hpp" />
     <ClInclude Include="CountUp.hpp" />
-    <ClInclude Include="Cricket.hpp" />
+    <ClInclude Include="StandardCricket.hpp" />
+    <ClInclude Include="Darts.hpp" />
+    <ClInclude Include="Font.hpp" />
     <ClInclude Include="Sound.hpp" />
     <ClInclude Include="ZeroOne.hpp" />
     <ClInclude Include="GameSelect.hpp" />

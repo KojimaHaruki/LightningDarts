@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.hpp"
-class Home : public Scene {
+class Home : public cScene {
 public:
     Home();
     Home(ShareData shareData);

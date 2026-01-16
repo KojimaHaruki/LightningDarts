@@ -1,26 +1,27 @@
 #include "Config.hpp"
 #include "Mouse.hpp"
 #include "Sound.hpp"
+#include "Darts.hpp"
 
 Config::Config(int priorScene, ShareData shareData) {
     sd = shareData;
     mNowScene = priorScene;
-    isConfig = true; 
+    mIsConfig = true;
     set();
 }
 
-void Config::draw(Ctrl ctrl) {
+void Config::draw(sCtrl ctrl) {
     drawImage(ctrl.icon);
-    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - sd.font.m.size / 2, 
-        ctrl.name.c_str(), sd.color.w, sd.font.m.handle);
+    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - MfontSize / 2,
+        ctrl.name.c_str(), white, Mfont);
     drawImage(ctrl.key.image);
     return;
 }
 
 void Config::reset() {
-    Scene::reset(); 
-    initCtrlKey(); 
-    initScreenSize(); 
+    cScene::reset();
+    initCtrlKey();
+    initScreenSize();
     Sound::instance()->initSoundVol(); return;
 }
 
@@ -31,7 +32,7 @@ void Config::set() {
     int iconX[2] = { sd.screen.center().x() + 5, sd.screen.center().x() + 5 + sd.screen.width() / 4 };
     int keyX[2] = {};
     for (int i = 0; i < 2; i++) keyX[i] = iconX[i] + 150;
-    ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.box.bottom() + sd.font.xl.size + 5);
+    ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.bottom() + XLfontSize + 5);
     ctrl.home.key.image.box.setUpperLeft(keyX[0], ctrl.home.icon.box.top());
     ctrl.skill.icon.box.setUpperLeft(iconX[0], ctrl.home.icon.box.bottom() + 5);
     ctrl.skill.key.image.box.setUpperLeft(keyX[0], ctrl.skill.icon.box.top());
@@ -43,8 +44,8 @@ void Config::set() {
     ctrl.init.key.image.box.setUpperLeft(keyX[0], ctrl.init.icon.box.top());
     ctrl.skip.icon.box.setUpperLeft(iconX[1], ctrl.init.icon.box.top());
     ctrl.skip.key.image.box.setUpperLeft(keyX[1], ctrl.init.icon.box.top());
-    for (int i = 0; i < 2; i++) { 
-        ctrl.mute[i].icon.box.setUpperLeft(iconX[1], ctrl.home.icon.box.top()); 
+    for (int i = 0; i < 2; i++) {
+        ctrl.mute[i].icon.box.setUpperLeft(iconX[1], ctrl.home.icon.box.top());
         ctrl.mute[i].key.image.box.setUpperLeft(keyX[1], ctrl.home.icon.box.top());
         ctrl.pause[i].icon.box.setUpperLeft(iconX[1], ctrl.skill.icon.box.top());
         ctrl.pause[i].key.image.box.setUpperLeft(keyX[1] - 30, ctrl.skill.icon.box.top());
@@ -65,49 +66,49 @@ void Config::set() {
 }
 
 void Config::draw() {
-    Scene::draw();
+    cScene::draw();
     // control setting
-    draw(ctrl.home); 
+    draw(ctrl.home);
     draw(ctrl.mute[Sound::instance()->isBGMPlayed()]);
-    draw(ctrl.playerSelect); 
+    draw(ctrl.playerSelect);
     draw(ctrl.gameSelect);
-    draw(ctrl.skill); 
-    draw(ctrl.pause[sd.gameTime.isPaused()]); 
-    draw(ctrl.config); 
-    draw(ctrl.window[sd.window]); 
+    draw(ctrl.skill);
+    draw(ctrl.pause[cDarts::instance()->timer().isPaused()]);
+    draw(ctrl.config);
+    draw(ctrl.window[sd.window]);
     draw(ctrl.quit);
-    draw(ctrl.init); 
-    draw(ctrl.reset); 
-    draw(ctrl.bgm); 
-    draw(ctrl.skip); 
-    draw(ctrl.back); 
+    draw(ctrl.init);
+    draw(ctrl.reset);
+    draw(ctrl.bgm);
+    draw(ctrl.skip);
+    draw(ctrl.back);
     draw(ctrl.forward);
     // music setting 
-    DrawStringToHandle(5, 25, "Sound", sd.color.w, sd.font.xl.handle);
-    DrawStringToHandle(sd.screen.center().x(), 25, "System", sd.color.w, sd.font.xl.handle);
-    DrawStringToHandle(10, 180, ("Play mode: " + Sound::instance()->bgmPlayModeName()).c_str(), 
-        sd.color.w, sd.font.m.handle);
+    DrawStringToHandle(5, 25, "Sound", white, XLfont);
+    DrawStringToHandle(sd.screen.center().x(), 25, "System", white, XLfont);
+    DrawStringToHandle(10, 180, ("Play mode: " + Sound::instance()->bgmPlayModeName()).c_str(),
+        white, Mfont);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
     for (int i = 0; i < Sound::Kind::NUM; i++) {
-        DrawStringToHandle(10, 90 + 30 * i, 
-            Sound::instance()->name(i).c_str(), sd.color.w, sd.font.m.handle);
-		int vol = Sound::instance()->vol(i);
-        DrawBox(100, 95 + 30 * i, 100 + vol, 105 + 30 * i, sd.color.w, TRUE);
-        DrawBox(100 + vol, 95 + 30 * i, 300, 105 + 30 * i, sd.color.k, TRUE);
-        DrawFormatStringToHandle(315, 90 + 30 * i, sd.color.w, sd.font.m.handle, "%3d", vol);
+        DrawStringToHandle(10, 90 + 30 * i,
+            Sound::instance()->name(i).c_str(), white, Mfont);
+        int vol = Sound::instance()->vol(i);
+        DrawBox(100, 95 + 30 * i, 100 + vol, 105 + 30 * i, white, TRUE);
+        DrawBox(100 + vol, 95 + 30 * i, 300, 105 + 30 * i, black, TRUE);
+        DrawFormatStringToHandle(315, 90 + 30 * i, white, Mfont, "%3d", vol);
         DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle, TRUE);
         DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle, TRUE);
         switch (Mouse::instance()->getClickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
         case Key::RELEASED:
-            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.touch, TRUE);
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, touchColor, TRUE);
             break;
         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.press, TRUE);
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, pressColor, TRUE);
             Sound::instance()->setVol(i, Mouse::instance()->x() - 100);
             break;
-        default: 
-            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, sd.color.gy, TRUE);
+        default:
+            DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, gray, TRUE);
             break;
         }
         if (Mouse::instance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) > 10) {
@@ -124,28 +125,25 @@ void Config::draw() {
         }
     }
     DrawStringToHandle(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
-        sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Config", sd.color.w, sd.font.m.handle);
+        sd.obj.upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
     return;
 }
 
 void Config::update() {
-    Scene::update();
+    cScene::update();
     if (isBoxClicked(355, 175, 380, 200)) {
-		Sound::instance()->playSE(1);
+        Sound::instance()->playSE(1);
         Sound::instance()->setBgmPlayMode(
-			(Sound::instance()->bgmPlayMode() - 1 + Sound::PlayMode::NUM) % Sound::PlayMode::NUM);
+            (Sound::instance()->bgmPlayMode() - 1 + Sound::PlayMode::NUM) % Sound::PlayMode::NUM);
     }
     else if (isBoxClicked(380, 175, 405, 200)) {
         Sound::instance()->playSE(1);
-		Sound::instance()->setBgmPlayMode(
-			(Sound::instance()->bgmPlayMode() + 1) % Sound::PlayMode::NUM);
+        Sound::instance()->setBgmPlayMode(
+            (Sound::instance()->bgmPlayMode() + 1) % Sound::PlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
     else if (ctrlRQ(sd.ctrl.back)) mNextScene = mNowScene;
     else if (ctrlRQ(sd.ctrl.window[sd.window])) set();
     else if (ctrlRQ(sd.ctrl.reset)) reset();
     return;
-}
-
-Config::~Config() {
 }

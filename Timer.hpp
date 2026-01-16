@@ -1,5 +1,6 @@
 #pragma once
 #include "DxLib.h"
+
 struct Time {
 	int h = 0; // hour
 	int m = 0; // min
@@ -8,21 +9,23 @@ struct Time {
 	double t = 0; // total second
 	int mt = 0; // total millisecond
 };
+
 class Timer {
 public:
 	Timer();
-	~Timer();
+	~Timer() {}
 	Time time(int t_ms);
-	inline Time GetLapseTime() { return lapseTime; }
-	inline int GetLapseCount() { return lapseTime.mt; }
+	Time GetLapseTime() { return lapseTime; }
+	int GetLapseCount() { return lapseTime.mt; }
 	int drawLapseTime(int x, int y, unsigned int Color, int Mode = 0);
 	int drawLapseTime(int x, int y, unsigned int Color, int FontHandle, int Mode = 0);
 	void update();
-	inline void reset()  { pause = TRUE; lapseTime = {}; return; }
-	inline void start()  { pause = FALSE; startTime = GetNowCount(); return; }
-	inline void stop()   { pause = TRUE; return; }
-	inline void resume() { pause = FALSE; startTime = GetNowCount() - lapseTime.mt; return; }
-	inline int isPaused() { return pause; }
+	void reset()  { pause = TRUE; lapseTime = {}; }
+	void start()  { pause = FALSE; startTime = GetNowCount(); }
+	void restart() { reset(); start(); }
+	void stop()   { pause = TRUE; }
+	void resume() { pause = FALSE; startTime = GetNowCount() - lapseTime.mt; }
+	int isPaused() { return pause; }
 	struct Mode {
 		static constexpr int HMSmS = 0;
 		static constexpr int MSmS = 1;

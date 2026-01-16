@@ -6,11 +6,23 @@
 #include <iostream>
 #include <vector>
 
-class Scene {
+class cScene {
+public:
+    static constexpr int MAX_CHARA_NUM = 28;
+    static constexpr int MAX_GROUP_NUM = 10;
+    static constexpr int MAX_PLAYER_NUM = 8;
+    static constexpr int MAX_TEAM_NUM = 4;
+    static constexpr int MAIN_GAME_NUM = 3;
+    static constexpr int SUB_GAME_NUM = 6;
+    static constexpr int GAME_NUM = MAIN_GAME_NUM * SUB_GAME_NUM;
+    static constexpr int TEAM_TYPE_NUM = 2;
+    static constexpr int SOLO_MEMBER_NUM = 1;
+    static constexpr int DUO_MEMBER_NUM = 2;
+    static constexpr int VALID_KEY_NUM = 67;
 protected:
     // Scene
     int mNowScene, mNextScene;
-    bool isConfig;
+    bool mIsConfig;
 
     // Time
     const std::string wday[7] = { "Sun","Mon","Tue","Wed","Thu", "Fri","Sat" };
@@ -22,52 +34,59 @@ protected:
     std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
 
     // Image
-    struct Image {
-        Box box;
+    struct sImage {
+        cBox box;
         int handle = 0;
         int trans = TRUE;
     };
     Coordinate2d<int> ICONSIZE_NORMAL;
 
     // Key for control
-    struct CtrlKey {
-        Image image;
+    struct sCtrlKey {
+        sImage image;
         int code = 0;
     };
 
     // Control
-    struct Ctrl {
-        CtrlKey key;
-        Image icon;
+    struct sCtrl {
+        sCtrlKey key;
+        sImage icon;
         std::string name;
     };
-    struct CtrlKind {
-        Ctrl left, right, down, up, skill, home, gameSelect, playerSelect, reset,
+    struct sCtrlKind {
+        sCtrl left, right, down, up, skill, home, gameSelect, playerSelect, reset,
             init, skip, quit, config, bgm, window[2], mute[2], pause[2], back, forward, start, yes, no;
     };
 
     // Picture
-    struct Picture {
-        Image image;
+    struct sPicture {
+        sImage image;
     };
     struct PictureKind {
-        Picture selected, darts, thunder;
+        sPicture selected, darts, thunder;
     };
 
     // Screen
-    struct BoxObj {
-        Box box;
+    struct sBoxObj {
+        cBox box;
         int color = 0;
         int fill = TRUE;
     };
-    struct ScreenObjKind {
-        BoxObj upperFrame, lowerFrame;
+    struct sScreenObjKind {
+        cBox upperFrame, lowerFrame;
     };
 
+	// Color
+    unsigned int white = 0U, black = 0U, gray = 0U,
+		red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
+        touchColor = 0U, pressColor = 0U, executeColor = 0U, teamColor[cScene::MAX_PLAYER_NUM] = {},
+        rankColor[MAX_PLAYER_NUM] = {};
+
+    // Font
+	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
+
     // Game
-    static constexpr int MAIN_GAME_NUM = 3;
-    static constexpr int SUB_GAME_NUM = 6;
-    static constexpr int GAME_NUM = MAIN_GAME_NUM * SUB_GAME_NUM;
+	int mGame = 0;
     const std::string mainGameName[MAIN_GAME_NUM] = { "01", "Cricket", "Others" };
     const std::string gameName[GAME_NUM] = {
         "301", "501", "701", "901", "1101", "1501",
@@ -77,164 +96,88 @@ protected:
     };
 
     // Team type
-	static constexpr int TEAM_TYPE_NUM = 2;
-    struct TeamType {
+    struct sTeamType {
         static constexpr int SOLO       = 0;
         static constexpr int DUO        = 1;
     };
     const std::string teamTypeName[TEAM_TYPE_NUM] = { "Solo", "Duo" };
-    static constexpr int SOLO_MEMBER_NUM = 1;
-    static constexpr int DUO_MEMBER_NUM = 2;
 
     // Character
     const std::string playerFolderPath = "./Image/Player";
-    static constexpr int MAX_CHARA_NUM = 28;
-    static constexpr int MAX_GROUP_NUM = 10;
-    static constexpr int MAX_PLAYER_NUM = 8;
-    static constexpr int MAX_TEAM_NUM = 4;
-    struct CharaStatus {
+    struct sCharaStatus {
         double winRate = 0;
         int rank = 0;
     };
-    struct Chara {
+    struct sChara {
         std::string name = {};
-        Image image;
+        std::string path = {};
+        sImage image;
         std::string group = {};
-        CharaStatus status;
+        sCharaStatus status;
     };
-    struct Group {
+    struct sGroup {
         std::string name = {};
-        std::vector<Chara> members = {};
+        std::vector<sChara> members = {};
     };
 
     // Key
-    static constexpr int VALID_KEY_NUM = 67;
     const int KeyNo[VALID_KEY_NUM] = { 
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34,
         35, 36, 37, 38, 42, 44, 45, 46, 47, 48, 49, 50, 54, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 87, 88,
         157, 184, 197, 200, 203, 205, 208, 210, 211 };
-    struct KeyImage {
-        Image image;
+    struct sKeyImage {
+        sImage image;
     };
 
     // Font
-    struct Font {
+    struct sFont {
         std::string name;
         int thick = 0;
         int size = 0;
         int type = DX_FONTTYPE_NORMAL;
         int handle = 0;
     };
-    struct FontKind {
-        Font xl = { "Pristina", 5, 60, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
-            m = { "Times New Roman Bold", 5, 18, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
-            s = { "Times New Roman Bold", 1, 14, DX_FONTTYPE_ANTIALIASING_EDGE, 0 };
-    };
-
-    // Color
-    struct ColorHandle {
-        unsigned int w = 0, k = 0, gy = 0, r = 0, g = 0, b = 0, m = 0, c = 0, y = 0, 
-            touch = 0, press = 0, execute = 0, team[MAX_PLAYER_NUM] = {};
-    };
 
     // Darts
-    struct Game {
-        static constexpr int DEFAULT            = -1;
-        static constexpr int ZERO_ONE_NUM       =  6;
-        static constexpr int STANDARD_CRICKET   =  6;
-        static constexpr int RANDAM_CRICKET     =  7;
-        static constexpr int HIDDEN_CRICKET     =  8;
-        static constexpr int SELECT_A_CRICKET   =  9;
-        static constexpr int ALL_NUMBER_CRICKET = 10;
-        static constexpr int CRICKET_COUNT_UP   = 11;
-        static constexpr int COUNT_UP           = 12;
-    };
-    struct DartsRadialPos {
-		static constexpr int OUTSIDE      = -1;
-		static constexpr int DOUBLE       =  0;
-		static constexpr int OUTER_SINGLE =  1;
-		static constexpr int TRIPLE       =  2;
-		static constexpr int INNER_SINGLE =  3;
-		static constexpr int BULL         =  4;
-		static constexpr int INNER_BULL   =  5;
-        static constexpr int NUM          =  6;
-        static constexpr float Radius[NUM] = { 196.85f, 178.85f, 126.77f, 108.77f, 22.0f, 8.0f };
-        static constexpr int Power[NUM] = { 2, 1, 3, 1, 1, 2 };
-    };
-    bool isValidPoint[21];
     const std::string rankName[MAX_PLAYER_NUM] = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th" };
-    struct Darts {
-        Coordinate2d<float> center;
-        int point = 0;
-        int power = 0;
-        int radialPos = 0;
-        int totalPoint = 0;
-        static constexpr int BOARD_POINT[21] = { 11, 8, 16, 7, 19, 3, 17, 2, 15, 10,
-                                                  6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11 };
-        const std::string radialPosName[DartsRadialPos::NUM] = {
-            "Double", "Single", "Triple", "Single", "Bull", "Inner Bull"
-        };
-        static constexpr int OUTSIDE = 0;
-        static constexpr int BULL = 21;
-        static constexpr int INNER_BULL = 22;
-        static constexpr int POINT_NUM = 23;
-        const std::string pointName[POINT_NUM] = { "",
-            "  1", "  2", "  3", "  4", "  5",
-            "  6", "  7", "  8", "  9", " 10",
-            " 11", " 12", " 13", " 14", " 15",
-            " 16", " 17", " 18", " 19", " 20",
-            "Bull", "Inner Bull" 
-        };
-        static constexpr int POINT_KEY[POINT_NUM] = {
-            KEY_INPUT_SPACE,
-            KEY_INPUT_1, KEY_INPUT_2, KEY_INPUT_3, KEY_INPUT_4, KEY_INPUT_5,
-            KEY_INPUT_6, KEY_INPUT_7, KEY_INPUT_8, KEY_INPUT_9, KEY_INPUT_0,
-            KEY_INPUT_F1, KEY_INPUT_F2, KEY_INPUT_F3, KEY_INPUT_F4, KEY_INPUT_F5,
-            KEY_INPUT_F6, KEY_INPUT_F7, KEY_INPUT_F8, KEY_INPUT_F9, KEY_INPUT_F10,
-            KEY_INPUT_F11, KEY_INPUT_F12
-        };
-    }; Darts darts;
 
     struct ShareData {
-        Timer gameTime;
         int window = FALSE;
-        Box screen;
-        CtrlKind ctrl;
+        cBox screen;
+        sCtrlKind ctrl;
         PictureKind pic;
-        int dartsBoard[4][4] = {};
-        int dartsArrow = 0;
-        ScreenObjKind obj;
-        KeyImage key[Keyboard::KEY_NUM];
-        FontKind font;
-        int game = Game::DEFAULT;
-        std::vector<Group> groups, teams;
-        int teamType = TeamType::SOLO;
+        sScreenObjKind obj;
+        sKeyImage key[Keyboard::KEY_NUM];
+        std::vector<sGroup> groups, teams;
+        int teamType = sTeamType::SOLO;
         int SkillMode = TRUE;
-        ColorHandle color;
     }; ShareData sd;
     const char* ShareDataFileName = "ShareData.dat";
     // SaveData
     struct ConfigData {
-        CharaStatus cs[MAX_CHARA_NUM];
+        sCharaStatus cs[MAX_CHARA_NUM];
     }; ConfigData cd;
     const char* ConfigDataFileName = "ConfigData.dat";
 
+    // Functions
+    void loadColor();
+    void loadFont();
     void initCtrlKey();
     void initScreenSize();
     void changeWindow(int WindowModeFlag);
-    int drawBoxObj(Box box, int color, int fill = TRUE);
-    int drawBoxObj(BoxObj obj);
-    int drawImage(Image imag);
-    bool isClicked(Box box);
+    int drawBoxObj(cBox box, int color, int fill = TRUE);
+    int drawBoxObj(sBoxObj obj);
+    int drawImage(sImage imag);
+    bool isClicked(cBox box);
     bool isBoxClicked(int x1, int y1, int x2, int y2);
-    bool isClicked(Image imag);
+    bool isClicked(sImage imag);
     bool isKeyTyped(int keyCode);
-    bool isTyped(CtrlKey key);
-    bool ctrlRQ(Ctrl ctrl);
+    bool isTyped(sCtrlKey key);
+    bool ctrlRQ(sCtrl ctrl);
 
 public:
-    Scene();
-    virtual ~Scene();
+    cScene();
+    virtual ~cScene();
     inline int currentScene() { return mNowScene; }
     inline int nextScene() { return mNextScene; }
     virtual void init();
@@ -249,7 +192,7 @@ public:
     static constexpr int PLAYER_SELECT =  3;
     static constexpr int GAME_START    =  4;
     static constexpr int ZERO_ONE      =  5;
-    static constexpr int CRICKET       =  6;
+    static constexpr int STANDARD_CRICKET       =  6;
     static constexpr int COUNT_UP      =  7;
     static constexpr int OTHER_GAME    =  8;
     static constexpr int QUIT          =  9;

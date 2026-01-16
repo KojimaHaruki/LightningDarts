@@ -1,17 +1,16 @@
 #pragma once
 #include "Scene.hpp"
-class Cricket : public Scene {
+class HiddenCricket : public cScene {
 public:
-	Cricket(ShareData shareData);
-	~Cricket();
-	void init(int nowScene, ShareData shareData);
+	HiddenCricket(ShareData shareData);
+	~HiddenCricket() {}
 	void reset();
 	void draw();
 	void update();
 	void fin();
 private:
-	static constexpr int BULL      = 6;
-	static constexpr int POS_NUM   = 7;
+	static constexpr int BULL = 6;
+	static constexpr int POS_NUM = 7;
 	static constexpr int POINT_NUM = 8;
 	int selectPos;
 	static constexpr int MAX_ATTEMPT = 500;
@@ -30,10 +29,10 @@ private:
 		bool isGameFin = false;
 		int finRank = 0;
 	}; RecordData now, record[MAX_ATTEMPT];
-	Box teamBox[MAX_PLAYER_NUM];
+	cBox teamBox[MAX_PLAYER_NUM];
 	int space;
 	struct MarkPart {
-		Box box;
+		cBox box;
 		int color;
 		int lineWidth;
 	}; MarkPart markPart[3];

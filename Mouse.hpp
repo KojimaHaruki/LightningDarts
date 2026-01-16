@@ -20,19 +20,19 @@ class Mouse : public Singleton<Mouse> {
         inline int getClickState() { return key[MOUSE_INPUT_LEFT].pressState; }
         inline int getRightClickCount() { return key[MOUSE_INPUT_RIGHT].pressCount; }
         inline int getRightClickState() { return key[MOUSE_INPUT_RIGHT].pressState; }
-        inline bool isCursorInBox(Box box) { return box.isInBox(cursor); }
+        inline bool isCursorInBox(cBox box) { return box.isInBox(cursor); }
         bool isCursorInBox(int x1, int y1, int x2, int y2);
-        int getClickBoxCount(Box box);
+        int getClickBoxCount(cBox box);
         int getClickBoxCount(int x1, int y1, int x2, int y2);
-        int getClickBoxState(Box box);
+        int getClickBoxState(cBox box);
         int getClickBoxState(int x1, int y1, int x2, int y2);
-        int getRightClickBoxCount(Box box);
+        int getRightClickBoxCount(cBox box);
         int getRightClickBoxCount(int x1, int y1, int x2, int y2);
-        int getRightClickBoxState(Box box);
+        int getRightClickBoxState(cBox box);
         int getRightClickBoxState(int x1, int y1, int x2, int y2);
-        int getPressBoxCount(int keyCode, Box box);
+        int getPressBoxCount(int keyCode, cBox box);
         int getPressBoxCount(int keyCode, int x1, int y1, int x2, int y2);
-        int getPressBoxState(int keyCode, Box box);
+        int getPressBoxState(int keyCode, cBox box);
         int getPressBoxState(int keyCode, int x1, int y1, int x2, int y2);
         inline Coordinate2d<int> xy() { return cursor; }
         inline int x() { return cursor.x(); }

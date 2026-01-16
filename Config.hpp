@@ -1,14 +1,14 @@
 #pragma once
 #include "Scene.hpp"
-class Config : public Scene {
+class Config : public cScene {
 public:
     Config(int priorScene, ShareData sd);
-    ~Config();
+    ~Config() {}
     void reset();
     void set();
     void update();
     void draw();
-    void draw(Ctrl ctrl);
+    void draw(sCtrl ctrl);
 private:
-    CtrlKind ctrl;
+    sCtrlKind ctrl;
 };

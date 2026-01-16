@@ -1,9 +1,9 @@
 #pragma once
 #include "Scene.hpp"
-class GameStart : public Scene {
+class cGameStart : public cScene {
 public:
-    GameStart(ShareData shareData);
-    ~GameStart();
+    cGameStart(ShareData shareData);
+    ~cGameStart() {}
     void reset();
     void update();
     void draw();

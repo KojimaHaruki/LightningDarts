@@ -3,12 +3,12 @@
 struct PixelBox {
     Coordinate2d<int> mSize, mCenter, mUpperLeft, mLowerLeft, mLowerRight, mUpperRight;
 };
-class Box {
+class cBox {
 private:
     PixelBox mBox;
 public:
-    Box();
-    ~Box();
+    cBox();
+    ~cBox();
     inline void setSize(int x, int y) { mBox.mSize.setXY(x, y); return; }
     inline void setSize(Coordinate2d<int> xy) { mBox.mSize = xy; return; }
     void setBox(int x1, int y1, int x2, int y2);

@@ -1,11 +1,14 @@
 #include "Timer.hpp"
+
 Timer::Timer() : startTime(0), lapseTime(), pause(TRUE) {}
+
 void Timer::update() {
 	if (pause) return; 
 	lapseTime.mt = GetNowCount() - startTime; 
 	lapseTime = time(lapseTime.mt); 
 	return;
 }
+
 Time Timer::time(int t_ms) {
 	Time time; div_t res_h, res_m, res_s;
 	res_h = div(t_ms, 3600000); time.h = res_h.quot;
@@ -14,6 +17,7 @@ Time Timer::time(int t_ms) {
 	time.ms = res_s.rem; time.mt = t_ms; time.t = 0.001 * t_ms;
 	return time;
 }
+
 int Timer::drawLapseTime(int x, int y, unsigned int color, int mode) {
 	switch (mode) {
 	case Mode::HMSmS: 
@@ -35,6 +39,7 @@ int Timer::drawLapseTime(int x, int y, unsigned int color, int mode) {
 	default: return -1;
 	} return 0;
 }
+
 int Timer::drawLapseTime(int x, int y, unsigned int color, int fontHandle, int mode) {
 	switch (mode) {
 	case Mode::HMSmS:
@@ -60,4 +65,3 @@ int Timer::drawLapseTime(int x, int y, unsigned int color, int fontHandle, int m
 	default: return -1;
 	} return 0;
 }
-Timer::~Timer() {}

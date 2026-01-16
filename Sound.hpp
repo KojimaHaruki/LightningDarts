@@ -32,7 +32,7 @@ public:
     static constexpr int COMBO_SE_NUM = 7;
 	// Functions
     std::string name(int SoundNo);
-    void loadBGM();
+    void load();
     void initSoundVol();
     void mute();
 	void unmute();

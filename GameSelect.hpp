@@ -1,12 +1,12 @@
 #pragma once
 #include "Scene.hpp"
-class GameSelect : public Scene {
+class GameSelect : public cScene {
 public:
     GameSelect(ShareData shareData);
-    ~GameSelect();
+    ~GameSelect() {}
     void reset();
     void draw();
     void update();
 private:
-    Box mainGameBox[MAIN_GAME_NUM], gameBox[GAME_NUM];
+    cBox mainGameBox[MAIN_GAME_NUM], gameBox[GAME_NUM];
 };

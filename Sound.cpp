@@ -12,7 +12,7 @@ std::string Sound::name(int SoundNo) {
     return mName[SoundNo];
 }
 
-void Sound::loadBGM() {
+void Sound::load() {
     InitSoundMem();
     std::error_code err;
     std::vector<std::string> artistName;

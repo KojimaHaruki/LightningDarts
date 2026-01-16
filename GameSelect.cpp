@@ -1,60 +1,69 @@
 #include "GameSelect.hpp"
 #include "Mouse.hpp"
 #include <string>
+#include "Color.hpp"
+#include "Darts.hpp"
+
 GameSelect::GameSelect(ShareData shareData) {
     sd = shareData;
     mNowScene = GAME_SELECT;
     for (int mainGameNo = 0, gameNo = 0; mainGameNo < MAIN_GAME_NUM; mainGameNo++) {
-        mainGameBox[mainGameNo].setSize(230, sd.font.xl.size + 40);
+        mainGameBox[mainGameNo].setSize(230, XLfontSize + 40);
         mainGameBox[mainGameNo].setUpperLeft(
-            sd.screen.left() + sd.screen.width() * mainGameNo / 3, sd.obj.upperFrame.box.bottom());
+            sd.screen.left() + sd.screen.width() * mainGameNo / 3, sd.obj.upperFrame.bottom());
         for (int subGameNo = 0; subGameNo < SUB_GAME_NUM; subGameNo++, gameNo++) {
-            gameBox[gameNo].setSize(250, sd.font.m.size + 12);
+            gameBox[gameNo].setSize(250, MfontSize + 12);
             gameBox[gameNo].setUpperLeft(mainGameBox[mainGameNo].left() + 15,
                 mainGameBox[mainGameNo].bottom() + sd.screen.height() * subGameNo / 10);
         }
     }
 }
+
 void GameSelect::reset() {
-    Scene::reset(); sd.game = -1;
+    cScene::reset();
+    cDarts::instance()->setGameNo(cDarts::sGame::DEFAULT);
 }
+
 void GameSelect::draw() {
-    Scene::draw();
+    cScene::draw();
     for (int mainGameNo = 0; mainGameNo < MAIN_GAME_NUM; mainGameNo++)
         DrawStringToHandle(mainGameBox[mainGameNo].left() + 5,
-            mainGameBox[mainGameNo].center().y() - sd.font.xl.size / 2,
-            mainGameName[mainGameNo].c_str(), sd.color.w, sd.font.xl.handle);
-    for (int gameNo = 0; gameNo < GAME_NUM; gameNo++) {
-        switch (Mouse::instance()->getClickBoxState(gameBox[gameNo])) {
-        case Key::RELEASED: 
-            DrawStringToHandle(gameBox[gameNo].left() + 20, gameBox[gameNo].center().y() - sd.font.m.size / 2,
-                gameName[gameNo].c_str(), sd.color.touch, sd.font.m.handle);
+            mainGameBox[mainGameNo].center().y() - XLfontSize / 2,
+            mainGameName[mainGameNo].c_str(), white, XLfont);
+    unsigned int color = white;
+    for (int game = 0; game < cDarts::sGame::NUM; game++, color = white) {
+        switch (Mouse::instance()->getClickBoxState(gameBox[game])) {
+        case Key::RELEASED:
+            color = touchColor;
             break;
         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-            DrawStringToHandle(gameBox[gameNo].left() + 20, gameBox[gameNo].center().y() - sd.font.m.size / 2,
-                gameName[gameNo].c_str(), sd.color.press, sd.font.m.handle);
+            color = pressColor;
             break;
         case Key::PRESSEDtoRELEASED:
-            sd.game = gameNo; mNextScene = PLAYER_SELECT;
-        default: 
-            DrawStringToHandle(gameBox[gameNo].left() + 20, gameBox[gameNo].center().y() - sd.font.m.size / 2,
-                gameName[gameNo].c_str(), sd.color.w, sd.font.m.handle);
+            cDarts::instance()->setGameNo(game); mNextScene = PLAYER_SELECT;
+        default:
             break;
         }
+        DrawStringToHandle(gameBox[game].left() + 20, gameBox[game].center().y() - MfontSize / 2,
+            gameName[game].c_str(), color, Mfont);
     }
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
-        sd.obj.upperFrame.box.center().y() - sd.font.m.size / 2, "Game Select", sd.color.w, sd.font.m.handle);
-    return;
+        sd.obj.upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
+
 void GameSelect::update() {
-    Scene::update();
-    if (sd.game >= 0 && sd.game < GAME_NUM) {
+    cScene::update();
+    if (mGame >= 0 && mGame < GAME_NUM) {
         drawImage(sd.ctrl.forward.icon);
-        if (ctrlRQ(sd.ctrl.forward) || ctrlRQ(sd.ctrl.skip)) { mNextScene = PLAYER_SELECT; return; }
+        if (ctrlRQ(sd.ctrl.forward) || ctrlRQ(sd.ctrl.skip)) { 
+            mNextScene = PLAYER_SELECT; 
+            return; 
+        }
     }
-    if (ctrlRQ(sd.ctrl.skip)) { sd.game = 0; mNextScene = PLAYER_SELECT; }
-    else if (ctrlRQ(sd.ctrl.back)) mNextScene = HOME;
-    return;
-}
-GameSelect::~GameSelect() {
+    if (ctrlRQ(sd.ctrl.skip)) { 
+        cDarts::instance()->setGameNo(cDarts::sGame::STANDARD_CRICKET); 
+        mNextScene = PLAYER_SELECT; 
+    }
+    else if (ctrlRQ(sd.ctrl.back) || ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
+    else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
 }
