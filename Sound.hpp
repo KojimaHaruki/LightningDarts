@@ -4,9 +4,9 @@
 #include "Singleton.hpp"
 #include "DxLib.h"
 
-class Sound : public Singleton<Sound> {
-    Sound() {}
-	friend class Singleton<Sound>;
+class cSound : public Singleton<cSound> {
+    cSound() {}
+	friend class Singleton<cSound>;
 public:
     // Sound
     struct Kind {
@@ -59,7 +59,7 @@ private:
     const std::string mBGMPlayModeName[PlayMode::NUM] = {
         "Loop", "Ascending order", "Descending order", "Random"
     };
-    const std::string BGMFolderPath = "./BGM";
+    const std::string BGMFolderPath = "C:/Users/miniy/Music/BGM";
     struct BGM {
         std::string path = {};
         std::string name = {};

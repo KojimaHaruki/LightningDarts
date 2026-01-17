@@ -6,6 +6,9 @@
 #include "Mouse.hpp"
 #include "Darts.hpp"
 #include "Color.hpp"
+#include "Game.hpp"
+#include "Sound.hpp"
+#include "Team.hpp"
 
 HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 	sd = shareData;
@@ -24,7 +27,8 @@ HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), s
 		}
 		for (int team = 0, x = sd.screen.right() - 400, y = sd.obj.upperFrame.bottom() + space;
 			team < sd.teams.size(); team++, x += 100, y = sd.obj.upperFrame.bottom() + space) {
-			teamBox[team].setSize(100, 100 + sd.teamType * 100 + POINT_NUM * (SfontSize + space));
+			teamBox[team].setSize(
+				100, 100 + cTeam::instance()->type() * 100 + POINT_NUM * (SfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
 				sd.teams.at(team).members[member].image.box.setUpperLeft(x, y);
@@ -63,8 +67,8 @@ void HiddenCricket::reset() {
 	std::vector<int> randomPoint;
 	for (int point = 1; point <= 20; point++) randomPoint.push_back(point);
 	std::shuffle(randomPoint.begin(), randomPoint.end(), std::mt19937{ std::random_device{}() });
-	switch (mGame) {
-	case cDarts::sGame::HIDDEN_CRICKET:
+	switch (mGameMode) {
+	case cGame::sMode::HIDDEN_CRICKET:
 		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
 			now.posScore[pos] = -point - 1;
 		}
@@ -73,7 +77,7 @@ void HiddenCricket::reset() {
 			cDarts::instance()->setPointValidation(point, true);
 		}
 		break;
-	case cDarts::sGame::RANDAM_CRICKET:
+	case cGame::sMode::RANDOM_CRICKET:
 		now.posScore[POS_NUM - 1] = 25;
 		cDarts::instance()->setPointValidation(0, true); // BULL is valid
 		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
@@ -81,7 +85,7 @@ void HiddenCricket::reset() {
 			cDarts::instance()->setPointValidation(point, true);
 		}
 		break;
-	case cDarts::sGame::SELECT_A_CRICKET:
+	case cGame::sMode::SELECT_A_CRICKET:
 		selectPos = 0;
 		for (int point = 0; point <= 20; point++) {
 			cDarts::instance()->setPointValidation(point, false);
@@ -99,6 +103,27 @@ void HiddenCricket::reset() {
 
 void HiddenCricket::draw() {
 	cScene::draw();
+	drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
+	drawImage(sd.ctrl.skill.icon);
+	cDarts::instance()->timer().drawLapseTime(
+		sd.screen.left(), sd.obj.upperFrame.bottom() + 10, white, Sfont, Timer::Mode::HMSmS);
+	DrawStringToHandle(
+		sd.ctrl.mute[0].icon.box.right() + 5, sd.obj.upperFrame.center().y() - MfontSize / 2,
+		(cGame::instance()->modeName() + " / " + cTeam::instance()->typeName()).c_str(),
+		white, Mfont);
+	cDarts::instance()->draw();
+	drawImage(sd.ctrl.playerSelect.icon);
+	drawImage(sd.ctrl.gameSelect.icon);
+	drawImage(sd.ctrl.skip.icon);
+	drawImage(sd.ctrl.home.icon);
+	drawImage(sd.ctrl.back.icon);
+	drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+	drawImage(sd.ctrl.config.icon);
+	drawImage(sd.ctrl.window[sd.window].icon);
+	drawImage(sd.ctrl.quit.icon);
+	drawImage(sd.ctrl.init.icon);
+	drawImage(sd.ctrl.reset.icon);
+	drawImage(sd.ctrl.bgm.icon);
 	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
 		white, Mfont, "Turn%3d", now.round + 1);
 	sChara chara;
@@ -147,7 +172,7 @@ void HiddenCricket::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members[sd.teamType].image.box.bottom();
+		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box.bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
 			if (now.posScore[pos] == 25) { // bull
 				DrawStringToHandle(sd.screen.center().x() + 12,
@@ -440,7 +465,7 @@ void HiddenCricket::update() {
 			now = record[attempt];
 			return;
 		}
-		if (mGame == cDarts::sGame::SELECT_A_CRICKET && selectPos > 0) {
+		if (mGameMode == cGame::sMode::SELECT_A_CRICKET && selectPos > 0) {
 			now.arrow = 1;
 			selectPos--;
 			if (now.posScore[selectPos] == 25) {

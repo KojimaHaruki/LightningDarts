@@ -4,7 +4,7 @@ class Home : public cScene {
 public:
     Home();
     Home(ShareData shareData);
-    ~Home();
+    ~Home() {}
     void draw();
     void update();
 };

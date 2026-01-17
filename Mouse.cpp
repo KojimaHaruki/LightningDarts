@@ -1,78 +1,78 @@
 #include <DxLib.h>
 #include "Mouse.hpp"
 
-bool Mouse::update() {
+bool cMouse::update() {
     int nowButtonState = GetMouseInput();
     int inX = 0, inY = 0;
     GetMousePoint(&inX, &inY);
     cursor.setXY(inX, inY);
     for (int i = 0; i < KEY_NUM; i++) {
         if (nowButtonState & i) { // if key is pressed,
-            if (key[i].pressCount < 0) { // if key is released before,
-                key[i].pressState = Key::RELEASEDtoPRESSED; 
-                key[i].pressCount = 1;
+            if (mPressKeyCount[i] < 0) { // if key is released before,
+                mPressKeyState[i] = Key::RELEASEDtoPRESSED;
+                mPressKeyCount[i] = 1;
             }
             else { // if key is pressed before,
-                key[i].pressState = Key::PRESSED;
-                key[i].pressCount++;
+                mPressKeyState[i] = Key::PRESSED;
+                mPressKeyCount[i]++;
             }
         }
         else { // if key is released,
-            if (key[i].pressCount > 0) { // if key is pressed before,
-                key[i].pressState = Key::PRESSEDtoRELEASED;
-                key[i].pressCount = -1;
+            if (mPressKeyCount[i] > 0) { // if key is pressed before,
+                mPressKeyState[i] = Key::PRESSEDtoRELEASED;
+                mPressKeyCount[i] = -1;
             }
             else { // if key is released before,
-                key[i].pressState = Key::RELEASED;
-                key[i].pressCount--;
+                mPressKeyState[i] = Key::RELEASED;
+                mPressKeyCount[i]--;
             }
         }
     }
     return true;
 }
-int Mouse::getPressCount(int keyCode) { 
-    if (!isValidKey(keyCode)) return 0; return key[keyCode].pressCount; 
+int cMouse::pressKeyCount(int keyCode) {
+    return (keyCode >= 0 && keyCode < KEY_NUM) ? mPressKeyCount[keyCode] : 0;
 }
-int Mouse::getPressState(int keyCode) { 
-    if (!isValidKey(keyCode)) return 0; return key[keyCode].pressState; 
+int cMouse::pressKeyState(int keyCode) {
+    return (keyCode >= 0 && keyCode < KEY_NUM) ? mPressKeyState[keyCode] : 0;
 }
-bool Mouse::isCursorInBox(int x1, int y1, int x2, int y2) {
+bool cMouse::isCursorInBox(int x1, int y1, int x2, int y2) {
     return cursor.x() > x1 && cursor.y() > y1 && cursor.x() < x2 && cursor.y() < y2;
 }
-int Mouse::getClickBoxCount(cBox box) {
-    if (!isCursorInBox(box)) return 0; return getClickCount();
+int cMouse::clickBoxCount(cBox box) {
+    if (!isCursorInBox(box)) return 0; return clickCount();
 }
-int Mouse::getClickBoxCount(int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return 0; return getClickCount();
+int cMouse::clickBoxCount(int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return 0; return clickCount();
 }
-int Mouse::getClickBoxState(cBox box) {
-    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return getClickState();
+int cMouse::clickBoxState(cBox box) {
+    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return clickState();
 }
-int Mouse::getClickBoxState(int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return getClickState();
+int cMouse::clickBoxState(int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return clickState();
 }
-int Mouse::getRightClickBoxCount(cBox box) {
-    if (!isCursorInBox(box)) return 0; return getRightClickCount();
+int cMouse::rightClickBoxCount(cBox box) {
+    if (!isCursorInBox(box)) return 0; return rightClickCount();
 }
-int Mouse::getRightClickBoxCount(int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return 0; return getRightClickCount();
+int cMouse::rightClickBoxCount(int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return 0; return rightClickCount();
 }
-int Mouse::getRightClickBoxState(cBox box) {
-    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return getRightClickState();
+int cMouse::rightClickBoxState(cBox box) {
+    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return rightClickState();
 }
-int Mouse::getRightClickBoxState(int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return getRightClickState();
+int cMouse::rightClickBoxState(int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return rightClickState();
 }
-int Mouse::getPressBoxCount(int keyCode, cBox box) {
-    if (!isCursorInBox(box)) return 0; return getPressCount(keyCode);
+int cMouse::pressBoxCount(int keyCode, cBox box) {
+    if (!isCursorInBox(box)) return 0; return pressKeyCount(keyCode);
 }
-int Mouse::getPressBoxCount(int keyCode, int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return 0; 
-    return getPressCount(keyCode);
+int cMouse::pressBoxCount(int keyCode, int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return 0;
+    return pressKeyCount(keyCode);
 }
-int Mouse::getPressBoxState(int keyCode, cBox box) {
-    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return getPressState(keyCode);
+int cMouse::pressBoxState(int keyCode, cBox box) {
+    if (!isCursorInBox(box)) return Key::NO_SIGNAL; return pressKeyState(keyCode);
 }
-int Mouse::getPressBoxState(int keyCode, int x1, int y1, int x2, int y2) {
-    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return getPressState(keyCode);
+int cMouse::pressBoxState(int keyCode, int x1, int y1, int x2, int y2) {
+    if (!isCursorInBox(x1, y1, x2, y2)) return Key::NO_SIGNAL; return pressKeyState(keyCode);
 }

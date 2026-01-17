@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.hpp"
+#include "Game.hpp"
+
 class GameSelect : public cScene {
 public:
     GameSelect(ShareData shareData);
@@ -8,5 +10,5 @@ public:
     void draw();
     void update();
 private:
-    cBox mainGameBox[MAIN_GAME_NUM], gameBox[GAME_NUM];
+    cBox gameCategoryBox[cGame::sCategory::NUM], gameModeBox[cGame::sMode::NUM];
 };

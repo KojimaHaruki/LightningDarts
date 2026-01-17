@@ -4,8 +4,10 @@
 #include <algorithm>
 #include "Mouse.hpp"
 #include "Color.hpp"
+#include "Game.hpp"
+#include "Sound.hpp"
 
-PlayerSelect::PlayerSelect(ShareData shareData) {
+sPlayerSelect::sPlayerSelect(ShareData shareData) {
     sd = shareData;
     mNowScene = PLAYER_SELECT;
     players.clear();
@@ -16,7 +18,6 @@ PlayerSelect::PlayerSelect(ShareData shareData) {
         }
     }
     playersMem = players;
-    setTeamType(sd.teamType);
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++) {
@@ -32,45 +33,52 @@ PlayerSelect::PlayerSelect(ShareData shareData) {
                 sd.screen.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
         }
     }
-    for (int playModeNo = 0; playModeNo < TEAM_TYPE_NUM; playModeNo++) {
+    for (int playModeNo = 0; playModeNo < cTeam::sType::NUM; playModeNo++) {
         teamTypeBox[playModeNo].setSize(
             100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
         teamTypeBox[playModeNo].setLowerLeft(100 * playModeNo + 400, sd.obj.lowerFrame.top());
     }
-    shuffle.box = teamTypeBox[sTeamType::DUO];
-    shuffle.box.setUpperLeft(teamTypeBox[sTeamType::DUO].upperRight());
+    shuffle.box = teamTypeBox[cTeam::sType::DUO];
+    shuffle.box.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
     shuffle.color = cColor::instance()->cyan();
     sd.ctrl.yes.icon.box.setSize(100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
     sd.ctrl.yes.icon.box.setLowerLeft(sd.screen.right() - 200, sd.obj.lowerFrame.top());
 }
 
-void PlayerSelect::reset() {
+void sPlayerSelect::reset() {
     cScene::reset();
     players.clear();
     playersMem = players;
     sd.teams.clear();
-    sd.teamType = sTeamType::SOLO;
+    cTeam::instance()->init();
 }
 
-void PlayerSelect::draw() {
+void sPlayerSelect::draw() {
     cScene::draw();
+    drawImage(sd.ctrl.gameSelect.icon);
+    drawImage(sd.ctrl.skip.icon);
+    drawImage(sd.ctrl.home.icon);
+    drawImage(sd.ctrl.back.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+    drawImage(sd.ctrl.config.icon);
+    drawImage(sd.ctrl.window[sd.window].icon);
+    drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon);
+    drawImage(sd.ctrl.reset.icon);
+    drawImage(sd.ctrl.bgm.icon);
     unsigned int color = white;
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++, color = white) {
             if (players.size() < MAX_PLAYER_NUM) {
-                switch (Mouse::instance()->getClickBoxState(sd.groups.at(group).members.at(member).image.box)) {
+                switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box)) {
                 case Key::RELEASED:
-                    color = touchColor;
-                    break;
+                    color = touchColor; break;
                 case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                    color = pressColor;
-                    break;
+                    color = pressColor; break;
                 case Key::PRESSEDtoRELEASED:
-                    color = executeColor;
-                    players.push_back(sd.groups.at(group).members.at(member));
-                    setTeamType(sd.teamType);
-                    playersMem = players;
+                    color = executeColor; players.push_back(sd.groups.at(group).members.at(member));
+                    setTeamType(cTeam::instance()->type()); playersMem = players; break;
                 default:
                     break;
                 }
@@ -87,7 +95,7 @@ void PlayerSelect::draw() {
         }
     }
     for (int player = 0; player < MAX_PLAYER_NUM; player++) {
-        div_t result = std::div(player, sd.teamType + 1);
+        div_t result = std::div(player, cTeam::instance()->type() + 1);
         int team = result.quot, member = result.rem;
         drawBoxObj(playerBox[player], teamColor[team]);
         if (player < players.size()) {
@@ -106,67 +114,56 @@ void PlayerSelect::draw() {
         DrawStringToHandle(90 + 40 * player, sd.obj.lowerFrame.top() - MfontSize - 15,
             std::to_string(player + 1).c_str(), white, Mfont);
     }
-    drawBoxObj(teamTypeBox[sd.teamType], gray, TRUE);
-    for (int teamType = 0; teamType < TEAM_TYPE_NUM; teamType++) {
+    drawBoxObj(teamTypeBox[cTeam::instance()->type()], gray, TRUE);
+    for (int teamType = 0; teamType < cTeam::sType::NUM; teamType++) {
         color = white;
-        if (sd.teamType != teamType && players.size() > teamType) {
-            switch (Mouse::instance()->getClickBoxState(teamTypeBox[teamType])) {
+        if (cTeam::instance()->type() != teamType && players.size() > teamType) {
+            switch (cMouse::instance()->clickBoxState(teamTypeBox[teamType])) {
             case Key::RELEASED:
-                color = touchColor;
-                break;
+                color = touchColor; break;
             case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-                color = pressColor;
-                break;
+                color = pressColor; break;
             case Key::PRESSEDtoRELEASED:
-                color = executeColor;
-                setTeamType(teamType);
-            default:
-                break;
+                color = executeColor; setTeamType(teamType); break;
+            default: break;
             }
         }
         DrawStringToHandle(
-            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)teamTypeName[teamType].size()),
+            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)cTeam::instance()->typeName().size()),
             teamTypeBox[teamType].center().y() - MfontSize / 2,
-            teamTypeName[teamType].c_str(), color, Mfont);
+            cTeam::instance()->typeName().c_str(), color, Mfont);
     }
     // Shuffle button
     drawBoxObj(shuffle);
     color = white;
-    switch (Mouse::instance()->getClickBoxState(shuffle.box)) {
+    switch (cMouse::instance()->clickBoxState(shuffle.box)) {
     case Key::RELEASED:
-        color = touchColor;
-        break;
+        color = touchColor; break;
     case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-        color = pressColor;
-        break;
+        color = pressColor; break;
     case Key::PRESSEDtoRELEASED:
         if (players.size() > 0) {
             color = executeColor;
             std::mt19937_64 get_random_mt(std::random_device{}());
             std::shuffle(players.begin(), players.end(), get_random_mt);
-            setTeamType(sd.teamType);
+            setTeamType(cTeam::instance()->type());
         }
-    default:
         break;
+    default: break;
     }
     DrawStringToHandle(shuffle.box.left() + 9, shuffle.box.center().y() - MfontSize / 2,
         "Shuffle", color, Mfont);
     // OK button
     drawBoxObj(sd.ctrl.yes.icon.box, magenta);
     color = white;
-    switch (Mouse::instance()->getClickBoxState(sd.ctrl.yes.icon.box)) {
+    switch (cMouse::instance()->clickBoxState(sd.ctrl.yes.icon.box)) {
     case Key::RELEASED:
-        color = touchColor;
-        break;
+        color = touchColor; break;
     case Key::RELEASEDtoPRESSED: case Key::PRESSED:
-        color = pressColor;
-        break;
+        color = pressColor; break;
     case Key::PRESSEDtoRELEASED:
-        if (players.size() > 0) {
-            color = executeColor;
-        }
-    default:
-        break;
+        if (players.size() > 0) { color = executeColor; } break;
+    default: break;
     }
     DrawStringToHandle(sd.ctrl.yes.icon.box.left() + 5,
         sd.ctrl.yes.icon.box.center().y() - MfontSize / 2, "OK!!", color, Mfont);
@@ -185,10 +182,10 @@ void PlayerSelect::draw() {
         "Player", white, Mfont);
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
         sd.obj.upperFrame.center().y() - MfontSize / 2,
-        (gameName[mGame] + " < Player Select").c_str(), white, Mfont);
+        (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);
 }
 
-void PlayerSelect::update() {
+void sPlayerSelect::update() {
     cScene::update();
     int nPlayer = players.size();
     if (nPlayer < playersMem.size()) {
@@ -205,16 +202,16 @@ void PlayerSelect::update() {
         }
         if (!players.size()) {
             players.push_back(sd.groups[0].members[0]);
-            setTeamType(sTeamType::SOLO);
+            setTeamType(cTeam::sType::SOLO);
             return;
         }
-        setTeamType(sd.teamType);
+        setTeamType(cTeam::instance()->type());
     }
     else if (nPlayer > 0 && ctrlRQ(sd.ctrl.yes)) mNextScene = GAME_START;
     else if (ctrlRQ(sd.ctrl.back)) {
         if (nPlayer > 0) {
             players.pop_back();
-            setTeamType(sd.teamType);
+            setTeamType(cTeam::instance()->type());
             return;
         }
         mNextScene = GAME_SELECT;
@@ -224,12 +221,12 @@ void PlayerSelect::update() {
     else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
 }
 
-void PlayerSelect::setTeamType(int teamType) {
+void sPlayerSelect::setTeamType(int teamType) {
     if (players.size() < 1) return;
-    sd.teamType = (players.size() < 2) ? sTeamType::SOLO : teamType;
+    cTeam::instance()->setType((players.size() < 2) ? cTeam::sType::SOLO : teamType);
     sd.teams.clear();
-    switch (sd.teamType) {
-    case sTeamType::SOLO:
+    switch (cTeam::instance()->type()) {
+    case cTeam::sType::SOLO:
         for (int player = 0; player < players.size(); player++) {
             sd.teams.push_back(sGroup());
             players.at(player).image.box.setUpperLeft(
@@ -239,7 +236,7 @@ void PlayerSelect::setTeamType(int teamType) {
             sd.teams.at(player).members.push_back(players.at(player));
         }
         return;
-    case sTeamType::DUO:
+    case cTeam::sType::DUO:
         for (int player = 0, team = 0; player < players.size(); team++) {
             sd.teams.push_back(sGroup());
             for (int member = 0; member < DUO_MEMBER_NUM && player < players.size(); member++, player++) {
@@ -249,6 +246,7 @@ void PlayerSelect::setTeamType(int teamType) {
                 sd.teams.at(team).members.push_back(players.at(player));
             }
         }
+        return;
     default:
         return;
     }

@@ -1,7 +1,7 @@
 #include "Home.hpp"
 #include "Color.hpp"
 #include "Font.hpp"
-#include "Darts.hpp"
+#include "Sound.hpp"
 
 Home::Home() {
     mNowScene = NO_CHANGE;
@@ -19,6 +19,16 @@ Home::Home(ShareData shareData) {
 
 void Home::draw() {
     cScene::draw();
+    drawImage(sd.ctrl.forward.icon);
+    drawImage(sd.ctrl.home.icon);
+    drawImage(sd.ctrl.back.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+    drawImage(sd.ctrl.config.icon);
+    drawImage(sd.ctrl.window[sd.window].icon);
+    drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon);
+    drawImage(sd.ctrl.reset.icon);
+    drawImage(sd.ctrl.bgm.icon);
     DrawStringToHandle(sd.screen.center().x() - 3 * XLfontSize,
         sd.screen.center().y() - XLfontSize / 2, "Lightning Darts", yellow, XLfont);
     DrawGraph(sd.screen.center().x() - 56, 11 * sd.screen.center().y() / 8 - 12, sd.ctrl.start.key.image.handle, TRUE);
@@ -34,20 +44,11 @@ void Home::draw() {
     }
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.upperRight().x(),
         sd.obj.upperFrame.center().y() - MfontSize / 2, "Home", white, Mfont);
-    return;
 }
 void Home::update() {
     cScene::update();
-    int gameNo = cDarts::instance()->gameNo();
     if (isTyped(sd.ctrl.start.key)) mNextScene = GAME_SELECT;
     else if (ctrlRQ(sd.ctrl.back)) mNextScene = QUIT;
     else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
-    else if (gameNo >= 0 && gameNo < GAME_NUM) {
-        drawImage(sd.ctrl.forward.icon);
-        if (ctrlRQ(sd.ctrl.forward)) { mNextScene = GAME_SELECT; }
-    }
-    return;
-}
-
-Home::~Home() {
+    else if (ctrlRQ(sd.ctrl.forward)) mNextScene = GAME_SELECT;
 }

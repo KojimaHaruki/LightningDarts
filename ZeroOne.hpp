@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.hpp"
-#include "Darts.hpp"
+#include "Game.hpp"
 
 class ZeroOne : public cScene {
 public:
@@ -12,7 +12,7 @@ public:
 	void fin();
 private:
 	int arrowImage = 0;
-	static constexpr int initPoint[cDarts::sGame::NUM] = { 301, 501, 701, 901, 1101, 1501 };
+	static constexpr int initPoint[cGame::sMode::ZERO_ONE_NUM] = { 301, 501, 701, 901, 1101, 1501 };
 	static constexpr int MAX_ROUND = 100;
 	static constexpr int MAX_ATTEMPT = 500;
 	int attempt, maxAttempt;

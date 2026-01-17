@@ -1,15 +1,17 @@
 #pragma once
 #include "Scene.hpp"
-class PlayerSelect : public cScene {
+#include "Team.hpp"
+
+class sPlayerSelect : public cScene {
 public:
-    PlayerSelect(ShareData shareData);
-    ~PlayerSelect() {}
+    sPlayerSelect(ShareData shareData);
+    ~sPlayerSelect() {}
     void reset();
     void draw();
     void update();
     void setTeamType(int teamType);
 private:
-    cBox playerBox[MAX_PLAYER_NUM], teamTypeBox[TEAM_TYPE_NUM];
+    cBox playerBox[MAX_PLAYER_NUM], teamTypeBox[cTeam::sType::NUM];
     sBoxObj shuffle;
 	std::vector<sChara> players, playersMem;
 };

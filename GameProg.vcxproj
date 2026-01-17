@@ -163,6 +163,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CountUp.cpp" />
+    <ClCompile Include="Team.hpp" />
     <ClCompile Include="StandardCricket.cpp" />
     <ClCompile Include="Darts.cpp" />
     <ClCompile Include="HiddenCricket.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Coordinate.hpp" />
     <ClInclude Include="CountUp.hpp" />
+    <ClInclude Include="Game.hpp" />
     <ClInclude Include="StandardCricket.hpp" />
     <ClInclude Include="Darts.hpp" />
     <ClInclude Include="Font.hpp" />

@@ -7,12 +7,12 @@
 #include "resource.h"
 namespace fs = std::filesystem;
 
-std::string Sound::name(int SoundNo) {
+std::string cSound::name(int SoundNo) {
     if (SoundNo < 0 || SoundNo >= Kind::NUM) return ""; 
     return mName[SoundNo];
 }
 
-void Sound::load() {
+void cSound::load() {
     InitSoundMem();
     std::error_code err;
     std::vector<std::string> artistName;
@@ -54,17 +54,17 @@ void Sound::load() {
     }
 }
 
-void Sound::initSoundVol() {
+void cSound::initSoundVol() {
     for (int i = 0; i < Kind::NUM; i++) mVol[i] = MAX_VOL;
     setVol(Kind::TOTAL, MAX_VOL);
 }
 
-void Sound::mute() {
+void cSound::mute() {
     StopSoundMem(mPlayingBGMHandle);
     mIsBGMPlayed = FALSE; // check mute mode
 }
 
-void Sound::unmute() {
+void cSound::unmute() {
     ChangeVolumeSoundMem(mBGMVol, mPlayingBGMHandle);
     // play BGM
     if (mBGMPlayMode == PlayMode::LOOP)
@@ -74,7 +74,7 @@ void Sound::unmute() {
     mIsBGMPlayed = TRUE; // check mute mode
 }
 
-bool Sound::setVol(int SoundNo, int Vol) {
+bool cSound::setVol(int SoundNo, int Vol) {
     if (SoundNo < 0 || SoundNo >= Kind::NUM) return false; // if sound doesn't exist, exit
     if (Vol > MAX_VOL) { // if sound's volume is above maximum volume,
         mVol[SoundNo] = MAX_VOL; // set maximum volume
@@ -95,7 +95,7 @@ bool Sound::setVol(int SoundNo, int Vol) {
     } return true;
 }
 
-bool Sound::playBGM(int BGMNo) {
+bool cSound::playBGM(int BGMNo) {
     if (BGMNo < 0 || BGMNo >= mBGMs.size()) // if BGM doesn't exist,
         return false; // exit
     int nextBGMHandle = -1;
@@ -116,7 +116,7 @@ bool Sound::playBGM(int BGMNo) {
     return true;
 }
 
-bool Sound::playNextBGM() {
+bool cSound::playNextBGM() {
     int nextBGMNo = mPlayingBGMNo + 1;
     if (mBGMPlayMode == PlayMode::RANDAM && nextBGMNo >= mBGMs.size()) {
         nextBGMNo = 0;
@@ -126,12 +126,12 @@ bool Sound::playNextBGM() {
     return playBGM(nextBGMNo);
 }
 
-bool Sound::playLastBGM() {
+bool cSound::playLastBGM() {
     int lastBGMNo = (mPlayingBGMNo - 1 + mBGMs.size()) % mBGMs.size();
     return playBGM(lastBGMNo);
 }
 
-void Sound::update() {
+void cSound::update() {
     if (mIsBGMPlayed && !CheckSoundMem(mPlayingBGMHandle)) {
         int nextBGMNo = mPlayingBGMNo;
         switch (mBGMPlayMode) {

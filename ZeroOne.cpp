@@ -3,6 +3,10 @@
 #include <numbers>
 #include "Mouse.hpp"
 #include "Color.hpp"
+#include "Sound.hpp"
+#include "Game.hpp"
+#include "Team.hpp"
+#include "Darts.hpp"
 
 ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = ZERO_ONE;
@@ -17,7 +21,8 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 		nScore = nRound + 1;
 		for (int team = 0, x = sd.screen.right() - 400, y = sd.obj.upperFrame.bottom() + space;
 			team < sd.teams.size(); team++, x += 100, y = sd.obj.upperFrame.bottom() + space) {
-			teamBox[team].setSize(100, 100 + sd.teamType * 100 + nScore * (MfontSize + space));
+			teamBox[team].setSize(
+				100, 100 + cTeam::instance()->type() * 100 + nScore * (MfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
 				sd.teams.at(team).members.at(member).image.box.setUpperLeft(x, y);
@@ -55,13 +60,36 @@ void ZeroOne::reset() {
 	now = {};
 	now.arrow = 3;
 	for (int playerNo = 0; playerNo < sd.teams.size(); playerNo++) {
-		now.teamRemain[playerNo] = initPoint[mGame];
+		now.teamRemain[playerNo] = initPoint[mGameMode];
 		now.rank[playerNo] = playerNo;
 	}
 }
 
 void ZeroOne::draw() {
 	cScene::draw();
+	drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
+	drawImage(sd.ctrl.skill.icon);
+	cDarts::instance()->timer().drawLapseTime(
+		sd.screen.left(), sd.obj.upperFrame.bottom() + 10, white, Sfont, Timer::Mode::HMSmS);
+	DrawStringToHandle(
+		sd.ctrl.mute[0].icon.box.right() + 5, sd.obj.upperFrame.center().y() - MfontSize / 2,
+		(cGame::instance()->modeName() + " / " + cTeam::instance()->typeName()).c_str(),
+		white, Mfont);
+	cDarts::instance()->draw();
+	drawImage(sd.ctrl.playerSelect.icon);
+	drawImage(sd.ctrl.gameSelect.icon);
+	drawImage(sd.ctrl.skip.icon);
+	drawImage(sd.ctrl.home.icon);
+	drawImage(sd.ctrl.back.icon);
+	drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+	drawImage(sd.ctrl.config.icon);
+	drawImage(sd.ctrl.window[sd.window].icon);
+	drawImage(sd.ctrl.quit.icon);
+	drawImage(sd.ctrl.init.icon);
+	drawImage(sd.ctrl.reset.icon);
+	drawImage(sd.ctrl.bgm.icon);
+	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
+		white, Mfont, "Turn%3d", now.round + 1);
 	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
 		white, Mfont, "Turn%3d", now.round + 1);
 	int recordNo = 0;
@@ -106,7 +134,7 @@ void ZeroOne::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members.at(sd.teamType).image.box.bottom();
+		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box.bottom();
 		if (now.round < nRound) {
 			recordNo = 0;
 		}

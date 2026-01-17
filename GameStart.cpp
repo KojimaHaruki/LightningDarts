@@ -3,6 +3,9 @@
 #include <string>
 #include <numbers>
 #include "Darts.hpp"
+#include "Game.hpp"
+#include "Team.hpp"
+#include "Sound.hpp"
 
 cGameStart::cGameStart(ShareData shareData) {
 	sd = shareData;
@@ -11,30 +14,44 @@ cGameStart::cGameStart(ShareData shareData) {
 	startTime = nowTime + timeFromEntryToStart;
 	double theta = M_PI, phi = M_PI / (double)MAX_PLAYER_NUM;
 	for (int team = 0; team < sd.teams.size(); team++, theta += 2.0 * M_PI / (double)sd.teams.size()) {
-		if (sd.teams[team].members.size() == 1) {
-			sd.teams[team].members[0].image.box.setCenter(
+		if (sd.teams.at(team).members.size() == 1) {
+			sd.teams.at(team).members[0].image.box.setCenter(
 				sd.screen.center().x() + 150.0 * cos(theta), sd.screen.center().y() - 150.0 * sin(theta));
 			continue;
 		}
-		sd.teams[team].members[0].image.box.setCenter(
+		sd.teams.at(team).members[0].image.box.setCenter(
 			sd.screen.center().x() + 150.0 * cos(theta + phi),
 			sd.screen.center().y() - 150.0 * sin(theta + phi));
-		sd.teams[team].members[1].image.box.setCenter(
+		sd.teams.at(team).members[1].image.box.setCenter(
 			sd.screen.center().x() + 150.0 * cos(theta - phi),
 			sd.screen.center().y() - 150.0 * sin(theta - phi));
 	}
 }
 
 void cGameStart::reset() {
-	cScene::reset(); 
+	cScene::reset();
 	startTime = time(NULL) + timeFromEntryToStart;
 }
 
 void cGameStart::draw() {
 	cScene::draw();
+	drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
+	drawImage(sd.ctrl.skill.icon);
+	drawImage(sd.ctrl.playerSelect.icon);
+	drawImage(sd.ctrl.gameSelect.icon);
+	drawImage(sd.ctrl.skip.icon);
+	drawImage(sd.ctrl.home.icon);
+	drawImage(sd.ctrl.back.icon);
+	drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+	drawImage(sd.ctrl.config.icon);
+	drawImage(sd.ctrl.window[sd.window].icon);
+	drawImage(sd.ctrl.quit.icon);
+	drawImage(sd.ctrl.init.icon);
+	drawImage(sd.ctrl.reset.icon);
+	drawImage(sd.ctrl.bgm.icon);
 	for (int team = 0; team < sd.teams.size(); team++) {
-		for (int member = 0; member < sd.teams[team].members.size(); member++) {
-			sChara player = sd.teams[team].members[member];
+		for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
+			sChara player = sd.teams.at(team).members.at(member);
 			drawImage(player.image);
 			DrawStringToHandle(player.image.box.left(), player.image.box.top(),
 				rankName[player.status.rank].c_str(), white, Mfont);
@@ -46,28 +63,28 @@ void cGameStart::draw() {
 		white, Mfont);
 	DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
 		sd.obj.upperFrame.center().y() - MfontSize / 2,
-		(gameName[mGame] + " / " + teamTypeName[sd.teamType] + " < Game Start").c_str(),
+		(cGame::instance()->modeName() + " / " + cTeam::instance()->typeName() + " < Game Start").c_str(),
 		white, Mfont);
 	return;
 }
 
 void cGameStart::update() {
-	cScene::update(); 
+	cScene::update();
 	nowTime = time(NULL);
 	if (ctrlRQ(sd.ctrl.back)) mNextScene = PLAYER_SELECT;
 	else if (ctrlRQ(sd.ctrl.skip) || nowTime >= startTime) {
-		switch (mGame) {
-		case cDarts::sGame::ZERO_ONE_301: case cDarts::sGame::ZERO_ONE_501:
-		case cDarts::sGame::ZERO_ONE_701: case cDarts::sGame::ZERO_ONE_901:
-		case cDarts::sGame::ZERO_ONE_1101: case cDarts::sGame::ZERO_ONE_1501:
+		switch (mGameMode) {
+		case cGame::sMode::ZERO_ONE_301: case cGame::sMode::ZERO_ONE_501:
+		case cGame::sMode::ZERO_ONE_701: case cGame::sMode::ZERO_ONE_901:
+		case cGame::sMode::ZERO_ONE_1101: case cGame::sMode::ZERO_ONE_1501:
 			mNextScene = ZERO_ONE;
 			break;
-		case cDarts::sGame::STANDARD_CRICKET: case cDarts::sGame::RANDAM_CRICKET:
-		case cDarts::sGame::HIDDEN_CRICKET: case cDarts::sGame::SELECT_A_CRICKET:
-		case cDarts::sGame::ALL_NUMBER_CRICKET:
+		case cGame::sMode::STANDARD_CRICKET: case cGame::sMode::RANDOM_CRICKET:
+		case cGame::sMode::HIDDEN_CRICKET: case cGame::sMode::SELECT_A_CRICKET:
+		case cGame::sMode::ALL_NUMBERS_CRICKET:
 			mNextScene = STANDARD_CRICKET;
 			break;
-		case cDarts::sGame::CRICKET_COUNT_UP: case cDarts::sGame::COUNT_UP:
+		case cGame::sMode::CRICKET_COUNT_UP: case cGame::sMode::COUNT_UP:
 			mNextScene = COUNT_UP;
 			break;
 		default:

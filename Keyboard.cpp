@@ -1,58 +1,61 @@
 #include <DxLib.h>
 #include "Keyboard.hpp"
 
-Keyboard::Keyboard() {}
+void cKeyboard::loadKeyImage() {
+    for (int i = 0; i < VALID_KEY_NUM; i++)
+        mKeyImage[KeyNo[i]] = LoadGraphToResource(MAKEINTRESOURCE(KeyNo[i]), "PNG");
+}
 
-bool Keyboard::update() {
+bool cKeyboard::update() {
     char nowKeyStatus[KEY_NUM];
     GetHitKeyStateAll(nowKeyStatus);       //¡‚ÌƒL[‚Ì“ü—Íó‘Ô‚ðŽæ“¾
     for (int i = 0; i < KEY_NUM; i++) {
         if (nowKeyStatus[i]) { // if key is pressed,
-            if (key[i].pressCount < 0) { // if key is released before,
-                key[i].pressState = Key::RELEASEDtoPRESSED;
-                key[i].pressCount = 1;
+            if (mPressKeyCount[i] < 0) { // if key is released before,
+                mPressKeyState[i] = Key::RELEASEDtoPRESSED;
+                mPressKeyCount[i] = 1;
             }
             else { // if key is pressed before,
-                key[i].pressState = Key::PRESSED;
-                key[i].pressCount++;
+                mPressKeyState[i] = Key::PRESSED;
+                mPressKeyCount[i]++;
             }
         }
         else { // if key is released,
-            if (key[i].pressCount > 0) { // if key is pressed before,
-                key[i].pressState = Key::PRESSEDtoRELEASED;
-                key[i].pressCount = -1;
+            if (mPressKeyCount[i] > 0) { // if key is pressed before,
+                mPressKeyState[i] = Key::PRESSEDtoRELEASED;
+                mPressKeyCount[i] = -1;
             }
             else { // if key is released before,
-                key[i].pressState = Key::RELEASED;
-                key[i].pressCount--;
+                mPressKeyState[i] = Key::RELEASED;
+                mPressKeyCount[i]--;
             }
         }
     }
     return true;
 }
-int Keyboard::getPressCount(int keyCode) {
-    if (!isValidKey(keyCode)) return 0;
+int cKeyboard::pressKeyCount(int keyCode) {
+    if (keyCode < 0 && keyCode >= KEY_NUM) return 0;
     switch (keyCode) {
     case KEY_INPUT_LSHIFT: case KEY_INPUT_RSHIFT:
-        return max(key[KEY_INPUT_LSHIFT].pressCount, key[KEY_INPUT_RSHIFT].pressCount);
+        return max(mPressKeyCount[KEY_INPUT_LSHIFT], mPressKeyCount[KEY_INPUT_RSHIFT]);
     case KEY_INPUT_LCONTROL: case KEY_INPUT_RCONTROL:
-        return max(key[KEY_INPUT_LCONTROL].pressCount, key[KEY_INPUT_RCONTROL].pressCount);
+        return max(mPressKeyCount[KEY_INPUT_LCONTROL], mPressKeyCount[KEY_INPUT_RCONTROL]);
     case KEY_INPUT_LALT: case KEY_INPUT_RALT:
-        return max(key[KEY_INPUT_LALT].pressCount, key[KEY_INPUT_RALT].pressCount);
+        return max(mPressKeyCount[KEY_INPUT_LALT], mPressKeyCount[KEY_INPUT_RALT]);
     default:
-        return key[keyCode].pressCount;
+        return mPressKeyCount[keyCode];
     }
 }
-int Keyboard::getPressState(int keyCode) {
-    if (!isValidKey(keyCode)) return 0;
+int cKeyboard::pressKeyState(int keyCode) {
+    if (keyCode < 0 && keyCode >= KEY_NUM) return 0;
     switch (keyCode) {
     case KEY_INPUT_LSHIFT: case KEY_INPUT_RSHIFT:
-        return max(key[KEY_INPUT_LSHIFT].pressState, key[KEY_INPUT_RSHIFT].pressState);
+        return max(mPressKeyState[KEY_INPUT_LSHIFT], mPressKeyState[KEY_INPUT_RSHIFT]);
     case KEY_INPUT_LCONTROL: case KEY_INPUT_RCONTROL:
-        return max(key[KEY_INPUT_LCONTROL].pressState, key[KEY_INPUT_RCONTROL].pressState);
+        return max(mPressKeyState[KEY_INPUT_LCONTROL], mPressKeyState[KEY_INPUT_RCONTROL]);
     case KEY_INPUT_LALT: case KEY_INPUT_RALT:
-        return max(key[KEY_INPUT_LALT].pressState, key[KEY_INPUT_RALT].pressState);
+        return max(mPressKeyState[KEY_INPUT_LALT], mPressKeyState[KEY_INPUT_RALT]);
     default:
-        return key[keyCode].pressState;
+        return mPressKeyState[keyCode];
     }
 }

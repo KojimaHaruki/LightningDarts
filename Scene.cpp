@@ -10,10 +10,11 @@
 #include "Darts.hpp"
 #include "Color.hpp"
 #include "Font.hpp"
+#include "Game.hpp"
 namespace fs = std::filesystem;
 
-cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), mIsConfig(false), nowTime(time(NULL)),
-mGame(cDarts::instance()->gameNo()) {
+cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
+mGameMode(cGame::instance()->mode()) {
     loadColor();
     loadFont();
     timeError = localtime_s(&nowLocalTime, &nowTime);
@@ -56,7 +57,7 @@ void cScene::initCtrlKey() {
     for (int i = 0; i < 2; i++) {
         sd.ctrl.mute[i].key.code = KEY_INPUT_M;
         sd.ctrl.window[i].key.code = KEY_INPUT_W;
-        sd.ctrl.pause[i].key.code = KEY_INPUT_SPACE;
+        sd.ctrl.pause[i].key.code = KEY_INPUT_PAUSE;
     }
 }
 
@@ -136,17 +137,14 @@ void cScene::init() {
         sd.ctrl.skill.name = "Skill"; sd.ctrl.skip.name = "Skip"; sd.ctrl.init.name = "Initialize";
         sd.ctrl.reset.name = "Reset the current scene"; sd.ctrl.bgm.name = "Change BGM";
         // load BGM
-        Sound::instance()->load();
+        cSound::instance()->load();
         cDarts::instance()->setCenter(
             sd.screen.left() + 0.25 * sd.screen.width() + 5, sd.screen.center().y());
     }
-    Sound::instance()->initSoundVol();
+    cSound::instance()->initSoundVol();
     StopSound();
-    Sound::instance()->playBGM(0);
-    // set game
-    cDarts::instance()->setGameNo(cDarts::sGame::DEFAULT);
-    // set player
-    sd.teamType = sTeamType::SOLO;
+    cSound::instance()->playBGM(0);
+    cGame::instance()->init();
     sd.teams.clear();
     sd.teams.reserve(MAX_GROUP_NUM);
     mNextScene = HOME;
@@ -160,33 +158,31 @@ void cScene::changeWindow(int WindowModeFlag) {
     // load font
     cFont::instance()->load();
     loadFont();
-    // load image
-    for (int i = 0; i < VALID_KEY_NUM; i++)
-        sd.key[KeyNo[i]].image.handle = LoadGraphToResource(MAKEINTRESOURCE(KeyNo[i]), "PNG");
-    sd.ctrl.home.key.image.handle = sd.key[sd.ctrl.home.key.code].image.handle;
-    sd.ctrl.back.key.image.handle = sd.key[sd.ctrl.back.key.code].image.handle;
-    sd.ctrl.forward.key.image.handle = sd.key[sd.ctrl.forward.key.code].image.handle;
-    sd.ctrl.quit.key.image.handle = sd.key[sd.ctrl.quit.key.code].image.handle;
-    sd.ctrl.config.key.image.handle = sd.key[sd.ctrl.config.key.code].image.handle;
-    sd.ctrl.skill.key.image.handle = sd.key[sd.ctrl.skill.key.code].image.handle;
-    sd.ctrl.skip.key.image.handle = sd.key[sd.ctrl.skip.key.code].image.handle;
-    sd.ctrl.init.key.image.handle = sd.key[sd.ctrl.init.key.code].image.handle;
-    sd.ctrl.gameSelect.key.image.handle = sd.key[sd.ctrl.gameSelect.key.code].image.handle;
-    sd.ctrl.playerSelect.key.image.handle = sd.key[sd.ctrl.playerSelect.key.code].image.handle;
-    sd.ctrl.reset.key.image.handle = sd.key[sd.ctrl.reset.key.code].image.handle;
-    sd.ctrl.bgm.key.image.handle = sd.key[sd.ctrl.bgm.key.code].image.handle;
-    sd.ctrl.left.key.image.handle = sd.key[sd.ctrl.left.key.code].image.handle;
-    sd.ctrl.right.key.image.handle = sd.key[sd.ctrl.right.key.code].image.handle;
-    sd.ctrl.up.key.image.handle = sd.key[sd.ctrl.up.key.code].image.handle;
-    sd.ctrl.down.key.image.handle = sd.key[sd.ctrl.down.key.code].image.handle;
-    sd.ctrl.start.key.image.handle = sd.key[sd.ctrl.start.key.code].image.handle;
-    sd.ctrl.no.key.image.handle = sd.key[sd.ctrl.no.key.code].image.handle;
-    sd.ctrl.yes.key.image.handle = sd.key[sd.ctrl.yes.key.code].image.handle;
-    sd.ctrl.reset.key.image.handle = sd.key[sd.ctrl.reset.key.code].image.handle;
+    cKeyboard::instance()->loadKeyImage();
+    sd.ctrl.home.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.home.key.code);
+    sd.ctrl.back.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.back.key.code);
+    sd.ctrl.forward.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.forward.key.code);
+    sd.ctrl.quit.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.quit.key.code);
+    sd.ctrl.config.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.config.key.code);
+    sd.ctrl.skill.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.skill.key.code);
+    sd.ctrl.skip.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.skip.key.code);
+    sd.ctrl.init.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.init.key.code);
+    sd.ctrl.gameSelect.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.gameSelect.key.code);
+    sd.ctrl.playerSelect.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.playerSelect.key.code);
+    sd.ctrl.reset.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.reset.key.code);
+    sd.ctrl.bgm.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.bgm.key.code);
+    sd.ctrl.left.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.left.key.code);
+    sd.ctrl.right.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.right.key.code);
+    sd.ctrl.up.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.up.key.code);
+    sd.ctrl.down.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.down.key.code);
+    sd.ctrl.start.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.start.key.code);
+    sd.ctrl.no.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.no.key.code);
+    sd.ctrl.yes.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.yes.key.code);
+    sd.ctrl.reset.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.reset.key.code);
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].key.image.handle = sd.key[sd.ctrl.mute[i].key.code].image.handle;
-        sd.ctrl.window[i].key.image.handle = sd.key[sd.ctrl.window[i].key.code].image.handle;
-        sd.ctrl.pause[i].key.image.handle = sd.key[sd.ctrl.pause[i].key.code].image.handle;
+        sd.ctrl.mute[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.mute[i].key.code);
+        sd.ctrl.window[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.window[i].key.code);
+        sd.ctrl.pause[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.pause[i].key.code);
     }
 
     // load players
@@ -256,8 +252,8 @@ void cScene::changeWindow(int WindowModeFlag) {
     sd.pic.darts.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_JPG1), "JPG");
     sd.pic.selected.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG90), "PNG");
     sd.pic.thunder.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG91), "PNG");
-    cDarts::instance()->load();
-    sd.window = GetWindowModeFlag(); return;
+    cDarts::instance()->loadImage();
+    sd.window = GetWindowModeFlag(); 
 }
 
 void cScene::reset() {
@@ -268,7 +264,7 @@ void cScene::draw() {
     drawImage(sd.pic.thunder.image);
     DrawStringToHandle(
         sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.center().y() - SfontSize / 2,
-        Sound::instance()->playingBGMName().c_str(), white, Sfont);
+        cSound::instance()->playingBGMName().c_str(), white, Sfont);
     DrawStringToHandle(sd.screen.right() - 340, sd.obj.lowerFrame.center().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
     DrawCircleAA(sd.screen.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
@@ -280,79 +276,33 @@ void cScene::draw() {
             sd.screen.right() - 42, sd.obj.lowerFrame.center().y() - SfontSize / 2,
             white, Sfont, "%02d:%02d", nowLocalTime.tm_hour, nowLocalTime.tm_min);
     }
-    // draw icon & darts board
-    switch (mNowScene) {
-    case ZERO_ONE: case STANDARD_CRICKET: case COUNT_UP:
-        drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
-        drawImage(sd.ctrl.skill.icon);
-        if (!mIsConfig) {
-            cDarts::instance()->timer().drawLapseTime(
-                sd.screen.left(), sd.obj.upperFrame.bottom() + 10, white, Sfont, Timer::Mode::HMSmS);
-            DrawStringToHandle(
-                sd.ctrl.mute[0].icon.box.right() + 5, sd.obj.upperFrame.center().y() - MfontSize / 2,
-                (gameName[cDarts::instance()->gameNo()] + " / " + teamTypeName[sd.teamType]).c_str(),
-                white, Mfont);
-            cDarts::instance()->draw();
-        }
-    case GAME_START:
-    case PLAYER_SELECT:
-        drawImage(sd.ctrl.playerSelect.icon);
-    case GAME_SELECT:
-        drawImage(sd.ctrl.gameSelect.icon);
-        drawImage(sd.ctrl.skip.icon);
-    default:
-        drawImage(sd.ctrl.home.icon);
-        drawImage(sd.ctrl.back.icon);
-        drawImage(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon);
-        drawImage(sd.ctrl.config.icon);
-        drawImage(sd.ctrl.window[sd.window].icon);
-        drawImage(sd.ctrl.quit.icon);
-        drawImage(sd.ctrl.init.icon);
-        drawImage(sd.ctrl.reset.icon);
-        drawImage(sd.ctrl.bgm.icon);
-        break;
-    }
     return;
 }
 void cScene::fin() {
 }
 void cScene::update() {
-    Mouse::instance()->update();
-    Keyboard::instance()->update();
-    Sound::instance()->update();
+    cMouse::instance()->update();
+    cKeyboard::instance()->update();
+    cSound::instance()->update();
     nowTime = time(NULL);
     timeError = localtime_s(&nowLocalTime, &nowTime);
     if (ctrlRQ(sd.ctrl.init)) init();
     else if (ctrlRQ(sd.ctrl.reset)) reset();
     else if (ctrlRQ(sd.ctrl.quit)) mNextScene = QUIT;
-    else if (ctrlRQ(sd.ctrl.mute[Sound::instance()->isBGMPlayed()])) {
-        if (Sound::instance()->isBGMPlayed()) {
-            Sound::instance()->mute();
+    else if (ctrlRQ(sd.ctrl.mute[cSound::instance()->isBGMPlayed()])) {
+        if (cSound::instance()->isBGMPlayed()) {
+            cSound::instance()->mute();
             return;
         }
-        Sound::instance()->unmute();
+        cSound::instance()->unmute();
     }
     else if (ctrlRQ(sd.ctrl.window[sd.window])) changeWindow((sd.window + 1) % 2);
     else if (ctrlRQ(sd.ctrl.bgm)) {
-        if (Keyboard::instance()->getPressState(KEY_INPUT_LSHIFT) == Key::PRESSED) {
-            Sound::instance()->playLastBGM();
+        if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == Key::PRESSED) {
+            cSound::instance()->playLastBGM();
         }
         else {
-            Sound::instance()->playNextBGM();
-        }
-    }
-    if (mIsConfig) {
-        switch (mNowScene) {
-        case ZERO_ONE: case STANDARD_CRICKET: case COUNT_UP:
-        case GAME_START:
-        case PLAYER_SELECT:
-            if (ctrlRQ(sd.ctrl.playerSelect)) { mNextScene = PLAYER_SELECT; return; }
-        case GAME_SELECT:
-            if (ctrlRQ(sd.ctrl.gameSelect)) { mNextScene = GAME_SELECT;   return; }
-        case HOME:
-            if (ctrlRQ(sd.ctrl.home)) { mNextScene = HOME;          return; }
-        default:
-            break;
+            cSound::instance()->playNextBGM();
         }
     }
 }
@@ -370,11 +320,11 @@ int cScene::drawImage(sImage image) {
 }
 
 bool cScene::isClicked(cBox box) {
-    return Mouse::instance()->getClickBoxState(box) == Key::PRESSEDtoRELEASED;
+    return cMouse::instance()->clickBoxState(box) == Key::PRESSEDtoRELEASED;
 }
 
 bool cScene::isBoxClicked(int x1, int y1, int x2, int y2) {
-    return Mouse::instance()->getClickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
+    return cMouse::instance()->clickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
 }
 
 bool cScene::isClicked(sImage image) {
@@ -382,7 +332,7 @@ bool cScene::isClicked(sImage image) {
 }
 
 bool cScene::isKeyTyped(int keyCode) {
-    return Keyboard::instance()->getPressState(keyCode) == Key::RELEASEDtoPRESSED;
+    return cKeyboard::instance()->pressKeyState(keyCode) == Key::RELEASEDtoPRESSED;
 }
 
 bool cScene::isTyped(sCtrlKey key) {

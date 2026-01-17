@@ -6,7 +6,6 @@
 Config::Config(int priorScene, ShareData shareData) {
     sd = shareData;
     mNowScene = priorScene;
-    mIsConfig = true;
     set();
 }
 
@@ -22,7 +21,7 @@ void Config::reset() {
     cScene::reset();
     initCtrlKey();
     initScreenSize();
-    Sound::instance()->initSoundVol(); return;
+    cSound::instance()->initSoundVol(); return;
 }
 
 void Config::set() {
@@ -67,9 +66,21 @@ void Config::set() {
 
 void Config::draw() {
     cScene::draw();
+    drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
+    drawImage(sd.ctrl.skill.icon);
+    if (mNowScene >= PLAYER_SELECT) drawImage(sd.ctrl.playerSelect.icon);
+    if (mNowScene >= GAME_SELECT) drawImage(sd.ctrl.gameSelect.icon);
+    if (mNowScene >= HOME) drawImage(sd.ctrl.home.icon);
+    drawImage(sd.ctrl.back.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+    drawImage(sd.ctrl.window[sd.window].icon);
+    drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon);
+    drawImage(sd.ctrl.reset.icon);
+    drawImage(sd.ctrl.bgm.icon);
     // control setting
     draw(ctrl.home);
-    draw(ctrl.mute[Sound::instance()->isBGMPlayed()]);
+    draw(ctrl.mute[cSound::instance()->isBGMPlayed()]);
     draw(ctrl.playerSelect);
     draw(ctrl.gameSelect);
     draw(ctrl.skill);
@@ -86,64 +97,65 @@ void Config::draw() {
     // music setting 
     DrawStringToHandle(5, 25, "Sound", white, XLfont);
     DrawStringToHandle(sd.screen.center().x(), 25, "System", white, XLfont);
-    DrawStringToHandle(10, 180, ("Play mode: " + Sound::instance()->bgmPlayModeName()).c_str(),
+    DrawStringToHandle(10, 180, ("Play mode: " + cSound::instance()->bgmPlayModeName()).c_str(),
         white, Mfont);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
-    for (int i = 0; i < Sound::Kind::NUM; i++) {
+    for (int i = 0; i < cSound::Kind::NUM; i++) {
         DrawStringToHandle(10, 90 + 30 * i,
-            Sound::instance()->name(i).c_str(), white, Mfont);
-        int vol = Sound::instance()->vol(i);
+            cSound::instance()->name(i).c_str(), white, Mfont);
+        int vol = cSound::instance()->vol(i);
         DrawBox(100, 95 + 30 * i, 100 + vol, 105 + 30 * i, white, TRUE);
         DrawBox(100 + vol, 95 + 30 * i, 300, 105 + 30 * i, black, TRUE);
         DrawFormatStringToHandle(315, 90 + 30 * i, white, Mfont, "%3d", vol);
         DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle, TRUE);
         DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle, TRUE);
-        switch (Mouse::instance()->getClickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
+        switch (cMouse::instance()->clickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
         case Key::RELEASED:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, touchColor, TRUE);
             break;
         case Key::RELEASEDtoPRESSED: case Key::PRESSED:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, pressColor, TRUE);
-            Sound::instance()->setVol(i, Mouse::instance()->x() - 100);
+            cSound::instance()->setVol(i, cMouse::instance()->x() - 100);
             break;
         default:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, gray, TRUE);
             break;
         }
-        if (Mouse::instance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) > 10) {
-            Sound::instance()->setVol(i, vol - 1);
+        if (cMouse::instance()->clickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) > 10) {
+            cSound::instance()->setVol(i, vol - 1);
         }
-        else if (Mouse::instance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) > 10) {
-            Sound::instance()->setVol(i, vol + 1);
+        else if (cMouse::instance()->clickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) > 10) {
+            cSound::instance()->setVol(i, vol + 1);
         }
-        else if (Mouse::instance()->getClickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) == -1) {
-            Sound::instance()->setVol(i, vol - 4);
+        else if (cMouse::instance()->clickBoxCount(355, 85 + 30 * i, 380, 110 + 30 * i) == -1) {
+            cSound::instance()->setVol(i, vol - 4);
         }
-        else if (Mouse::instance()->getClickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) == -1) {
-            Sound::instance()->setVol(i, vol + 4);
+        else if (cMouse::instance()->clickBoxCount(380, 85 + 30 * i, 405, 110 + 30 * i) == -1) {
+            cSound::instance()->setVol(i, vol + 4);
         }
     }
-    DrawStringToHandle(sd.ctrl.mute[Sound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
+    DrawStringToHandle(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
         sd.obj.upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
-    return;
 }
 
 void Config::update() {
     cScene::update();
     if (isBoxClicked(355, 175, 380, 200)) {
-        Sound::instance()->playSE(1);
-        Sound::instance()->setBgmPlayMode(
-            (Sound::instance()->bgmPlayMode() - 1 + Sound::PlayMode::NUM) % Sound::PlayMode::NUM);
+        cSound::instance()->playSE(1);
+        cSound::instance()->setBgmPlayMode(
+            (cSound::instance()->bgmPlayMode() - 1 + cSound::PlayMode::NUM) % cSound::PlayMode::NUM);
     }
     else if (isBoxClicked(380, 175, 405, 200)) {
-        Sound::instance()->playSE(1);
-        Sound::instance()->setBgmPlayMode(
-            (Sound::instance()->bgmPlayMode() + 1) % Sound::PlayMode::NUM);
+        cSound::instance()->playSE(1);
+        cSound::instance()->setBgmPlayMode(
+            (cSound::instance()->bgmPlayMode() + 1) % cSound::PlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
     else if (ctrlRQ(sd.ctrl.back)) mNextScene = mNowScene;
     else if (ctrlRQ(sd.ctrl.window[sd.window])) set();
     else if (ctrlRQ(sd.ctrl.reset)) reset();
-    return;
+    else if (mNowScene >= PLAYER_SELECT && ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;
+    else if (mNowScene >= GAME_SELECT && ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;
+    else if (mNowScene >= HOME && ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
 }

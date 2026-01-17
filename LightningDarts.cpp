@@ -36,10 +36,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         case cScene::CONFIG: scene = new Config(scene->currentScene(), scene->shareData()); break;
         case cScene::HOME:          scene = new Home(scene->shareData());                   break;
         case cScene::GAME_SELECT:   scene = new GameSelect(scene->shareData());             break;
-        case cScene::PLAYER_SELECT: scene = new PlayerSelect(scene->shareData());           break;
+        case cScene::PLAYER_SELECT: scene = new sPlayerSelect(scene->shareData());           break;
         case cScene::GAME_START:    scene = new cGameStart(scene->shareData());             break;
         case cScene::ZERO_ONE:      scene = new ZeroOne(scene->shareData());                break;
-        case cScene::STANDARD_CRICKET: scene = new StandardCricket(scene->shareData());     break;
+        case cScene::STANDARD_CRICKET: scene = new cStandardCricket(scene->shareData());     break;
         case cScene::COUNT_UP:      scene = new CountUp(scene->shareData());                break;
         case cScene::QUIT:          delete scene; return 0;
         default: return -1;

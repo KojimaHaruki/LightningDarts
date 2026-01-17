@@ -1,15 +1,16 @@
 #pragma once
 #include "Scene.hpp"
 
-class StandardCricket : public cScene {
+class cStandardCricket : public cScene {
 public:
-	StandardCricket(ShareData shareData);
-	~StandardCricket() {}
+	cStandardCricket(ShareData shareData);
+	~cStandardCricket() {}
 
 	// Functions
 	void reset();
 	void draw();
 	void update();
+	void remember(int attempt);
 	void record();
 	void checkPosFill(int pos);
 	bool addDamage(int pos, int damage);
