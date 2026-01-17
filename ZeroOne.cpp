@@ -11,16 +11,17 @@
 ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = ZERO_ONE;
 	sd = shareData;
+	nTeam = sd.teams.size();
 	arrowImage = cDarts::instance()->arrowImage();
-	sd.ctrl.skip.icon.box.setLowerRight(sd.screen.center().x() + 10, sd.obj.lowerFrame.top());
+	sd.ctrl.skip.icon.box.setLowerRight(screenBox.center().x() + 10, sd.obj.lowerFrame.top());
 	reset();
 	for (int point = 0; point < 21; point++) cDarts::instance()->setPointValidation(point, true);
-	if (sd.teams.size() <= 4) {
+	if (nTeam <= 4) {
 		space = 4;
 		nRound = 9;
 		nScore = nRound + 1;
-		for (int team = 0, x = sd.screen.right() - 400, y = sd.obj.upperFrame.bottom() + space;
-			team < sd.teams.size(); team++, x += 100, y = sd.obj.upperFrame.bottom() + space) {
+		for (int team = 0, x = screenBox.right() - 400, y = sd.obj.upperFrame.bottom() + space;
+			team < nTeam; team++, x += 100, y = sd.obj.upperFrame.bottom() + space) {
 			teamBox[team].setSize(
 				100, 100 + cTeam::instance()->type() * 100 + nScore * (MfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
@@ -33,16 +34,16 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 		space = 2;
 		nRound = 7;
 		nScore = nRound + 1;
-		for (int player = 0; player < sd.teams.size(); player++) {
+		for (int player = 0; player < nTeam; player++) {
 			sd.teams.at(player).members.at(0).image.box.setSize(100, 70);
 			teamBox[player].setSize(100,
 				sd.teams.at(player).members.at(0).image.box.size().y() + nScore * (SfontSize + space));
 		}
 		for (int player = 0; player < 4; player++) {
 			sd.teams.at(player).members.at(0).image.box.setUpperLeft(
-				sd.screen.right() + 100 * (player - 4), sd.obj.upperFrame.bottom() + space);
+				screenBox.right() + 100 * (player - 4), sd.obj.upperFrame.bottom() + space);
 			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box.upperLeft());
-			if (player + 4 < sd.teams.size()) {
+			if (player + 4 < nTeam) {
 				sd.teams.at(player + 4).members.at(0).image.box.setUpperLeft(
 					teamBox[player].left(), teamBox[player].bottom() + MfontSize + space);
 				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box.upperLeft());
@@ -59,8 +60,8 @@ void ZeroOne::reset() {
 	maxAttempt = 0;
 	now = {};
 	now.arrow = 3;
-	for (int playerNo = 0; playerNo < sd.teams.size(); playerNo++) {
-		now.teamRemain[playerNo] = initPoint[mGameMode];
+	for (int playerNo = 0; playerNo < nTeam; playerNo++) {
+		now.teamRemain[playerNo] = INIT_POINT[mGameMode];
 		now.rank[playerNo] = playerNo;
 	}
 }
@@ -70,7 +71,7 @@ void ZeroOne::draw() {
 	drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
 	drawImage(sd.ctrl.skill.icon);
 	cDarts::instance()->timer().drawLapseTime(
-		sd.screen.left(), sd.obj.upperFrame.bottom() + 10, white, Sfont, Timer::Mode::HMSmS);
+		screenBox.left(), sd.obj.upperFrame.bottom() + 10, white, Sfont, Timer::Mode::HMSmS);
 	DrawStringToHandle(
 		sd.ctrl.mute[0].icon.box.right() + 5, sd.obj.upperFrame.center().y() - MfontSize / 2,
 		(cGame::instance()->modeName() + " / " + cTeam::instance()->typeName()).c_str(),
@@ -88,18 +89,18 @@ void ZeroOne::draw() {
 	drawImage(sd.ctrl.init.icon);
 	drawImage(sd.ctrl.reset.icon);
 	drawImage(sd.ctrl.bgm.icon);
-	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
+	DrawFormatStringToHandle(screenBox.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
 		white, Mfont, "Turn%3d", now.round + 1);
-	DrawFormatStringToHandle(sd.screen.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
+	DrawFormatStringToHandle(screenBox.center().x() - 80, sd.obj.upperFrame.bottom() + 10,
 		white, Mfont, "Turn%3d", now.round + 1);
 	int recordNo = 0;
 	sChara chara;
-	if (sd.teams.size() <= 4) {
-		DrawBox(sd.screen.center().x() + 10, teamBox[0].top(),
-			teamBox[sd.teams.size() - 1].right(), teamBox[0].bottom(), tableColor, TRUE);
+	if (nTeam <= 4) {
+		DrawBox(screenBox.center().x() + 10, teamBox[0].top(),
+			teamBox[nTeam - 1].right(), teamBox[0].bottom(), tableColor, TRUE);
 		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
 			teamBox[now.team].right(), teamBox[now.team].bottom(), white, TRUE);
-		for (int team = 0; team < sd.teams.size(); team++) {
+		for (int team = 0; team < nTeam; team++) {
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
 				chara = sd.teams.at(team).members.at(member);
 				drawImage(chara.image);
@@ -142,23 +143,23 @@ void ZeroOne::draw() {
 			recordNo = now.round - nRound + 1;
 		}
 		for (int i = 0; recordNo <= now.round; i++, recordNo++) {
-			DrawFormatStringToHandle(sd.screen.center().x() + 16,
+			DrawFormatStringToHandle(screenBox.center().x() + 16,
 				y + space / 2 + i * (MfontSize + space),
 				white, Mfont, "%2d", recordNo + 1);
 		}
 		for (int recordNo = 0, posY = 0; recordNo < nScore; recordNo++) {
 			posY = y + recordNo * (MfontSize + space);
-			DrawLine(sd.screen.center().x() + 10, posY, teamBox[sd.teams.size() - 1].right(), posY, black);
+			DrawLine(screenBox.center().x() + 10, posY, teamBox[nTeam - 1].right(), posY, black);
 		}
 	}
 	else {
-		DrawBox(sd.screen.center().x() + 10, teamBox[0].top(),
+		DrawBox(screenBox.center().x() + 10, teamBox[0].top(),
 			teamBox[3].right(), teamBox[0].bottom(), tableColor, TRUE);
-		DrawBox(sd.screen.center().x() + 10, teamBox[4].top(),
-			teamBox[sd.teams.size() - 1].right(), teamBox[4].bottom(), tableColor, TRUE);
+		DrawBox(screenBox.center().x() + 10, teamBox[4].top(),
+			teamBox[nTeam - 1].right(), teamBox[4].bottom(), tableColor, TRUE);
 		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
 			teamBox[now.team].right(), teamBox[now.team].bottom(), white, TRUE);
-		for (int team = 0; team < sd.teams.size(); team++) {
+		for (int team = 0; team < nTeam; team++) {
 			chara = sd.teams.at(team).members.at(0);
 			DrawRotaGraph(chara.image.box.center().x(), chara.image.box.center().y(),
 				0.7, 0.0, chara.image.handle, TRUE);
@@ -195,9 +196,9 @@ void ZeroOne::draw() {
 		}
 		for (int pointNo = 0, y = 0; pointNo < nScore; pointNo++) {
 			y = sd.teams.at(0).members.at(0).image.box.bottom() + pointNo * (SfontSize + space);
-			DrawLine(sd.screen.center().x() + 10, y, teamBox[3].right(), y, black);
+			DrawLine(screenBox.center().x() + 10, y, teamBox[3].right(), y, black);
 			y = sd.teams.at(4).members.at(0).image.box.bottom() + pointNo * (SfontSize + space);
-			DrawLine(sd.screen.center().x() + 10, y, teamBox[sd.teams.size() - 1].right(), y, black);
+			DrawLine(screenBox.center().x() + 10, y, teamBox[nTeam - 1].right(), y, black);
 		}
 		for (int i = 0; i < 2; i++) {
 			chara = sd.teams.at(4 * i).members.at(0);
@@ -208,7 +209,7 @@ void ZeroOne::draw() {
 				recordNo = now.round - nRound + 1;
 			}
 			for (int j = 0; recordNo <= now.round; j++, recordNo++) {
-				DrawFormatStringToHandle(sd.screen.center().x() + 12,
+				DrawFormatStringToHandle(screenBox.center().x() + 12,
 					chara.image.box.bottom() + space / 2 + j * (SfontSize + space),
 					white, Sfont, "%2d", recordNo + 1);
 			}
@@ -217,9 +218,9 @@ void ZeroOne::draw() {
 	chara = sd.teams.at(now.team).members.at(now.member);
 	for (int arrow = 0, x = chara.image.box.right(), y = chara.image.box.top(); arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, arrowImage, TRUE);
-	DrawBox(sd.screen.center().x() + 10, teamBox[0].bottom(),
-		sd.screen.right(), teamBox[0].bottom() + 2 * space + MfontSize, pressColor, TRUE);
-	DrawStringToHandle(sd.screen.center().x() + 120, teamBox[0].bottom() + space,
+	DrawBox(screenBox.center().x() + 10, teamBox[0].bottom(),
+		screenBox.right(), teamBox[0].bottom() + 2 * space + MfontSize, pressColor, TRUE);
+	DrawStringToHandle(screenBox.center().x() + 120, teamBox[0].bottom() + space,
 		(chara.name + ", throw darts!").c_str(), white, Mfont);
 }
 
@@ -252,20 +253,20 @@ void ZeroOne::update() {
 			now.arrow = 0;
 		}
 		if (!now.teamRemain[now.team]) {
-			now.isPlayerFin[now.team] = true;
+			now.isTeamFin[now.team] = true;
 			now.arrow = 0;
 			now.rank[now.team] = now.finRank;
 			now.finRank++;
-			if (now.finRank == sd.teams.size()) {
+			if (now.finRank == nTeam) {
 				now.isGameFin = true;
 			}
 		}
-		for (int player = 0; player < sd.teams.size(); player++) {
-			if (!now.isPlayerFin[player]) {
+		for (int player = 0; player < nTeam; player++) {
+			if (!now.isTeamFin[player]) {
 				now.rank[player] = 0;
-				for (int opponent = (player + 1) % sd.teams.size(); opponent != player;
-					opponent = (opponent + 1) % sd.teams.size()) {
-					if (now.teamRemain[player] > now.teamRemain[opponent] || now.isPlayerFin[opponent] ||
+				for (int opponent = (player + 1) % nTeam; opponent != player;
+					opponent = (opponent + 1) % nTeam) {
+					if (now.teamRemain[player] > now.teamRemain[opponent] || now.isTeamFin[opponent] ||
 						(now.teamRemain[player] == now.teamRemain[opponent] && player > opponent)) {
 						now.rank[player]++;
 					}
@@ -283,15 +284,15 @@ void ZeroOne::update() {
 			now.arrow = 0;
 		}
 		if (now.arrow < 1) {
-			for (int i = 0; i < sd.teams.size(); i++) {
+			for (int i = 0; i < nTeam; i++) {
 				now.team++;
-				if (now.team >= sd.teams.size()) {
+				if (now.team >= nTeam) {
 					now.team = 0;
 					now.member++;
 					now.round++;
 					if (now.round >= MAX_ROUND) {
 						now.round = MAX_ROUND - 1;
-						for (int playerNo = 0; playerNo < sd.teams.size(); playerNo++) {
+						for (int playerNo = 0; playerNo < nTeam; playerNo++) {
 							for (int recordNo = 0; recordNo < MAX_ROUND - 1; recordNo++) {
 								now.teamRoundScore[playerNo][recordNo] = now.teamRoundScore[playerNo][recordNo + 1];
 							}
@@ -302,7 +303,7 @@ void ZeroOne::update() {
 				if (now.member >= sd.teams.at(now.team).members.size()) {
 					now.member = 0;
 				}
-				if (!now.isPlayerFin[now.team]) {
+				if (!now.isTeamFin[now.team]) {
 					now.arrow = 3;
 					break;
 				}
@@ -332,9 +333,9 @@ void ZeroOne::update() {
 }
 
 void ZeroOne::fin() {
-	sd.ctrl.skip.icon.box.setLowerRight(sd.screen.right(), sd.obj.lowerFrame.top());
-	if (sd.teams.size() > 4) {
-		for (int player = 0; player < sd.teams.size(); player++) {
+	sd.ctrl.skip.icon.box.setLowerRight(screenBox.right(), sd.obj.lowerFrame.top());
+	if (nTeam > 4) {
+		for (int player = 0; player < nTeam; player++) {
 			sd.teams.at(player).members.at(0).image.box.setSize(100, 100);
 		}
 	}

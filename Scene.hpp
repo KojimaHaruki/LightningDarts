@@ -5,18 +5,18 @@
 #include "Timer.hpp"
 #include <iostream>
 #include <vector>
+#include "Team.hpp"
 
 class cScene {
 public:
     static constexpr int MAX_CHARA_NUM = 28;
     static constexpr int MAX_GROUP_NUM = 10;
-    static constexpr int MAX_PLAYER_NUM = 8;
-    static constexpr int MAX_TEAM_NUM = 4;
-    static constexpr int SOLO_MEMBER_NUM = 1;
-    static constexpr int DUO_MEMBER_NUM = 2;
 protected:
     // Scene
     int mNowScene, mNextScene;
+
+    // Screen
+    cBox screenBox;
 
     // Time
     const std::string wday[7] = { "Sun","Mon","Tue","Wed","Thu", "Fri","Sat" };
@@ -73,8 +73,8 @@ protected:
 	// Color
     unsigned int white = 0U, black = 0U, gray = 0U,
 		red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
-        touchColor = 0U, pressColor = 0U, executeColor = 0U, teamColor[cScene::MAX_PLAYER_NUM] = {},
-        rankColor[MAX_PLAYER_NUM] = {};
+        touchColor = 0U, pressColor = 0U, executeColor = 0U, teamColor[cTeam::MAX_SOLO_PLAYER_NUM] = {},
+        rankColor[cTeam::MAX_SOLO_PLAYER_NUM] = {};
 
     // Font
 	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
@@ -110,11 +110,15 @@ protected:
     };
 
     // Darts
-    const std::string rankName[MAX_PLAYER_NUM] = { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th" };
+    const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = { 
+        "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th" 
+    };
+
+    // Team
+    int nTeam = 0;
 
     struct ShareData {
         int window = FALSE;
-        cBox screen;
         sCtrlKind ctrl;
         PictureKind pic;
         sScreenObjKind obj;
@@ -122,11 +126,6 @@ protected:
         int SkillEffectMode = TRUE;
     }; ShareData sd;
     const char* ShareDataFileName = "ShareData.dat";
-    // SaveData
-    struct ConfigData {
-        sCharaStatus cs[MAX_CHARA_NUM];
-    }; ConfigData cd;
-    const char* ConfigDataFileName = "ConfigData.dat";
 
     // Functions
     void loadColor();

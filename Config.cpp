@@ -28,7 +28,7 @@ void Config::set() {
     ctrl = sd.ctrl;
     ctrl.bgm.icon.box.setUpperLeft(10, 210);
     ctrl.bgm.key.image.box.setUpperLeft(200, 210);
-    int iconX[2] = { sd.screen.center().x() + 5, sd.screen.center().x() + 5 + sd.screen.width() / 4 };
+    int iconX[2] = { screenBox.center().x() + 5, screenBox.center().x() + 5 + screenBox.width() / 4 };
     int keyX[2] = {};
     for (int i = 0; i < 2; i++) keyX[i] = iconX[i] + 150;
     ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.bottom() + XLfontSize + 5);
@@ -96,7 +96,7 @@ void Config::draw() {
     draw(ctrl.forward);
     // music setting 
     DrawStringToHandle(5, 25, "Sound", white, XLfont);
-    DrawStringToHandle(sd.screen.center().x(), 25, "System", white, XLfont);
+    DrawStringToHandle(screenBox.center().x(), 25, "System", white, XLfont);
     DrawStringToHandle(10, 180, ("Play mode: " + cSound::instance()->bgmPlayModeName()).c_str(),
         white, Mfont);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);

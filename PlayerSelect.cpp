@@ -10,29 +10,33 @@
 sPlayerSelect::sPlayerSelect(ShareData shareData) {
     sd = shareData;
     mNowScene = PLAYER_SELECT;
-    players.clear();
-    for (int team = 0, player = 0; team < sd.teams.size() && player < MAX_PLAYER_NUM; team++) {
-        for (int member = 0; member < sd.teams.at(team).members.size() && player < MAX_PLAYER_NUM;
-            member++, player++) {
-            players.push_back(sd.teams.at(team).members.at(member));
-        }
-    }
-    playersMem = players;
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++) {
             sd.groups.at(group).members.at(member).image.box.setSize(100, 100);
             sd.groups.at(group).members.at(member).image.box.setUpperLeft(
-                sd.screen.left() + 100 * (chara % 7), sd.obj.upperFrame.bottom() + 100 * (chara / 7));
+                screenBox.left() + 100 * (chara % 7), sd.obj.upperFrame.bottom() + 100 * (chara / 7));
         }
     }
-    for (int team = 0, player = 0; team < MAX_TEAM_NUM && player < MAX_PLAYER_NUM; team++) {
-        for (int member = 0; member < DUO_MEMBER_NUM && player < MAX_PLAYER_NUM; member++, player++) {
+    for (int team = 0, player = 0;
+        team < cTeam::MAX_DUO_TEAM_NUM && player < cTeam::MAX_SOLO_PLAYER_NUM; team++) {
+        for (int member = 0;
+            member < cTeam::DUO_MEMBER_NUM && player < cTeam::MAX_SOLO_PLAYER_NUM; member++, player++) {
             playerBox[player].setSize(100, 100);
             playerBox[player].setUpperLeft(
-                sd.screen.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
+                screenBox.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
         }
     }
+    players.clear();
+    for (int team = 0, player = 0; team < sd.teams.size() && player < cTeam::MAX_SOLO_PLAYER_NUM; team++) {
+        for (int member = 0;
+            member < sd.teams.at(team).members.size() && player < cTeam::MAX_SOLO_PLAYER_NUM;
+            member++, player++) {
+            players.push_back(sd.teams.at(team).members.at(member));
+            players.at(player).image.box = playerBox[player];
+        }
+    }
+    playersMem = players;
     for (int playModeNo = 0; playModeNo < cTeam::sType::NUM; playModeNo++) {
         teamTypeBox[playModeNo].setSize(
             100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
@@ -42,7 +46,7 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
     shuffle.box.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
     shuffle.color = cColor::instance()->cyan();
     sd.ctrl.yes.icon.box.setSize(100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
-    sd.ctrl.yes.icon.box.setLowerLeft(sd.screen.right() - 200, sd.obj.lowerFrame.top());
+    sd.ctrl.yes.icon.box.setLowerLeft(screenBox.right() - 200, sd.obj.lowerFrame.top());
 }
 
 void sPlayerSelect::reset() {
@@ -55,22 +59,16 @@ void sPlayerSelect::reset() {
 
 void sPlayerSelect::draw() {
     cScene::draw();
-    drawImage(sd.ctrl.gameSelect.icon);
+    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon); 
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon); drawImage(sd.ctrl.gameSelect.icon); 
+    drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
     drawImage(sd.ctrl.skip.icon);
-    drawImage(sd.ctrl.home.icon);
-    drawImage(sd.ctrl.back.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
-    drawImage(sd.ctrl.config.icon);
-    drawImage(sd.ctrl.window[sd.window].icon);
-    drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon);
-    drawImage(sd.ctrl.reset.icon);
-    drawImage(sd.ctrl.bgm.icon);
     unsigned int color = white;
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++, color = white) {
-            if (players.size() < MAX_PLAYER_NUM) {
+            if (players.size() < cTeam::MAX_SOLO_PLAYER_NUM) {
                 switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box)) {
                 case Key::RELEASED:
                     color = touchColor; break;
@@ -94,7 +92,7 @@ void sPlayerSelect::draw() {
                 sd.groups.at(group).members.at(member).name.c_str(), color, Sfont);
         }
     }
-    for (int player = 0; player < MAX_PLAYER_NUM; player++) {
+    for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
         div_t result = std::div(player, cTeam::instance()->type() + 1);
         int team = result.quot, member = result.rem;
         drawBoxObj(playerBox[player], teamColor[team]);
@@ -167,18 +165,18 @@ void sPlayerSelect::draw() {
     }
     DrawStringToHandle(sd.ctrl.yes.icon.box.left() + 5,
         sd.ctrl.yes.icon.box.center().y() - MfontSize / 2, "OK!!", color, Mfont);
-    DrawGraph(sd.screen.right() - 140, sd.ctrl.yes.icon.box.center().y() - ICONSIZE_NORMAL.y() / 2,
+    DrawGraph(screenBox.right() - 140, sd.ctrl.yes.icon.box.center().y() - ICONSIZE_NORMAL.y() / 2,
         sd.ctrl.yes.key.image.handle, TRUE);
-    int x = sd.screen.left(), y1 = sd.obj.upperFrame.bottom(), y2 = y1 + 400;
+    int x = screenBox.left(), y1 = sd.obj.upperFrame.bottom(), y2 = y1 + 400;
     for (int i = 0; i < 4; i++, x += 100) DrawLine(x, y1, x, y2, black);
     y2 = sd.obj.lowerFrame.top();
     for (int i = 4; i < 10; i++, x += 100) DrawLine(x, y1, x, y2, black);
     DrawLine(playerBox[0].left(), y1, playerBox[0].left(), y2, black, 2);
-    DrawLine(teamTypeBox[0].left(), y2, sd.screen.right() - 100, y2, black);
-    int x1 = sd.screen.left(), x2 = sd.screen.right();
+    DrawLine(teamTypeBox[0].left(), y2, screenBox.right() - 100, y2, black);
+    int x1 = screenBox.left(), x2 = screenBox.right();
     for (int i = 0, y = sd.obj.upperFrame.bottom(); i <= 4; i++, y += 100)
         DrawLine(x1, y, x2, y, black);
-    DrawStringToHandle(sd.screen.left(), sd.obj.lowerFrame.top() - MfontSize - 15,
+    DrawStringToHandle(screenBox.left(), sd.obj.lowerFrame.top() - MfontSize - 15,
         "Player", white, Mfont);
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
         sd.obj.upperFrame.center().y() - MfontSize / 2,
@@ -230,8 +228,8 @@ void sPlayerSelect::setTeamType(int teamType) {
         for (int player = 0; player < players.size(); player++) {
             sd.teams.push_back(sGroup());
             players.at(player).image.box.setUpperLeft(
-                sd.screen.right() - 200 + 100 * (player % DUO_MEMBER_NUM),
-                sd.obj.upperFrame.bottom() + 100 * (player / DUO_MEMBER_NUM));
+                screenBox.right() - 200 + 100 * (player % cTeam::DUO_MEMBER_NUM),
+                sd.obj.upperFrame.bottom() + 100 * (player / cTeam::DUO_MEMBER_NUM));
             players.at(player).status.rank = player;
             sd.teams.at(player).members.push_back(players.at(player));
         }
@@ -239,9 +237,10 @@ void sPlayerSelect::setTeamType(int teamType) {
     case cTeam::sType::DUO:
         for (int player = 0, team = 0; player < players.size(); team++) {
             sd.teams.push_back(sGroup());
-            for (int member = 0; member < DUO_MEMBER_NUM && player < players.size(); member++, player++) {
+            for (int member = 0;
+                member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
                 players.at(player).image.box.setUpperLeft(
-                    sd.screen.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
+                    screenBox.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
                 players.at(player).status.rank = team + (players.size() / 2) * member;
                 sd.teams.at(team).members.push_back(players.at(player));
             }

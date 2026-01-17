@@ -10,11 +10,13 @@ public:
 	void reset();
 	void draw();
 	void update();
-	void remember(int attempt);
-	void record();
+	bool back();
+	bool forward();
+	bool skip();
+	bool record();
 	void checkPosFill(int pos);
 	bool addDamage(int pos, int damage);
-	void changeTeam();
+	bool changeTeam();
 	void updateRank();
 	void checkTeamFin();
 	void checkGameFin();
@@ -26,7 +28,6 @@ private:
 	static constexpr int POINT_NUM = 8;
 	static constexpr int MAX_POWER = 3;
 	static constexpr int MAX_ATTEMPT = 500;
-	int nTeam = 0;
 	int attempt = 0, maxAttempt = 0;
 	static constexpr int POS_POINT[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
 	struct Memory {
@@ -34,12 +35,12 @@ private:
 		int member = 0;
 		int arrow = 3;
 		int round = 0;
-		int teamPosPower[MAX_PLAYER_NUM][POS_NUM] = {};
-		int teamBill[MAX_PLAYER_NUM] = {};
-		bool isTeamPosFilled[MAX_PLAYER_NUM][POS_NUM] = {};
+		int teamPosPower[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
+		int teamBill[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		bool isTeamPosFilled[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
 		bool isPosFill[POS_NUM] = {};
-		int rank[MAX_PLAYER_NUM];
-		bool isTeamFin[MAX_PLAYER_NUM] = {};
+		int rank[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		bool isTeamFin[cTeam::MAX_SOLO_PLAYER_NUM] = {};
 		bool isGameFin = false;
 	}; Memory now, mem[MAX_ATTEMPT];
 	struct sPosBox {

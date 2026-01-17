@@ -11,27 +11,28 @@
 #include "Color.hpp"
 #include "Font.hpp"
 #include "Game.hpp"
+#include "Screen.hpp"
 namespace fs = std::filesystem;
 
 cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
-mGameMode(cGame::instance()->mode()) {
+mGameMode(cGame::instance()->mode()), screenBox(cScreen::instance()->box()), nTeam(sd.teams.size()) {
     loadColor();
     loadFont();
     timeError = localtime_s(&nowLocalTime, &nowTime);
     ICONSIZE_NORMAL.setXY(25, 25);
     // load team color
-    for (int i = 0; i < MAX_PLAYER_NUM; i++) teamColor[i] = cColor::instance()->teamColor(i);
+    for (int i = 0; i < cTeam::MAX_SOLO_PLAYER_NUM; i++) teamColor[i] = cColor::instance()->teamColor(i);
 }
 
 void cScene::loadColor() {
-    white = cColor::instance()->white(); black = cColor::instance()->black(); 
-    gray = cColor::instance()->gray(); red = cColor::instance()->red(); 
+    white = cColor::instance()->white(); black = cColor::instance()->black();
+    gray = cColor::instance()->gray(); red = cColor::instance()->red();
     green = cColor::instance()->green(); blue = cColor::instance()->blue();
     magenta = cColor::instance()->magenta(); cyan = cColor::instance()->cyan();
     yellow = cColor::instance()->yellow(); tableColor = cColor::instance()->tableColor();
     touchColor = cColor::instance()->touchColor(); pressColor = cColor::instance()->pressColor();
-    executeColor = cColor::instance()->executeColor(); 
-    for (int i = 0; i < MAX_PLAYER_NUM; i++) {
+    executeColor = cColor::instance()->executeColor();
+    for (int i = 0; i < cTeam::MAX_SOLO_PLAYER_NUM; i++) {
         teamColor[i] = cColor::instance()->teamColor(i);
         rankColor[i] = cColor::instance()->rankColor(i);
     }
@@ -62,15 +63,16 @@ void cScene::initCtrlKey() {
 }
 
 void cScene::initScreenSize() {
-    sd.screen.setSize(900, 500); sd.screen.setUpperLeft(0, 0);
+    cScreen::instance()->init();
+    screenBox = cScreen::instance()->box();
     changeWindow(sd.window);
     // set frame
-    sd.obj.upperFrame.setSize(sd.screen.width(), ICONSIZE_NORMAL.y());
-    sd.obj.upperFrame.setUpperLeft(sd.screen.upperLeft());
-    sd.obj.lowerFrame.setSize(sd.screen.width(), ICONSIZE_NORMAL.y());
-    sd.obj.lowerFrame.setLowerLeft(sd.screen.lowerLeft());
+    sd.obj.upperFrame.setSize(screenBox.width(), ICONSIZE_NORMAL.y());
+    sd.obj.upperFrame.setUpperLeft(screenBox.upperLeft());
+    sd.obj.lowerFrame.setSize(screenBox.width(), ICONSIZE_NORMAL.y());
+    sd.obj.lowerFrame.setLowerLeft(screenBox.lowerLeft());
     // set icon
-    sd.ctrl.home.icon.box.setSize(30, 25); sd.ctrl.home.icon.box.setUpperLeft(sd.screen.upperLeft());
+    sd.ctrl.home.icon.box.setSize(30, 25); sd.ctrl.home.icon.box.setUpperLeft(screenBox.upperLeft());
     sd.ctrl.back.icon.box.setSize(ICONSIZE_NORMAL);
     sd.ctrl.back.icon.box.setUpperLeft(sd.ctrl.home.icon.box.upperRight());
     sd.ctrl.forward.icon.box.setSize(ICONSIZE_NORMAL);
@@ -79,7 +81,8 @@ void cScene::initScreenSize() {
         sd.ctrl.mute[i].icon.box.setSize(ICONSIZE_NORMAL);
         sd.ctrl.mute[i].icon.box.setUpperLeft(sd.ctrl.forward.icon.box.upperRight());
     }
-    sd.ctrl.quit.icon.box.setSize(ICONSIZE_NORMAL); sd.ctrl.quit.icon.box.setUpperRight(sd.screen.upperRight());
+    sd.ctrl.quit.icon.box.setSize(ICONSIZE_NORMAL); sd.ctrl.quit.icon.box.setUpperRight(
+        screenBox.upperRight());
     for (int i = 0; i < 2; i++) {
         sd.ctrl.window[i].icon.box.setSize(ICONSIZE_NORMAL);
         sd.ctrl.window[i].icon.box.setUpperRight(sd.ctrl.quit.icon.box.upperLeft());
@@ -99,7 +102,7 @@ void cScene::initScreenSize() {
     sd.ctrl.skip.icon.box.setSize(76, 25);
     sd.ctrl.skip.icon.box.setLowerRight(sd.obj.lowerFrame.upperRight());
     sd.ctrl.init.icon.box.setSize(ICONSIZE_NORMAL);
-    sd.ctrl.init.icon.box.setLowerLeft(sd.screen.lowerLeft());
+    sd.ctrl.init.icon.box.setLowerLeft(screenBox.lowerLeft());
     sd.ctrl.reset.icon.box.setSize(ICONSIZE_NORMAL);
     sd.ctrl.reset.icon.box.setLowerLeft(sd.ctrl.init.icon.box.lowerRight());
     sd.ctrl.bgm.icon.box.setSize(ICONSIZE_NORMAL);
@@ -126,7 +129,7 @@ void cScene::init() {
         DrawStringToHandle(100, 50, "Powered by", white, XLfont);
         DrawGraph(200, 100 + XLfontSize, cpp, TRUE);
         DrawGraph(500, 100 + XLfontSize, dxlib, TRUE);
-        DrawStringToHandle(sd.screen.right() - 180, sd.screen.bottom() - MfontSize - 10,
+        DrawStringToHandle(screenBox.right() - 180, screenBox.bottom() - MfontSize - 10,
             "now loading...", white, Mfont);
         ScreenFlip();
         sd.ctrl.home.name = "Home"; sd.ctrl.back.name = "Back"; sd.ctrl.forward.name = "Forward";
@@ -139,7 +142,8 @@ void cScene::init() {
         // load BGM
         cSound::instance()->load();
         cDarts::instance()->setCenter(
-            sd.screen.left() + 0.25 * sd.screen.width() + 5, sd.screen.center().y());
+            screenBox.left() + 0.25 * screenBox.width() + 5,
+            screenBox.center().y());
     }
     cSound::instance()->initSoundVol();
     StopSound();
@@ -151,7 +155,6 @@ void cScene::init() {
 }
 
 void cScene::changeWindow(int WindowModeFlag) {
-    if (!WindowModeFlag) SetGraphMode(sd.screen.width(), sd.screen.height(), 32); // change screen size
     ChangeWindowMode(WindowModeFlag);
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
@@ -212,7 +215,7 @@ void cScene::changeWindow(int WindowModeFlag) {
                 const fs::directory_entry entry = *iter;
                 std::string extension = entry.path().extension().string();
                 if (extension == ".jpg" || extension == ".png") { // if found file is image,
-                    std::string name = entry.path().filename().string(), 
+                    std::string name = entry.path().filename().string(),
                         path = entry.path().string();
                     name.erase(name.length() - extension.length(), extension.length());
                     sd.groups.at(group).members.push_back(
@@ -227,7 +230,15 @@ void cScene::changeWindow(int WindowModeFlag) {
             std::cout << err.message() << std::endl;
         }
     }
-    
+    if (nTeam > 0) {
+        for (int team = 0; team < sd.teams.size(); team++) {
+            for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
+                sd.teams.at(team).members.at(member).image.handle =
+                    LoadGraph(sd.teams.at(team).members.at(member).path.c_str());
+            }
+        }
+    }
+
     sd.ctrl.left.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG68), "PNG");
     sd.ctrl.right.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG69), "PNG");
     sd.ctrl.skill.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG70), "PNG");
@@ -253,7 +264,7 @@ void cScene::changeWindow(int WindowModeFlag) {
     sd.pic.selected.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG90), "PNG");
     sd.pic.thunder.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG91), "PNG");
     cDarts::instance()->loadImage();
-    sd.window = GetWindowModeFlag(); 
+    sd.window = GetWindowModeFlag();
 }
 
 void cScene::reset() {
@@ -265,15 +276,15 @@ void cScene::draw() {
     DrawStringToHandle(
         sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.center().y() - SfontSize / 2,
         cSound::instance()->playingBGMName().c_str(), white, Sfont);
-    DrawStringToHandle(sd.screen.right() - 340, sd.obj.lowerFrame.center().y() - SfontSize / 2,
+    DrawStringToHandle(screenBox.right() - 340, sd.obj.lowerFrame.center().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
-    DrawCircleAA(sd.screen.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
+    DrawCircleAA(screenBox.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
         SfontSize / 2.0f, 1000, black, FALSE, 3.0f);
-    DrawCircleAA(sd.screen.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
+    DrawCircleAA(screenBox.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
         SfontSize / 2.0f, 1000, yellow, FALSE, 1.0f);
     if (!timeError) {
         DrawFormatStringToHandle(
-            sd.screen.right() - 42, sd.obj.lowerFrame.center().y() - SfontSize / 2,
+            screenBox.right() - 42, sd.obj.lowerFrame.center().y() - SfontSize / 2,
             white, Sfont, "%02d:%02d", nowLocalTime.tm_hour, nowLocalTime.tm_min);
     }
     return;

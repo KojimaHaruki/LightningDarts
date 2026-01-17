@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.hpp"
-#include "Team.hpp"
 
 class sPlayerSelect : public cScene {
 public:
@@ -11,7 +10,7 @@ public:
     void update();
     void setTeamType(int teamType);
 private:
-    cBox playerBox[MAX_PLAYER_NUM], teamTypeBox[cTeam::sType::NUM];
+    cBox playerBox[cTeam::MAX_SOLO_PLAYER_NUM], teamTypeBox[cTeam::sType::NUM];
     sBoxObj shuffle;
 	std::vector<sChara> players, playersMem;
 };

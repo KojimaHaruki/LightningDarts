@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.hpp"
+
 class Home : public cScene {
 public:
     Home();

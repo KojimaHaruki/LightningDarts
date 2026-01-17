@@ -11,13 +11,13 @@ GameSelect::GameSelect(ShareData shareData) {
         category++) {
         gameCategoryBox[category].setSize(230, XLfontSize + 40);
         gameCategoryBox[category].setUpperLeft(
-            sd.screen.left() + sd.screen.width() * category / 3, sd.obj.upperFrame.bottom());
+            screenBox.left() + screenBox.width() * category / 3, sd.obj.upperFrame.bottom());
         for (int categoryMode = 0; 
             categoryMode < cGame::CATEGORY_MODE_NUM[category] && mode < cGame::sMode::NUM; 
             categoryMode++, mode++) {
             gameModeBox[mode].setSize(250, MfontSize + 12);
             gameModeBox[mode].setUpperLeft(gameCategoryBox[category].left() + 15,
-                gameCategoryBox[category].bottom() + sd.screen.height() * categoryMode / 10);
+                gameCategoryBox[category].bottom() + screenBox.height() * categoryMode / 10);
         }
     }
 }
@@ -29,17 +29,11 @@ void GameSelect::reset() {
 
 void GameSelect::draw() {
     cScene::draw();
+    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon); drawImage(sd.ctrl.forward.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon); drawImage(sd.ctrl.config.icon);
+    drawImage(sd.ctrl.window[sd.window].icon); drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
     drawImage(sd.ctrl.skip.icon);
-    drawImage(sd.ctrl.home.icon);
-    drawImage(sd.ctrl.back.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
-    drawImage(sd.ctrl.config.icon);
-    drawImage(sd.ctrl.window[sd.window].icon);
-    drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon);
-    drawImage(sd.ctrl.reset.icon);
-    drawImage(sd.ctrl.bgm.icon);
-    drawImage(sd.ctrl.forward.icon);
     for (int category = 0; category < cGame::sCategory::NUM; category++)
         DrawStringToHandle(gameCategoryBox[category].left() + 5,
             gameCategoryBox[category].center().y() - XLfontSize / 2,

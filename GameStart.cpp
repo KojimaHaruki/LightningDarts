@@ -4,7 +4,6 @@
 #include <numbers>
 #include "Darts.hpp"
 #include "Game.hpp"
-#include "Team.hpp"
 #include "Sound.hpp"
 
 cGameStart::cGameStart(ShareData shareData) {
@@ -12,19 +11,19 @@ cGameStart::cGameStart(ShareData shareData) {
 	mNowScene = GAME_START;
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
-	double theta = M_PI, phi = M_PI / (double)MAX_PLAYER_NUM;
+	double theta = M_PI, phi = M_PI / (double)cTeam::MAX_SOLO_PLAYER_NUM;
 	for (int team = 0; team < sd.teams.size(); team++, theta += 2.0 * M_PI / (double)sd.teams.size()) {
 		if (sd.teams.at(team).members.size() == 1) {
 			sd.teams.at(team).members[0].image.box.setCenter(
-				sd.screen.center().x() + 150.0 * cos(theta), sd.screen.center().y() - 150.0 * sin(theta));
+				screenBox.center().x() + 150.0 * cos(theta), screenBox.center().y() - 150.0 * sin(theta));
 			continue;
 		}
 		sd.teams.at(team).members[0].image.box.setCenter(
-			sd.screen.center().x() + 150.0 * cos(theta + phi),
-			sd.screen.center().y() - 150.0 * sin(theta + phi));
+			screenBox.center().x() + 150.0 * cos(theta + phi),
+			screenBox.center().y() - 150.0 * sin(theta + phi));
 		sd.teams.at(team).members[1].image.box.setCenter(
-			sd.screen.center().x() + 150.0 * cos(theta - phi),
-			sd.screen.center().y() - 150.0 * sin(theta - phi));
+			screenBox.center().x() + 150.0 * cos(theta - phi),
+			screenBox.center().y() - 150.0 * sin(theta - phi));
 	}
 }
 
@@ -59,7 +58,7 @@ void cGameStart::draw() {
 				player.image.box.bottom() - SfontSize - 10, player.name.c_str(), white, Sfont);
 		}
 	}
-	DrawStringToHandle(sd.screen.center().x() - 10, sd.screen.center().y() - MfontSize / 2, "VS",
+	DrawStringToHandle(screenBox.center().x() - 10, screenBox.center().y() - MfontSize / 2, "VS",
 		white, Mfont);
 	DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
 		sd.obj.upperFrame.center().y() - MfontSize / 2,

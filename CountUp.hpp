@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.hpp"
+
 class CountUp : public cScene {
 public:
 	CountUp(ShareData shareData);
@@ -19,13 +20,12 @@ private:
 		int member = 0;
 		int arrow = 3;
 		int round = 0;
-		int teamRoundScore[MAX_PLAYER_NUM][ROUND_NUM] = {};
-		int teamScore[MAX_PLAYER_NUM] = {};
-		int rank[MAX_PLAYER_NUM] = {};
+		int teamRoundScore[cTeam::MAX_SOLO_PLAYER_NUM][ROUND_NUM] = {};
+		int teamScore[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		int rank[cTeam::MAX_SOLO_PLAYER_NUM] = {};
 		bool isGameFin = false;
 	}; RecordData now, record[MAX_ATTEMPT];
-	cBox teamBox[MAX_PLAYER_NUM];
-	int space;
-	static constexpr int pointArray[21] = { 11, 8, 16, 7, 19, 3, 17, 2, 15, 10, 6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11 };
+	cBox teamBox[cTeam::MAX_SOLO_PLAYER_NUM];
+	int space = 0;
 	static constexpr int CRICKET_NUMBER_SCORE[CRICKET_NUMBER_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
 };

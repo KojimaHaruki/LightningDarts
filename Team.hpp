@@ -11,6 +11,10 @@ public:
         static constexpr int DUO = 1;
         static constexpr int NUM = 2;
     };
+    static constexpr int SOLO_MEMBER_NUM = 1;
+    static constexpr int DUO_MEMBER_NUM = 2;
+    static constexpr int MAX_SOLO_PLAYER_NUM = 8;
+    static constexpr int MAX_DUO_TEAM_NUM = 4;
     // Functions
     void init() { mType = sType::SOLO; }
     bool setType(int type) {
