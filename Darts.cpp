@@ -100,13 +100,13 @@ void cDarts::draw() {
 
 bool cDarts::updateByKeyboard() {
     // check inner bull
-    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::INNER_BULL]) == Key::RELEASEDtoPRESSED) {
+    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::INNER_BULL]) == sKey::RELEASEDtoPRESSED) {
 		mRadialPos = sRadialPos::INNER_BULL; mPoint = 25; mPower = 2; mTotalPoint = 50; mIsThrowed = true;
         return true;
     }
 
     // check outer bull
-    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::OUTER_BULL]) == Key::RELEASEDtoPRESSED) {
+    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::OUTER_BULL]) == sKey::RELEASEDtoPRESSED) {
         mRadialPos = sRadialPos::OUTER_BULL; mPoint = 25; mPower = 1; mIsThrowed = true;
         if (cGame::instance()->category() == cGame::sCategory::CRICKET) {
             mTotalPoint = 25; return true;
@@ -116,20 +116,20 @@ bool cDarts::updateByKeyboard() {
     }
 
     // check miss
-    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::MISS]) == Key::RELEASEDtoPRESSED) {
+    if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::MISS]) == sKey::RELEASEDtoPRESSED) {
         mIsThrowed = true; return true;
     }
     
     // check points 1 to 20
     for (int point = 1; point <= 20; point++) {
-        if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[point]) == Key::RELEASEDtoPRESSED) {
-            if (cKeyboard::instance()->pressKeyState(KEY_INPUT_D) == Key::PRESSED) {
+        if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[point]) == sKey::RELEASEDtoPRESSED) {
+            if (cKeyboard::instance()->pressKeyState(KEY_INPUT_D) == sKey::PRESSED) {
                 mRadialPos = sRadialPos::DOUBLE; mPower = 2;
             }
-            else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_T) == Key::PRESSED) {
+            else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_T) == sKey::PRESSED) {
                 mRadialPos = sRadialPos::TRIPLE; mPower = 3;
             }
-            else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_O) == Key::PRESSED) {
+            else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_O) == sKey::PRESSED) {
                 mRadialPos = sRadialPos::OUTER_SINGLE; mPower = 1;
             }
             else {
@@ -150,7 +150,7 @@ void cDarts::updateByMouse() {
     for (int radialPosNo = sRadialPos::INNER_BULL; radialPosNo < sRadialPos::NUM; radialPosNo++) {
         if (r < sRadialPos::RADIUS[radialPosNo]) {
             mRadialPos = radialPosNo; mPower = sRadialPos::POWER[radialPosNo];
-            if (cMouse::instance()->clickState() == Key::PRESSEDtoRELEASED) {
+            if (cMouse::instance()->clickState() == sKey::PRESSEDtoRELEASED) {
                 mIsThrowed = true;
                 break;
             }

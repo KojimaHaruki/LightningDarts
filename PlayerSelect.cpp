@@ -79,11 +79,11 @@ void sPlayerSelect::draw() {
             member++, chara++, color = white) {
             if (players.size() < cTeam::MAX_SOLO_PLAYER_NUM) {
                 switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box())) {
-                case Key::RELEASED:
+                case sKey::RELEASED:
                     color = touchColor; break;
-                case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+                case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
                     color = pressColor; break;
-                case Key::PRESSEDtoRELEASED:
+                case sKey::PRESSEDtoRELEASED:
                     color = executeColor; players.push_back(sd.groups.at(group).members.at(member));
                     setTeamType(cTeam::instance()->type()); playersMem = players; break;
                 default:
@@ -131,11 +131,11 @@ void sPlayerSelect::draw() {
         color = white;
         if (teamType != cTeam::instance()->type() && players.size() > teamType) {
             switch (cMouse::instance()->clickBoxState(teamTypeBox[teamType])) {
-            case Key::RELEASED:
+            case sKey::RELEASED:
                 color = touchColor; break;
-            case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+            case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
                 color = pressColor; break;
-            case Key::PRESSEDtoRELEASED:
+            case sKey::PRESSEDtoRELEASED:
                 color = executeColor; setTeamType(teamType); break;
             default: break;
             }
@@ -150,11 +150,11 @@ void sPlayerSelect::draw() {
     shuffle.draw();
     color = white;
     switch (cMouse::instance()->clickBoxState(shuffle)) {
-    case Key::RELEASED:
+    case sKey::RELEASED:
         color = touchColor; break;
-    case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+    case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
         color = pressColor; break;
-    case Key::PRESSEDtoRELEASED:
+    case sKey::PRESSEDtoRELEASED:
         if (players.size() > 0) {
             color = executeColor;
             std::mt19937_64 get_random_mt(std::random_device{}());
@@ -170,11 +170,11 @@ void sPlayerSelect::draw() {
     sd.ctrl.yes.icon.box().draw();
     color = white;
     switch (cMouse::instance()->clickBoxState(sd.ctrl.yes.icon.box())) {
-    case Key::RELEASED:
+    case sKey::RELEASED:
         color = touchColor; break;
-    case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+    case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
         color = pressColor; break;
-    case Key::PRESSEDtoRELEASED:
+    case sKey::PRESSEDtoRELEASED:
         if (players.size() > 0) { color = executeColor; } break;
     default: break;
     }

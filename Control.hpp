@@ -7,37 +7,53 @@ class cControl : public Singleton<cControl> {
     cControl() {}
     friend class Singleton<cControl>;
 public:
-    // key
-    struct sKey {
-        cImage image;
-        int code = 0;
-    };
+    static constexpr int DEFAULT_ICON_WIDTH = 25;
+    static constexpr int DEFAULT_ICON_HEIGHT = 25;
+
+    static constexpr int LEFT = 0;
+    static constexpr int RIGHT = 1;
+    static constexpr int DOWN = 2;
+    static constexpr int UP = 3;
+    static constexpr int SKILL = 4;
+    static constexpr int HOME = 5;
+    static constexpr int GAME_SELECT = 6;
+    static constexpr int PLAYER_SELECT = 7;
+    static constexpr int RESET = 8;
+    static constexpr int INITIALIZE = 9;
+    static constexpr int SKIP = 10;
+    static constexpr int QUIT = 11;
+    static constexpr int CONFIG = 12;
+    static constexpr int CHANGE_BGM = 13;
+    static constexpr int ANOTHER_WINDOW = 14;
+    static constexpr int MAXIMIZE_WINDOW = 15;
+    static constexpr int MUTE = 16;
+    static constexpr int UNMUTE = 17;
+    static constexpr int PAUSE = 18;
+    static constexpr int RESUME = 19;
+    static constexpr int BACK = 20;
+    static constexpr int FORWARD = 21;
+    static constexpr int START = 22;
+    static constexpr int YES = 23;
+    static constexpr int NO = 24;
+    static constexpr int NUM = 25;
+
+    cImage icon(int ctrl) { return mCtrl[ctrl].icon; }
+    cBox& iconBox(int ctrl) { return mCtrl[ctrl].icon.box(); }
+    // Functions
+    void init();
+    void loadName();
+    void initKey();
+    void loadIcon();
+    void reloadIcon();
+    void initIconBox();
+    bool isRequested(int ctrl);
+private:
 
     // data
     struct sData {
-        sKey key;
+        int keyCode = 0;
         cImage icon;
-        std::string name;
+        std::string name = {};
     };
-    sData left, right, down, up, skill, home, gameSelect, playerSelect, reset,
-        init, skip, quit, config, bgm, window[2], mute[2], pause[2], back, forward, start, yes, no;
-
-    // Functions
-    void resetKey() {
-        home.key.code = KEY_INPUT_H;      back.key.code = KEY_INPUT_BACK;
-        forward.key.code = KEY_INPUT_RETURN; quit.key.code = KEY_INPUT_ESCAPE;
-        config.key.code = KEY_INPUT_C;      skill.key.code = KEY_INPUT_E;
-        skip.key.code = KEY_INPUT_S;      init.key.code = KEY_INPUT_I;
-        gameSelect.key.code = KEY_INPUT_G; playerSelect.key.code = KEY_INPUT_P;
-        reset.key.code = KEY_INPUT_R; bgm.key.code = KEY_INPUT_B;
-        left.key.code = KEY_INPUT_LEFT;   right.key.code = KEY_INPUT_RIGHT;
-        up.key.code = KEY_INPUT_UP;     down.key.code = KEY_INPUT_DOWN;
-        start.key.code = KEY_INPUT_SPACE;  yes.key.code = KEY_INPUT_Y;
-        no.key.code = KEY_INPUT_N;
-        for (int i = 0; i < 2; i++) {
-            mute[i].key.code = KEY_INPUT_M;
-            window[i].key.code = KEY_INPUT_W;
-            pause[i].key.code = KEY_INPUT_PAUSE;
-        }
-    }
+    sData mCtrl[NUM];
 };

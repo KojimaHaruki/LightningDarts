@@ -22,21 +22,21 @@ bool cKeyboard::update() {
     for (int i = 0; i < KEY_NUM; i++) {
         if (nowKeyStatus[i]) { // if key is pressed,
             if (mPressKeyCount[i] < 0) { // if key is released before,
-                mPressKeyState[i] = Key::RELEASEDtoPRESSED;
+                mPressKeyState[i] = sKey::RELEASEDtoPRESSED;
                 mPressKeyCount[i] = 1;
             }
             else { // if key is pressed before,
-                mPressKeyState[i] = Key::PRESSED;
+                mPressKeyState[i] = sKey::PRESSED;
                 mPressKeyCount[i]++;
             }
         }
         else { // if key is released,
             if (mPressKeyCount[i] > 0) { // if key is pressed before,
-                mPressKeyState[i] = Key::PRESSEDtoRELEASED;
+                mPressKeyState[i] = sKey::PRESSEDtoRELEASED;
                 mPressKeyCount[i] = -1;
             }
             else { // if key is released before,
-                mPressKeyState[i] = Key::RELEASED;
+                mPressKeyState[i] = sKey::RELEASED;
                 mPressKeyCount[i]--;
             }
         }

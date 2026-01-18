@@ -42,11 +42,11 @@ void GameSelect::draw() {
     unsigned int color = white;
     for (int game = 0; game < cGame::sMode::NUM; game++, color = white) {
         switch (cMouse::instance()->clickBoxState(gameModeBox[game])) {
-        case Key::RELEASED:
+        case sKey::RELEASED:
             color = touchColor; break;
-        case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+        case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
             color = pressColor; break;
-        case Key::PRESSEDtoRELEASED:
+        case sKey::PRESSEDtoRELEASED:
             cGame::instance()->setMode(game); mNextScene = PLAYER_SELECT; break;
         default: break;
         }

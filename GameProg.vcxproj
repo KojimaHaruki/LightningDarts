@@ -162,6 +162,7 @@
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Control.cpp" />
     <ClCompile Include="CountUp.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Team.hpp" />

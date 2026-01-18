@@ -3,6 +3,7 @@
 #include "Singleton.hpp"
 #include "Box.hpp"
 #include "Key.hpp"
+#include "DxLib.h"
 
 class cMouse : public Singleton<cMouse> {
     cMouse() {}

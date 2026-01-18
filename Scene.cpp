@@ -287,7 +287,7 @@ void cScene::update() {
     }
     else if (ctrlRQ(sd.ctrl.window[sd.window])) changeWindow((sd.window + 1) % 2);
     else if (ctrlRQ(sd.ctrl.bgm)) {
-        if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == Key::PRESSED) {
+        if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == sKey::PRESSED) {
             cSound::instance()->playLastBGM();
         }
         else {
@@ -297,11 +297,11 @@ void cScene::update() {
 }
 
 bool cScene::isClicked(cBox box) {
-    return cMouse::instance()->clickBoxState(box) == Key::PRESSEDtoRELEASED;
+    return cMouse::instance()->clickBoxState(box) == sKey::PRESSEDtoRELEASED;
 }
 
 bool cScene::isBoxClicked(int x1, int y1, int x2, int y2) {
-    return cMouse::instance()->clickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
+    return cMouse::instance()->clickBoxState(x1, y1, x2, y2) == sKey::PRESSEDtoRELEASED;
 }
 
 bool cScene::isClicked(cImage image) {
@@ -309,7 +309,7 @@ bool cScene::isClicked(cImage image) {
 }
 
 bool cScene::isKeyTyped(int keyCode) {
-    return cKeyboard::instance()->pressKeyState(keyCode) == Key::RELEASEDtoPRESSED;
+    return cKeyboard::instance()->pressKeyState(keyCode) == sKey::RELEASEDtoPRESSED;
 }
 
 bool cScene::isTyped(sCtrl ctrl) {

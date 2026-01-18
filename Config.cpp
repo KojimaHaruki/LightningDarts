@@ -106,10 +106,10 @@ void Config::draw() {
         DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle(), TRUE);
         DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle(), TRUE);
         switch (cMouse::instance()->clickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
-        case Key::RELEASED:
+        case sKey::RELEASED:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, touchColor, TRUE);
             break;
-        case Key::RELEASEDtoPRESSED: case Key::PRESSED:
+        case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, pressColor, TRUE);
             cSound::instance()->setVol(i, cMouse::instance()->x() - 100);
             break;
