@@ -66,25 +66,25 @@ HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), s
 				100, 100 + cTeam::instance()->type() * 100 + POINT_NUM * (SfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
-				sd.teams.at(team).members[member].image.box.setUpperLeft(x, y);
+				sd.teams.at(team).members[member].image.box().setUpperLeft(x, y);
 			}
 		}
 	}
 	else {
 		space = 2;
 		for (int player = 0; player < nTeam; player++) {
-			sd.teams.at(player).members.at(0).image.box.setSize(100, 70);
+			sd.teams.at(player).members.at(0).image.box().setSize(100, 70);
 			teamBox[player].setSize(100,
-				sd.teams.at(player).members.at(0).image.box.size().y() + POINT_NUM * (SfontSize + space));
+				sd.teams.at(player).members.at(0).image.box().size().y() + POINT_NUM * (SfontSize + space));
 		}
 		for (int player = 0; player < 4; player++) {
-			sd.teams.at(player).members.at(0).image.box.setUpperLeft(
+			sd.teams.at(player).members.at(0).image.box().setUpperLeft(
 				screen.right() + 100 * (player - 4), upperFrame.bottom() + space);
-			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box.upperLeft());
+			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box().upperLeft());
 			if (player + 4 < nTeam) {
-				sd.teams.at(player + 4).members.at(0).image.box.setUpperLeft(
+				sd.teams.at(player + 4).members.at(0).image.box().setUpperLeft(
 					teamBox[player].left(), teamBox[player].bottom() + MfontSize + space);
-				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box.upperLeft());
+				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box().upperLeft());
 			}
 		}
 	}
@@ -140,18 +140,18 @@ void HiddenCricket::draw() {
 	cScene::draw();
 
 	// draw icon
-	if (cTimer::instance()->isPaused()) drawImage(sd.ctrl.pause[TRUE].icon);
-	else drawImage(sd.ctrl.pause[FALSE].icon);
-	if (attempt < maxAttempt) drawImage(sd.ctrl.forward.icon);
-	drawImage(sd.ctrl.gameSelect.icon); drawImage(sd.ctrl.playerSelect.icon);
-	drawImage(sd.ctrl.skill.icon); drawImage(sd.ctrl.skip.icon);
+	if (cTimer::instance()->isPaused()) sd.ctrl.pause[TRUE].icon.draw();
+	else sd.ctrl.pause[FALSE].icon.draw();
+	if (attempt < maxAttempt) sd.ctrl.forward.icon.draw();
+	sd.ctrl.gameSelect.icon.draw(); sd.ctrl.playerSelect.icon.draw();
+	sd.ctrl.skill.icon.draw(); sd.ctrl.skip.icon.draw();
 
 	// draw time
 	cTimer::instance()->drawLapseTime(
 		screen.left(), upperFrame.bottom() + 10, white, Sfont, cTimer::Mode::HMSmS);
 
 	// draw game name
-	DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5, upperFrame.center().y() - MfontSize / 2,
+	DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5, upperFrame.center().y() - MfontSize / 2,
 		cGame::instance()->modeName().c_str(), white, Mfont);
 
 	// draw darts board
@@ -172,16 +172,16 @@ void HiddenCricket::draw() {
 			markPart[2].color = teamColor[team];
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
 				chara = sd.teams.at(team).members[member];
-				drawImage(chara.image);
-				DrawStringToHandle(chara.image.box.left() + 5 * max(0, 10 - chara.name.size()),
-					chara.image.box.bottom() - SfontSize - 6, chara.name.c_str(),
+				chara.image.draw();
+				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+					chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(),
 					white, Sfont);
 			}
 			DrawStringToHandle(teamBox[team].left(), teamBox[team].top(), rankName[now.rank[team]].c_str(),
 				white, Mfont);
 			for (int pos = 0; pos < POINT_NUM - 1; pos++) {
-				markPart[2].box.setCenter(chara.image.box.center().x(),
-					chara.image.box.bottom() + (2 * pos + 1) * (SfontSize + space) / 2);
+				markPart[2].box.setCenter(chara.image.box().center().x(),
+					chara.image.box().bottom() + (2 * pos + 1) * (SfontSize + space) / 2);
 				markPart[0].box.setCenter(markPart[2].box.center().x() - 1, markPart[2].box.center().y());
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
@@ -202,13 +202,13 @@ void HiddenCricket::draw() {
 					}
 				}
 			}
-			DrawFormatStringToHandle(chara.image.box.center().x() - 20,
-				chara.image.box.bottom() + 7 * SfontSize + 15 * space / 2,
+			DrawFormatStringToHandle(chara.image.box().center().x() - 20,
+				chara.image.box().bottom() + 7 * SfontSize + 15 * space / 2,
 				white, Mfont, "%4d", now.teamBill[team]);
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box.bottom();
+		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box().bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
 			DrawStringToHandle(screen.center().x() + 12,
 				y + pos * SfontSize + (2 * pos + 1) * space / 2,
@@ -237,16 +237,16 @@ void HiddenCricket::draw() {
 		for (int team = 0; team < nTeam; team++) {
 			markPart[2].color = teamColor[team];
 			chara = sd.teams.at(team).members.at(0);
-			DrawRotaGraph(chara.image.box.center().x(), chara.image.box.center().y(),
-				0.7, 0.0, chara.image.handle, TRUE);
-			DrawStringToHandle(chara.image.box.left(), chara.image.box.top(),
+			DrawRotaGraph(chara.image.box().center().x(), chara.image.box().center().y(),
+				0.7, 0.0, chara.image.handle(), TRUE);
+			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
 				rankName[now.rank[team]].c_str(), white, Sfont);
-			DrawStringToHandle(chara.image.box.left() + 5 * max(0, 10 - chara.name.size()),
-				chara.image.box.bottom() - SfontSize - 6,
+			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+				chara.image.box().bottom() - SfontSize - 6,
 				chara.name.c_str(), white, Sfont);
 			for (int posNo = 0; posNo < POINT_NUM - 1; posNo++) {
-				markPart[2].box.setCenter(chara.image.box.center().x(),
-					chara.image.box.bottom() + (2 * posNo + 1) * (SfontSize + space) / 2);
+				markPart[2].box.setCenter(chara.image.box().center().x(),
+					chara.image.box().bottom() + (2 * posNo + 1) * (SfontSize + space) / 2);
 				markPart[0].box.setCenter(markPart[2].box.center().x() - 1, markPart[2].box.center().y());
 				markPart[1].box.setCenter(markPart[2].box.center().x() + 1, markPart[2].box.center().y());
 				for (int i = 0; i < 3; i++) {
@@ -267,34 +267,34 @@ void HiddenCricket::draw() {
 					}
 				}
 			}
-			DrawFormatStringToHandle(chara.image.box.center().x() - 20,
-				chara.image.box.bottom() + 7 * SfontSize + 15 * space / 2,
+			DrawFormatStringToHandle(chara.image.box().center().x() - 20,
+				chara.image.box().bottom() + 7 * SfontSize + 15 * space / 2,
 				white, Sfont, "%4d", now.teamBill[team]);
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
 		for (int pointPos = 0, y = 0; pointPos < POINT_NUM; pointPos++) {
-			y = sd.teams.at(0).members.at(0).image.box.bottom() + pointPos * (SfontSize + space);
+			y = sd.teams.at(0).members.at(0).image.box().bottom() + pointPos * (SfontSize + space);
 			DrawLine(screen.center().x() + 10, y, teamBox[3].right(), y, black);
-			y = sd.teams.at(4).members.at(0).image.box.bottom() + pointPos * (SfontSize + space);
+			y = sd.teams.at(4).members.at(0).image.box().bottom() + pointPos * (SfontSize + space);
 			DrawLine(screen.center().x() + 10, y, teamBox[nTeam - 1].right(), y, black);
 		}
 		for (int i = 0; i < 2; i++) {
 			chara = sd.teams.at(4 * i).members.at(0);
 			for (int pos = 0; pos < selectPos; pos++) {
 				DrawStringToHandle(screen.center().x() + 12,
-					chara.image.box.bottom() + pos * SfontSize + (2 * pos + 1) * space / 2,
+					chara.image.box().bottom() + pos * SfontSize + (2 * pos + 1) * space / 2,
 					cDarts::instance()->pointName(now.posScore[pos]).c_str(), white, Sfont);
 			}
 			DrawStringToHandle(screen.center().x() + 12,
-				chara.image.box.bottom() + 7 * SfontSize + 15 * space / 2,
+				chara.image.box().bottom() + 7 * SfontSize + 15 * space / 2,
 				"Bill", white, Sfont);
 		}
 	}
 	DrawBox(screen.center().x() + 10, teamBox[0].bottom(),
 		screen.right(), teamBox[0].bottom() + 2 * space + MfontSize, pressColor, TRUE);
 	chara = sd.teams.at(now.team).members.at(now.member);
-	for (int arrow = 0, x = chara.image.box.right(), y = chara.image.box.top();
+	for (int arrow = 0, x = chara.image.box().right(), y = chara.image.box().top();
 		arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, cDarts::instance()->arrowImage(), TRUE);
 	if (selectPos < POS_NUM) {
@@ -316,7 +316,7 @@ void HiddenCricket::update() {
 		totalPoint = cDarts::instance()->totalPoint();
 	if (selectPos < POS_NUM) { // select-a-clicket
 		if (now.posScore[selectPos] > 0) {
-			drawImage(sd.ctrl.forward.icon);
+			sd.ctrl.forward.icon.draw();
 			if (ctrlRQ(sd.ctrl.forward)) {
 				if (now.posScore[selectPos] == 25) {
 					cDarts::instance()->setPointValidation(0, true);
@@ -358,7 +358,7 @@ void HiddenCricket::update() {
 		}
 	}
 	else if (attempt < maxAttempt) {
-		drawImage(sd.ctrl.forward.icon);
+		sd.ctrl.forward.icon.draw();
 		if (ctrlRQ(sd.ctrl.forward)) {
 			attempt++;
 			now = record[attempt];
@@ -512,10 +512,10 @@ void HiddenCricket::update() {
 }
 
 void HiddenCricket::fin() {
-	sd.ctrl.skip.icon.box.setLowerRight(screen.right(), lowerFrame.top());
+	sd.ctrl.skip.icon.box().setLowerRight(screen.right(), lowerFrame.top());
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
-			sd.teams.at(player).members.at(0).image.box.setSize(100, 100);
+			sd.teams.at(player).members.at(0).image.box().setSize(100, 100);
 		}
 	}
 }

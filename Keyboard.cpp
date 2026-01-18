@@ -3,7 +3,17 @@
 
 void cKeyboard::loadKeyImage() {
     for (int i = 0; i < VALID_KEY_NUM; i++)
-        mKeyImage[KeyNo[i]] = LoadGraphToResource(MAKEINTRESOURCE(KeyNo[i]), "PNG");
+        mKeyImage[KeyNo[i]].load(KeyNo[i], "PNG");
+}
+
+cImage cKeyboard::keyImage(int keyCode) { 
+    if (keyCode >= 0 && keyCode < KEY_NUM) return mKeyImage[keyCode];
+    cImage empty; return empty;
+}
+
+cBox& cKeyboard::keyBox(int keyCode) {
+    if (keyCode >= 0 && keyCode < KEY_NUM) return mKeyImage[keyCode].box();
+    cImage empty; return empty.box();
 }
 
 bool cKeyboard::update() {

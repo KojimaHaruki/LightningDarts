@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "DxLib.h"
 #include "Box.hpp"
 
 class cImage {
@@ -13,11 +12,11 @@ public:
     void setTrans(bool trans) { mTrans = trans; }
     
     // getter
-    cBox box() { return mBox; }
+    cBox &box() { return mBox; }
+    int handle() { return mHandle; }
 
     // fuctions
     void load(std::string path);
-    void load(std::string name, std::string type);
     void load(int resource, std::string type);
     bool reload();
     int draw();
@@ -25,6 +24,7 @@ public:
 private:
     std::string mPath = {}, mName = {}, mType = {};
     bool isResource = false;
+    int mResource = 0;
     cBox mBox;
     int mHandle = -1;
     bool mTrans = true;

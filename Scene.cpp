@@ -52,20 +52,20 @@ void cScene::loadScreen() {
 }
 
 void cScene::initCtrlKey() {
-    sd.ctrl.home.key.code = KEY_INPUT_H;      sd.ctrl.back.key.code = KEY_INPUT_BACK;
-    sd.ctrl.forward.key.code = KEY_INPUT_RETURN; sd.ctrl.quit.key.code = KEY_INPUT_ESCAPE;
-    sd.ctrl.config.key.code = KEY_INPUT_C;      sd.ctrl.skill.key.code = KEY_INPUT_E;
-    sd.ctrl.skip.key.code = KEY_INPUT_S;      sd.ctrl.init.key.code = KEY_INPUT_I;
-    sd.ctrl.gameSelect.key.code = KEY_INPUT_G; sd.ctrl.playerSelect.key.code = KEY_INPUT_P;
-    sd.ctrl.reset.key.code = KEY_INPUT_R; sd.ctrl.bgm.key.code = KEY_INPUT_B;
-    sd.ctrl.left.key.code = KEY_INPUT_LEFT;   sd.ctrl.right.key.code = KEY_INPUT_RIGHT;
-    sd.ctrl.up.key.code = KEY_INPUT_UP;     sd.ctrl.down.key.code = KEY_INPUT_DOWN;
-    sd.ctrl.start.key.code = KEY_INPUT_SPACE;  sd.ctrl.yes.key.code = KEY_INPUT_Y;
-    sd.ctrl.no.key.code = KEY_INPUT_N;
+    sd.ctrl.home.keyCode = KEY_INPUT_H;      sd.ctrl.back.keyCode = KEY_INPUT_BACK;
+    sd.ctrl.forward.keyCode = KEY_INPUT_RETURN; sd.ctrl.quit.keyCode = KEY_INPUT_ESCAPE;
+    sd.ctrl.config.keyCode = KEY_INPUT_C;      sd.ctrl.skill.keyCode = KEY_INPUT_E;
+    sd.ctrl.skip.keyCode = KEY_INPUT_S;      sd.ctrl.init.keyCode = KEY_INPUT_I;
+    sd.ctrl.gameSelect.keyCode = KEY_INPUT_G; sd.ctrl.playerSelect.keyCode = KEY_INPUT_P;
+    sd.ctrl.reset.keyCode = KEY_INPUT_R; sd.ctrl.bgm.keyCode = KEY_INPUT_B;
+    sd.ctrl.left.keyCode = KEY_INPUT_LEFT;   sd.ctrl.right.keyCode = KEY_INPUT_RIGHT;
+    sd.ctrl.up.keyCode = KEY_INPUT_UP;     sd.ctrl.down.keyCode = KEY_INPUT_DOWN;
+    sd.ctrl.start.keyCode = KEY_INPUT_SPACE;  sd.ctrl.yes.keyCode = KEY_INPUT_Y;
+    sd.ctrl.no.keyCode = KEY_INPUT_N;
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].key.code = KEY_INPUT_M;
-        sd.ctrl.window[i].key.code = KEY_INPUT_W;
-        sd.ctrl.pause[i].key.code = KEY_INPUT_PAUSE;
+        sd.ctrl.mute[i].keyCode = KEY_INPUT_M;
+        sd.ctrl.window[i].keyCode = KEY_INPUT_W;
+        sd.ctrl.pause[i].keyCode = KEY_INPUT_PAUSE;
     }
 }
 
@@ -75,48 +75,48 @@ void cScene::initScreenSize() {
     changeWindow(sd.window);
     // set icon
     cCoordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.home.icon.box.setSize(30, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.home.icon.box.setUpperLeft(screen.upperLeft());
-    sd.ctrl.back.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.back.icon.box.setUpperLeft(sd.ctrl.home.icon.box.upperRight());
-    sd.ctrl.forward.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.forward.icon.box.setUpperLeft(sd.ctrl.back.icon.box.upperRight());
+    sd.ctrl.home.icon.box().setSize(30, DEFAULT_ICON_HEIGHT);
+    sd.ctrl.home.icon.box().setUpperLeft(screen.upperLeft());
+    sd.ctrl.back.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.back.icon.box().setUpperLeft(sd.ctrl.home.icon.box().upperRight());
+    sd.ctrl.forward.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.forward.icon.box().setUpperLeft(sd.ctrl.back.icon.box().upperRight());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].icon.box.setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.mute[i].icon.box.setUpperLeft(sd.ctrl.forward.icon.box.upperRight());
+        sd.ctrl.mute[i].icon.box().setSize(DEFAULT_ICON_SIZE);
+        sd.ctrl.mute[i].icon.box().setUpperLeft(sd.ctrl.forward.icon.box().upperRight());
     }
-    sd.ctrl.quit.icon.box.setSize(DEFAULT_ICON_SIZE); sd.ctrl.quit.icon.box.setUpperRight(
+    sd.ctrl.quit.icon.box().setSize(DEFAULT_ICON_SIZE); sd.ctrl.quit.icon.box().setUpperRight(
         screen.upperRight());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.window[i].icon.box.setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.window[i].icon.box.setUpperRight(sd.ctrl.quit.icon.box.upperLeft());
+        sd.ctrl.window[i].icon.box().setSize(DEFAULT_ICON_SIZE);
+        sd.ctrl.window[i].icon.box().setUpperRight(sd.ctrl.quit.icon.box().upperLeft());
     }
-    sd.ctrl.config.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.config.icon.box.setUpperRight(sd.ctrl.window[0].icon.box.upperLeft());
-    sd.ctrl.gameSelect.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.gameSelect.icon.box.setUpperRight(sd.ctrl.config.icon.box.upperLeft());
-    sd.ctrl.playerSelect.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.playerSelect.icon.box.setUpperRight(sd.ctrl.gameSelect.icon.box.upperLeft());
+    sd.ctrl.config.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.config.icon.box().setUpperRight(sd.ctrl.window[0].icon.box().upperLeft());
+    sd.ctrl.gameSelect.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.gameSelect.icon.box().setUpperRight(sd.ctrl.config.icon.box().upperLeft());
+    sd.ctrl.playerSelect.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.playerSelect.icon.box().setUpperRight(sd.ctrl.gameSelect.icon.box().upperLeft());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.pause[i].icon.box.setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.pause[i].icon.box.setUpperRight(sd.ctrl.playerSelect.icon.box.upperLeft());
+        sd.ctrl.pause[i].icon.box().setSize(DEFAULT_ICON_SIZE);
+        sd.ctrl.pause[i].icon.box().setUpperRight(sd.ctrl.playerSelect.icon.box().upperLeft());
     }
-    sd.ctrl.skill.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.skill.icon.box.setUpperRight(sd.ctrl.pause[0].icon.box.upperLeft());
-    sd.ctrl.skip.icon.box.setSize(76, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.skip.icon.box.setLowerRight(lowerFrame.upperRight());
-    sd.ctrl.init.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.init.icon.box.setLowerLeft(screen.lowerLeft());
-    sd.ctrl.reset.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.reset.icon.box.setLowerLeft(sd.ctrl.init.icon.box.lowerRight());
-    sd.ctrl.bgm.icon.box.setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.bgm.icon.box.setLowerLeft(sd.ctrl.reset.icon.box.lowerRight());
+    sd.ctrl.skill.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.skill.icon.box().setUpperRight(sd.ctrl.pause[0].icon.box().upperLeft());
+    sd.ctrl.skip.icon.box().setSize(76, DEFAULT_ICON_HEIGHT);
+    sd.ctrl.skip.icon.box().setLowerRight(lowerFrame.upperRight());
+    sd.ctrl.init.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.init.icon.box().setLowerLeft(screen.lowerLeft());
+    sd.ctrl.reset.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.reset.icon.box().setLowerLeft(sd.ctrl.init.icon.box().lowerRight());
+    sd.ctrl.bgm.icon.box().setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.bgm.icon.box().setLowerLeft(sd.ctrl.reset.icon.box().lowerRight());
     // set image
-    sd.pic.selected.image.box.setSize(100, 86);
-    sd.pic.darts.image.box.setSize(900, 600);
-    sd.pic.darts.image.box.setUpperLeft(0, 0);
-    sd.pic.thunder.image.box.setSize(900, 945);
-    sd.pic.thunder.image.box.setUpperLeft(-50, -200);
+    sd.pic.selected.image.box().setSize(100, 86);
+    sd.pic.darts.image.box().setSize(900, 600);
+    sd.pic.darts.image.box().setUpperLeft(0, 0);
+    sd.pic.thunder.image.box().setSize(900, 945);
+    sd.pic.thunder.image.box().setUpperLeft(-50, -200);
 }
 
 void cScene::init() {
@@ -164,38 +164,12 @@ void cScene::changeWindow(int WindowModeFlag) {
     cFont::instance()->load();
     loadFont();
     cKeyboard::instance()->loadKeyImage();
-    sd.ctrl.home.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.home.key.code);
-    sd.ctrl.back.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.back.key.code);
-    sd.ctrl.forward.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.forward.key.code);
-    sd.ctrl.quit.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.quit.key.code);
-    sd.ctrl.config.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.config.key.code);
-    sd.ctrl.skill.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.skill.key.code);
-    sd.ctrl.skip.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.skip.key.code);
-    sd.ctrl.init.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.init.key.code);
-    sd.ctrl.gameSelect.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.gameSelect.key.code);
-    sd.ctrl.playerSelect.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.playerSelect.key.code);
-    sd.ctrl.reset.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.reset.key.code);
-    sd.ctrl.bgm.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.bgm.key.code);
-    sd.ctrl.left.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.left.key.code);
-    sd.ctrl.right.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.right.key.code);
-    sd.ctrl.up.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.up.key.code);
-    sd.ctrl.down.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.down.key.code);
-    sd.ctrl.start.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.start.key.code);
-    sd.ctrl.no.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.no.key.code);
-    sd.ctrl.yes.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.yes.key.code);
-    sd.ctrl.reset.key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.reset.key.code);
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.mute[i].key.code);
-        sd.ctrl.window[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.window[i].key.code);
-        sd.ctrl.pause[i].key.image.handle = cKeyboard::instance()->keyImage(sd.ctrl.pause[i].key.code);
-    }
 
     // load players
     if (sd.groups.size() > 0) {
         for (int group = 0; group < sd.groups.size(); group++) {
             for (int member = 0; member < sd.groups.at(group).members.size(); member++) {
-                sd.groups.at(group).members.at(member).image.handle =
-                    LoadGraph(sd.groups.at(group).members.at(member).path.c_str());
+                sd.groups.at(group).members.at(member).image.reload();
             }
         }
     }
@@ -220,9 +194,10 @@ void cScene::changeWindow(int WindowModeFlag) {
                     std::string name = entry.path().filename().string(),
                         path = entry.path().string();
                     name.erase(name.length() - extension.length(), extension.length());
-                    sd.groups.at(group).members.push_back(
-                        sChara(name, path, sImage(cBox(), LoadGraph(path.c_str()), TRUE),
-                            sd.groups.at(group).name, sCharaStatus()));
+                    sd.groups.at(group).members.push_back(sChara());
+                    sd.groups.at(group).members.back().name = name;
+                    sd.groups.at(group).members.back().image.load(path);
+                    sd.groups.at(group).members.back().group = sd.groups.at(group).name;
                 }
             }
         }
@@ -235,36 +210,35 @@ void cScene::changeWindow(int WindowModeFlag) {
     if (nTeam > 0) {
         for (int team = 0; team < sd.teams.size(); team++) {
             for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
-                sd.teams.at(team).members.at(member).image.handle =
-                    LoadGraph(sd.teams.at(team).members.at(member).path.c_str());
+                sd.teams.at(team).members.at(member).image.reload();
             }
         }
     }
 
-    sd.ctrl.left.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG68), "PNG");
-    sd.ctrl.right.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG69), "PNG");
-    sd.ctrl.skill.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG70), "PNG");
-    sd.ctrl.home.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG71), "PNG");
-    sd.ctrl.init.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG72), "PNG");
-    sd.ctrl.gameSelect.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG73), "PNG");
-    sd.ctrl.playerSelect.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG74), "PNG");
-    sd.ctrl.reset.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG75), "PNG");
-    sd.ctrl.skip.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG76), "PNG");
-    sd.ctrl.quit.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG77), "PNG");
-    sd.ctrl.config.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG78), "PNG");
-    sd.ctrl.bgm.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG79), "PNG");
+    sd.ctrl.left.icon.load(IDB_PNG68, "PNG");
+    sd.ctrl.right.icon.load(IDB_PNG69, "PNG");
+    sd.ctrl.skill.icon.load(IDB_PNG70, "PNG");
+    sd.ctrl.home.icon.load(IDB_PNG71, "PNG");
+    sd.ctrl.init.icon.load(IDB_PNG72, "PNG");
+    sd.ctrl.gameSelect.icon.load(IDB_PNG73, "PNG");
+    sd.ctrl.playerSelect.icon.load(IDB_PNG74, "PNG");
+    sd.ctrl.reset.icon.load(IDB_PNG75, "PNG");
+    sd.ctrl.skip.icon.load(IDB_PNG76, "PNG");
+    sd.ctrl.quit.icon.load(IDB_PNG77, "PNG");
+    sd.ctrl.config.icon.load(IDB_PNG78, "PNG");
+    sd.ctrl.bgm.icon.load(IDB_PNG79, "PNG");
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.window[i].icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG80 + i), "PNG");
-        sd.ctrl.mute[i].icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG82 + i), "PNG");
-        sd.ctrl.pause[i].icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG84 + i), "PNG");
+        sd.ctrl.window[i].icon.load(IDB_PNG80 + i, "PNG");
+        sd.ctrl.mute[i].icon.load(IDB_PNG82 + i, "PNG");
+        sd.ctrl.pause[i].icon.load(IDB_PNG84 + i, "PNG");
     }
-    sd.ctrl.back.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG86), "PNG");
-    sd.ctrl.forward.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG87), "PNG");
-    sd.ctrl.down.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG88), "PNG");
-    sd.ctrl.up.icon.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG89), "PNG");
-    sd.pic.darts.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_JPG1), "JPG");
-    sd.pic.selected.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG90), "PNG");
-    sd.pic.thunder.image.handle = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG91), "PNG");
+    sd.ctrl.back.icon.load(IDB_PNG86, "PNG");
+    sd.ctrl.forward.icon.load(IDB_PNG87, "PNG");
+    sd.ctrl.down.icon.load(IDB_PNG88, "PNG");
+    sd.ctrl.up.icon.load(IDB_PNG89, "PNG");
+    sd.pic.darts.image.load(IDB_JPG1, "JPG");
+    sd.pic.selected.image.load(IDB_PNG90, "PNG");
+    sd.pic.thunder.image.load(IDB_PNG91, "PNG");
     cDarts::instance()->loadImage();
     sd.window = GetWindowModeFlag();
 }
@@ -273,15 +247,13 @@ void cScene::reset() {
 }
 
 void cScene::draw() {
-    drawImage(sd.pic.darts.image);
-    drawImage(sd.pic.thunder.image);
-    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
-    drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); 
-    drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
+    sd.pic.darts.image.draw(); sd.pic.thunder.image.draw();
+    sd.ctrl.home.icon.draw(); sd.ctrl.back.icon.draw();
+    sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.draw(); 
+    sd.ctrl.config.icon.draw(); sd.ctrl.window[sd.window].icon.draw();
+    sd.ctrl.quit.icon.draw(); sd.ctrl.init.icon.draw(); sd.ctrl.reset.icon.draw(); sd.ctrl.bgm.icon.draw();
     DrawStringToHandle(
-        sd.ctrl.bgm.icon.box.right(), cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
+        sd.ctrl.bgm.icon.box().right(), cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
         cSound::instance()->playingBGMName().c_str(), white, Sfont);
     DrawStringToHandle(screen.right() - 340, lowerFrame.center().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
@@ -324,10 +296,6 @@ void cScene::update() {
     }
 }
 
-int cScene::drawImage(sImage image) {
-    return DrawGraph(image.box.left(), image.box.top(), image.handle, image.trans);
-}
-
 bool cScene::isClicked(cBox box) {
     return cMouse::instance()->clickBoxState(box) == Key::PRESSEDtoRELEASED;
 }
@@ -336,20 +304,20 @@ bool cScene::isBoxClicked(int x1, int y1, int x2, int y2) {
     return cMouse::instance()->clickBoxState(x1, y1, x2, y2) == Key::PRESSEDtoRELEASED;
 }
 
-bool cScene::isClicked(sImage image) {
-    return isClicked(image.box);
+bool cScene::isClicked(cImage image) {
+    return isClicked(image.box());
 }
 
 bool cScene::isKeyTyped(int keyCode) {
     return cKeyboard::instance()->pressKeyState(keyCode) == Key::RELEASEDtoPRESSED;
 }
 
-bool cScene::isTyped(sCtrlKey key) {
-    return isKeyTyped(key.code);
+bool cScene::isTyped(sCtrl ctrl) {
+    return isKeyTyped(ctrl.keyCode);
 }
 
 bool cScene::ctrlRQ(sCtrl ctrl) {
-    return isClicked(ctrl.icon) || isTyped(ctrl.key);
+    return isClicked(ctrl.icon) || isTyped(ctrl);
 }
 
 cScene::~cScene() {

@@ -31,8 +31,8 @@ void GameSelect::draw() {
     cScene::draw();
     
     // icons
-    drawImage(sd.ctrl.forward.icon);
-    drawImage(sd.ctrl.skip.icon);
+    sd.ctrl.forward.icon.draw();
+    sd.ctrl.skip.icon.draw();
     
     // games
     for (int category = 0; category < cGame::sCategory::NUM; category++)
@@ -55,7 +55,7 @@ void GameSelect::draw() {
     }
 
     // scene title
-    DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
+    DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5,
         upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
 

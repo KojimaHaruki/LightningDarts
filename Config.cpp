@@ -2,6 +2,7 @@
 #include "Mouse.hpp"
 #include "Sound.hpp"
 #include "Timer.hpp"
+#include "Keyboard.hpp"
 
 Config::Config(int priorScene, ShareData shareData) {
     sd = shareData;
@@ -10,11 +11,10 @@ Config::Config(int priorScene, ShareData shareData) {
 }
 
 void Config::draw(sCtrl ctrl) {
-    drawImage(ctrl.icon);
-    DrawStringToHandle(ctrl.icon.box.right() + 5, ctrl.icon.box.center().y() - MfontSize / 2,
+    ctrl.icon.draw();
+    DrawStringToHandle(ctrl.icon.box().right() + 5, ctrl.icon.box().center().y() - MfontSize / 2,
         ctrl.name.c_str(), white, Mfont);
-    drawImage(ctrl.key.image);
-    return;
+    cKeyboard::instance()->keyImage(ctrl.keyCode).draw();
 }
 
 void Config::reset() {
@@ -26,52 +26,51 @@ void Config::reset() {
 
 void Config::set() {
     ctrl = sd.ctrl;
-    ctrl.bgm.icon.box.setUpperLeft(10, 210);
-    ctrl.bgm.key.image.box.setUpperLeft(200, 210);
+    ctrl.bgm.icon.box().setUpperLeft(10, 210);
+    cKeyboard::instance()->keyBox(ctrl.bgm.keyCode).setUpperLeft(200, 210);
     int iconX[2] = { screen.center().x(), screen.center().x() + 20 + screen.width() / 4 };
     int keyX[2] = { iconX[0] + 190, iconX[1] + 150 };
-    ctrl.home.icon.box.setUpperLeft(iconX[0], upperFrame.bottom() + XLfontSize + 30);
-    ctrl.home.key.image.box.setUpperLeft(keyX[0], ctrl.home.icon.box.top());
-    ctrl.skill.icon.box.setUpperLeft(iconX[0], ctrl.home.icon.box.bottom() + 5);
-    ctrl.skill.key.image.box.setUpperLeft(keyX[0], ctrl.skill.icon.box.top());
-    ctrl.config.icon.box.setUpperLeft(iconX[0], ctrl.skill.icon.box.bottom() + 5);
-    ctrl.config.key.image.box.setUpperLeft(keyX[0], ctrl.config.icon.box.top());
-    ctrl.quit.icon.box.setUpperLeft(iconX[1], ctrl.config.icon.box.top());
-    ctrl.quit.key.image.box.setUpperLeft(keyX[1], ctrl.config.icon.box.top());
-    ctrl.init.icon.box.setUpperLeft(iconX[0], ctrl.config.icon.box.bottom() + 5);
-    ctrl.init.key.image.box.setUpperLeft(keyX[0], ctrl.init.icon.box.top());
-    ctrl.skip.icon.box.setUpperLeft(iconX[1], ctrl.init.icon.box.top());
-    ctrl.skip.key.image.box.setUpperLeft(keyX[1], ctrl.init.icon.box.top());
+    ctrl.home.icon.box().setUpperLeft(iconX[0], upperFrame.bottom() + XLfontSize + 30);
+    cKeyboard::instance()->keyBox(ctrl.home.keyCode).setUpperLeft(keyX[0], ctrl.home.icon.box().top());
+    ctrl.skill.icon.box().setUpperLeft(iconX[0], ctrl.home.icon.box().bottom() + 5);
+    cKeyboard::instance()->keyBox(ctrl.skill.keyCode).setUpperLeft(keyX[0], ctrl.skill.icon.box().top());
+    ctrl.config.icon.box().setUpperLeft(iconX[0], ctrl.skill.icon.box().bottom() + 5);
+    cKeyboard::instance()->keyBox(ctrl.config.keyCode).setUpperLeft(keyX[0], ctrl.config.icon.box().top());
+    ctrl.quit.icon.box().setUpperLeft(iconX[1], ctrl.config.icon.box().top());
+    cKeyboard::instance()->keyBox(ctrl.quit.keyCode).setUpperLeft(keyX[1], ctrl.config.icon.box().top());
+    ctrl.init.icon.box().setUpperLeft(iconX[0], ctrl.config.icon.box().bottom() + 5);
+    cKeyboard::instance()->keyBox(ctrl.init.keyCode).setUpperLeft(keyX[0], ctrl.init.icon.box().top());
+    ctrl.skip.icon.box().setUpperLeft(iconX[1], ctrl.init.icon.box().top());
+    cKeyboard::instance()->keyBox(ctrl.skip.keyCode).setUpperLeft(keyX[1], ctrl.init.icon.box().top());
     for (int i = 0; i < 2; i++) {
-        ctrl.mute[i].icon.box.setUpperLeft(iconX[1], ctrl.home.icon.box.top());
-        ctrl.mute[i].key.image.box.setUpperLeft(keyX[1], ctrl.home.icon.box.top());
-        ctrl.pause[i].icon.box.setUpperLeft(iconX[1], ctrl.skill.icon.box.top());
-        ctrl.pause[i].key.image.box.setUpperLeft(keyX[1], ctrl.skill.icon.box.top());
-        ctrl.window[i].icon.box.setUpperLeft(iconX[0], ctrl.init.icon.box.bottom() + 5);
-        ctrl.window[i].key.image.box.setUpperLeft(keyX[0], ctrl.window[i].icon.box.top());
+        ctrl.mute[i].icon.box().setUpperLeft(iconX[1], ctrl.home.icon.box().top());
+        cKeyboard::instance()->keyBox(ctrl.mute[i].keyCode).setUpperLeft(keyX[1], ctrl.home.icon.box().top());
+        ctrl.pause[i].icon.box().setUpperLeft(iconX[1], ctrl.skill.icon.box().top());
+        cKeyboard::instance()->keyBox(ctrl.pause[i].keyCode).setUpperLeft(keyX[1], ctrl.skill.icon.box().top());
+        ctrl.window[i].icon.box().setUpperLeft(iconX[0], ctrl.init.icon.box().bottom() + 5);
+        cKeyboard::instance()->keyBox(ctrl.window[i].keyCode).setUpperLeft(keyX[0], ctrl.window[i].icon.box().top());
     }
-    ctrl.gameSelect.icon.box.setUpperLeft(iconX[1], ctrl.window[0].icon.box.top());
-    ctrl.gameSelect.key.image.box.setUpperLeft(keyX[1], ctrl.gameSelect.icon.box.top());
-    ctrl.playerSelect.icon.box.setUpperLeft(iconX[0], ctrl.gameSelect.icon.box.bottom() + 5);
-    ctrl.playerSelect.key.image.box.setUpperLeft(keyX[0], ctrl.playerSelect.icon.box.top());
-    ctrl.reset.icon.box.setUpperLeft(iconX[1], ctrl.playerSelect.icon.box.top());
-    ctrl.reset.key.image.box.setUpperLeft(keyX[1], ctrl.reset.icon.box.top());
-    ctrl.back.icon.box.setUpperLeft(iconX[0], ctrl.reset.icon.box.bottom() + 5);
-    ctrl.back.key.image.box.setUpperLeft(keyX[0], ctrl.back.icon.box.top());
-    ctrl.forward.icon.box.setUpperLeft(iconX[1], ctrl.back.icon.box.top());
-    ctrl.forward.key.image.box.setUpperLeft(keyX[1], ctrl.back.icon.box.top());
-    return;
+    ctrl.gameSelect.icon.box().setUpperLeft(iconX[1], ctrl.window[0].icon.box().top());
+    cKeyboard::instance()->keyBox(ctrl.gameSelect.keyCode).setUpperLeft(keyX[1], ctrl.gameSelect.icon.box().top());
+    ctrl.playerSelect.icon.box().setUpperLeft(iconX[0], ctrl.gameSelect.icon.box().bottom() + 5);
+    cKeyboard::instance()->keyBox(ctrl.playerSelect.keyCode).setUpperLeft(keyX[0], ctrl.playerSelect.icon.box().top());
+    ctrl.reset.icon.box().setUpperLeft(iconX[1], ctrl.playerSelect.icon.box().top());
+    cKeyboard::instance()->keyBox(ctrl.reset.keyCode).setUpperLeft(keyX[1], ctrl.reset.icon.box().top());
+    ctrl.back.icon.box().setUpperLeft(iconX[0], ctrl.reset.icon.box().bottom() + 5);
+    cKeyboard::instance()->keyBox(ctrl.back.keyCode).setUpperLeft(keyX[0], ctrl.back.icon.box().top());
+    ctrl.forward.icon.box().setUpperLeft(iconX[1], ctrl.back.icon.box().top());
+    cKeyboard::instance()->keyBox(ctrl.forward.keyCode).setUpperLeft(keyX[1], ctrl.back.icon.box().top());
 }
 
 void Config::draw() {
     cScene::draw();
 
     // draw icon
-    if (cTimer::instance()->isPaused()) drawImage(sd.ctrl.pause[TRUE].icon);
-    else drawImage(sd.ctrl.pause[FALSE].icon);
-    drawImage(sd.ctrl.skill.icon);
-    if (mNowScene >= PLAYER_SELECT) drawImage(sd.ctrl.playerSelect.icon);
-    if (mNowScene >= GAME_SELECT) drawImage(sd.ctrl.gameSelect.icon);
+    if (cTimer::instance()->isPaused()) sd.ctrl.pause[TRUE].icon.draw();
+    else sd.ctrl.pause[FALSE].icon.draw();
+    sd.ctrl.skill.icon.draw();
+    if (mNowScene >= PLAYER_SELECT) sd.ctrl.playerSelect.icon.draw();
+    if (mNowScene >= GAME_SELECT) sd.ctrl.gameSelect.icon.draw();
 
     // control setting
     draw(ctrl.home);
@@ -95,8 +94,8 @@ void Config::draw() {
     DrawStringToHandle(screen.center().x(), upperFrame.bottom() + 10, "System", white, XLfont);
     DrawStringToHandle(10, 180, ("Play mode: " + cSound::instance()->bgmPlayModeName()).c_str(),
         white, Mfont);
-    DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
-    DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
+    DrawGraph(355, 175, sd.ctrl.down.icon.handle(), TRUE);
+    DrawGraph(380, 175, sd.ctrl.up.icon.handle(), TRUE);
     for (int i = 0; i < cSound::sKind::NUM; i++) {
         DrawStringToHandle(10, 90 + 30 * i,
             cSound::instance()->name(i).c_str(), white, Mfont);
@@ -104,8 +103,8 @@ void Config::draw() {
         DrawBox(100, 95 + 30 * i, 100 + vol, 105 + 30 * i, white, TRUE);
         DrawBox(100 + vol, 95 + 30 * i, 300, 105 + 30 * i, black, TRUE);
         DrawFormatStringToHandle(315, 90 + 30 * i, white, Mfont, "%3d", vol);
-        DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle, TRUE);
-        DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle, TRUE);
+        DrawGraph(355, 85 + 30 * i, sd.ctrl.down.icon.handle(), TRUE);
+        DrawGraph(380, 85 + 30 * i, sd.ctrl.up.icon.handle(), TRUE);
         switch (cMouse::instance()->clickBoxState(95, 90 + 30 * i, 305, 110 + 30 * i)) {
         case Key::RELEASED:
             DrawBox(95 + vol, 90 + 30 * i, 105 + vol, 110 + 30 * i, touchColor, TRUE);
@@ -131,7 +130,7 @@ void Config::draw() {
             cSound::instance()->setVol(i, vol + 4);
         }
     }
-    DrawStringToHandle(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
+    DrawStringToHandle(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.box().upperRight().x(),
         upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
 }
 
@@ -148,7 +147,7 @@ void Config::update() {
             (cSound::instance()->bgmPlayMode() + 1) % cSound::sPlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-    else if (ctrlRQ(sd.ctrl.back)) { 
+    else if (ctrlRQ(sd.ctrl.back)) {
         mNextScene = mNowScene;
         if (mNowScene >= ZERO_ONE) {
             cTimer::instance()->resume();

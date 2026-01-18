@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Team.hpp"
+#include "Image.hpp"
 
 class cScene {
 public:
@@ -24,22 +25,10 @@ protected:
     // Skill
     std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
 
-    // Image
-    struct sImage {
-        cBox box;
-        int handle = 0;
-        int trans = TRUE;
-    };
-    // Key for control
-    struct sCtrlKey {
-        sImage image;
-        int code = 0;
-    };
-
     // Control
     struct sCtrl {
-        sCtrlKey key;
-        sImage icon;
+        int keyCode = 0;
+        cImage icon;
         std::string name;
     };
     struct sCtrlKind {
@@ -49,7 +38,7 @@ protected:
 
     // Picture
     struct sPicture {
-        sImage image;
+        cImage image;
     };
     struct PictureKind {
         sPicture selected, darts, thunder;
@@ -75,8 +64,7 @@ protected:
     };
     struct sChara {
         std::string name = {};
-        std::string path = {};
-        sImage image;
+        cImage image;
         std::string group = {};
         sCharaStatus status;
     };
@@ -104,12 +92,11 @@ protected:
     void initCtrlKey();
     void initScreenSize();
     void changeWindow(int WindowModeFlag);
-    int drawImage(sImage imag);
     bool isClicked(cBox box);
     bool isBoxClicked(int x1, int y1, int x2, int y2);
-    bool isClicked(sImage imag);
+    bool isClicked(cImage imag);
     bool isKeyTyped(int keyCode);
-    bool isTyped(sCtrlKey key);
+    bool isTyped(sCtrl ctrl);
     bool ctrlRQ(sCtrl ctrl);
 
 public:

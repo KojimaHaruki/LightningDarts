@@ -10,12 +10,13 @@ public:
 	void reset();
 	void draw();
 	void update();
+	bool throwDart();
 	bool back();
 	bool forward();
 	bool skip();
 	bool record();
 	void checkPosFill(int pos);
-	bool addDamage(int pos, int damage);
+	bool addScore(int pos);
 	bool changeTeam();
 	void updateRank();
 	void checkTeamFin();
@@ -36,8 +37,8 @@ private:
 		int arrow = 3;
 		int round = 0;
 		int teamPosPower[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
-		int teamBill[cTeam::MAX_SOLO_PLAYER_NUM] = {};
-		bool isTeamPosFilled[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
+		int teamScore[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		bool isTeamPosFill[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
 		bool isPosFill[POS_NUM] = {};
 		int rank[cTeam::MAX_SOLO_PLAYER_NUM] = {};
 		bool isTeamFin[cTeam::MAX_SOLO_PLAYER_NUM] = {};
@@ -57,4 +58,5 @@ private:
 	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};
+	std::vector<std::string> ranker;
 };

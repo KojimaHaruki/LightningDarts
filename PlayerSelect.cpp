@@ -6,6 +6,7 @@
 #include "Color.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
+#include "Keyboard.hpp"
 
 sPlayerSelect::sPlayerSelect(ShareData shareData) {
     sd = shareData;
@@ -13,8 +14,8 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++) {
-            sd.groups.at(group).members.at(member).image.box.setSize(100, 100);
-            sd.groups.at(group).members.at(member).image.box.setUpperLeft(
+            sd.groups.at(group).members.at(member).image.box().setSize(100, 100);
+            sd.groups.at(group).members.at(member).image.box().setUpperLeft(
                 screen.left() + 100 * (chara % 7), upperFrame.bottom() + 100 * (chara / 7));
         }
     }
@@ -33,7 +34,7 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
             member < sd.teams.at(team).members.size() && player < cTeam::MAX_SOLO_PLAYER_NUM;
             member++, player++) {
             players.push_back(sd.teams.at(team).members.at(member));
-            players.at(player).image.box = playerBox[player];
+            players.at(player).image.box() = playerBox[player];
         }
     }
     playersMem = players;
@@ -49,10 +50,11 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
     shuffle = teamTypeBox[cTeam::sType::DUO];
     shuffle.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
     shuffle.setColor(cyan);
-    sd.ctrl.yes.icon.box.setSize(100, lowerFrame.top() - upperFrame.bottom() - 400);
-    sd.ctrl.yes.icon.box.setLowerLeft(screen.right() - 200, lowerFrame.top());
-    sd.ctrl.yes.icon.box.setColor(magenta);
-
+    sd.ctrl.yes.icon.box().setSize(100, lowerFrame.top() - upperFrame.bottom() - 400);
+    sd.ctrl.yes.icon.box().setLowerLeft(screen.right() - 200, lowerFrame.top());
+    sd.ctrl.yes.icon.box().setColor(magenta);
+    cKeyboard::instance()->keyBox(sd.ctrl.yes.keyCode).setUpperLeft(
+        screen.right() - 140, sd.ctrl.yes.icon.box().center().y() - DEFAULT_ICON_HEIGHT / 2);
 }
 
 void sPlayerSelect::reset() {
@@ -67,8 +69,8 @@ void sPlayerSelect::draw() {
     cScene::draw();
 
     // icons
-    drawImage(sd.ctrl.gameSelect.icon);
-    drawImage(sd.ctrl.skip.icon);
+    sd.ctrl.gameSelect.icon.draw();
+    sd.ctrl.skip.icon.draw();
 
     // characters
     unsigned int color = white;
@@ -76,7 +78,7 @@ void sPlayerSelect::draw() {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++, color = white) {
             if (players.size() < cTeam::MAX_SOLO_PLAYER_NUM) {
-                switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box)) {
+                switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box())) {
                 case Key::RELEASED:
                     color = touchColor; break;
                 case Key::RELEASEDtoPRESSED: case Key::PRESSED:
@@ -88,14 +90,14 @@ void sPlayerSelect::draw() {
                     break;
                 }
             }
-            drawImage(sd.groups.at(group).members.at(member).image);
-            DrawStringToHandle(sd.groups.at(group).members.at(member).image.box.left(),
-                sd.groups.at(group).members.at(member).image.box.top(),
+            sd.groups.at(group).members.at(member).image.draw();
+            DrawStringToHandle(sd.groups.at(group).members.at(member).image.box().left(),
+                sd.groups.at(group).members.at(member).image.box().top(),
                 sd.groups.at(group).name.c_str(), color, Sfont);
             DrawStringToHandle(
-                sd.groups.at(group).members.at(member).image.box.left() +
+                sd.groups.at(group).members.at(member).image.box().left() +
                 2 + 5 * max(0, 10 - (int)sd.groups.at(group).members.at(member).name.size()),
-                sd.groups.at(group).members.at(member).image.box.bottom() - SfontSize - 10,
+                sd.groups.at(group).members.at(member).image.box().bottom() - SfontSize - 10,
                 sd.groups.at(group).members.at(member).name.c_str(), color, Sfont);
         }
     }
@@ -107,9 +109,9 @@ void sPlayerSelect::draw() {
         int team = result.quot, member = result.rem;
         playerBox[player].draw();
         if (player < players.size()) {
-            drawImage(players.at(player).image);
+            players.at(player).image.draw();
             DrawStringToHandle(playerBox[player].left(), playerBox[player].top(),
-                PLAYER_NAME[players.at(player).status.rank].c_str(), white, Mfont);
+                PLAYER_NAME[player].c_str(), white, Mfont);
             DrawStringToHandle(
                 playerBox[player].left() + 2 + 5 * max(0, 10 - (int)players.at(player).name.size()),
                 playerBox[player].bottom() - SfontSize - 10,
@@ -163,11 +165,11 @@ void sPlayerSelect::draw() {
     default: break;
     }
     DrawStringToHandle(shuffle.left() + 9, shuffle.centerY() - MfontSize / 2, "Shuffle", color, Mfont);
-    
+
     // OK button
-    sd.ctrl.yes.icon.box.draw();
+    sd.ctrl.yes.icon.box().draw();
     color = white;
-    switch (cMouse::instance()->clickBoxState(sd.ctrl.yes.icon.box)) {
+    switch (cMouse::instance()->clickBoxState(sd.ctrl.yes.icon.box())) {
     case Key::RELEASED:
         color = touchColor; break;
     case Key::RELEASEDtoPRESSED: case Key::PRESSED:
@@ -176,10 +178,9 @@ void sPlayerSelect::draw() {
         if (players.size() > 0) { color = executeColor; } break;
     default: break;
     }
-    DrawStringToHandle(sd.ctrl.yes.icon.box.left() + 5,
-        sd.ctrl.yes.icon.box.center().y() - MfontSize / 2, "OK!!", color, Mfont);
-    DrawGraph(screen.right() - 140, sd.ctrl.yes.icon.box.center().y() - DEFAULT_ICON_HEIGHT / 2,
-        sd.ctrl.yes.key.image.handle, TRUE);
+    DrawStringToHandle(sd.ctrl.yes.icon.box().left() + 5,
+        sd.ctrl.yes.icon.box().center().y() - MfontSize / 2, "OK!!", color, Mfont);
+    cKeyboard::instance()->keyImage(sd.ctrl.yes.keyCode).draw();
     int x = screen.left(), y1 = upperFrame.bottom(), y2 = y1 + 400;
     for (int i = 0; i < 4; i++, x += 100) DrawLine(x, y1, x, y2, black);
     y2 = lowerFrame.top();
@@ -191,7 +192,7 @@ void sPlayerSelect::draw() {
         DrawLine(x1, y, x2, y, black);
 
     // scene title
-    DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
+    DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5,
         upperFrame.center().y() - MfontSize / 2,
         (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);
 }
@@ -200,7 +201,7 @@ void sPlayerSelect::update() {
     cScene::update();
     int nPlayer = players.size();
     if (nPlayer < playersMem.size()) {
-        drawImage(sd.ctrl.forward.icon);
+        sd.ctrl.forward.icon.draw();
         if (ctrlRQ(sd.ctrl.forward)) {
             players.push_back(playersMem.at(nPlayer));
             return;
@@ -238,11 +239,11 @@ void sPlayerSelect::setTeamType(int teamType) {
     if (cTeam::instance()->type() == cTeam::sType::SOLO) {
         for (int player = 0; player < players.size(); player++) {
             sd.teams.push_back(sGroup());
-            players.at(player).image.box.setUpperLeft(
+            players.at(player).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * (player % cTeam::DUO_MEMBER_NUM),
                 upperFrame.bottom() + 100 * (player / cTeam::DUO_MEMBER_NUM));
-            players.at(player).status.rank = player;
             sd.teams.at(player).members.push_back(players.at(player));
+            sd.teams.at(player).name = players.at(player).name;
         }
         for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
             playerBox[player].setColor(teamColor[player]);
@@ -253,12 +254,14 @@ void sPlayerSelect::setTeamType(int teamType) {
     }
     for (int player = 0, team = 0; player < players.size(); team++) {
         sd.teams.push_back(sGroup());
-        for (int member = 0;
-            member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
-            players.at(player).image.box.setUpperLeft(
+        for (int member = 0; member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
+            players.at(player).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
-            players.at(player).status.rank = team + (players.size() / 2) * member;
             sd.teams.at(team).members.push_back(players.at(player));
+        }
+        sd.teams.at(team).name = sd.teams.at(team).members.at(0).name;
+        if (sd.teams.at(team).members.size() == cTeam::DUO_MEMBER_NUM) {
+            sd.teams.at(team).name += " & " + sd.teams.at(team).members.at(1).name;
         }
     }
     for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
