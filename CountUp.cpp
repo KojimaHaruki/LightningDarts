@@ -35,14 +35,22 @@ CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
 				sd.teams.at(team).members.at(member).image.box.setUpperLeft(x, y);
 			}
+			if (team == now.team) {
+				teamBox[team].setColor(white); continue;
+			}
+			teamBox[team].setColor(tableColor);
 		}
 	}
 	else {
 		space = 2;
-		for (int player = 0; player < nTeam; player++) {
-			sd.teams.at(player).members.at(0).image.box.setSize(100, 70);
-			teamBox[player].setSize(100,
-				sd.teams.at(player).members.at(0).image.box.size().y() + SCORE_NUM * (SfontSize + space));
+		for (int team = 0; team < nTeam; team++) {
+			sd.teams.at(team).members.at(0).image.box.setSize(100, 70);
+			teamBox[team].setSize(100,
+				sd.teams.at(team).members.at(0).image.box.size().y() + SCORE_NUM * (SfontSize + space));
+			if (team == now.team) {
+				teamBox[team].setColor(white); continue;
+			}
+			teamBox[team].setColor(tableColor);
 		}
 		for (int player = 0; player < 4; player++) {
 			sd.teams.at(player).members.at(0).image.box.setUpperLeft(
@@ -110,8 +118,7 @@ void CountUp::draw() {
 	if (nTeam <= 4) {
 		DrawBox(screen.center().x() + 10, teamBox[0].top(),
 			teamBox[nTeam - 1].right(), teamBox[0].bottom(), tableColor, TRUE);
-		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
-			teamBox[now.team].right(), teamBox[now.team].bottom(), white, TRUE);
+		teamBox[now.team].draw();
 		for (int team = 0; team < nTeam; team++) {
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
 				chara = sd.teams.at(team).members.at(member);
@@ -152,8 +159,7 @@ void CountUp::draw() {
 			teamBox[3].right(), teamBox[0].bottom(), tableColor, TRUE);
 		DrawBox(screen.center().x() + 10, teamBox[4].top(),
 			teamBox[nTeam - 1].right(), teamBox[4].bottom(), tableColor, TRUE);
-		DrawBox(teamBox[now.team].left(), teamBox[now.team].top(),
-			teamBox[now.team].right(), teamBox[now.team].bottom(), white, TRUE);
+		teamBox[now.team].draw();
 		for (int team = 0; team < nTeam; team++) {
 			chara = sd.teams.at(team).members.at(0);
 			DrawRotaGraph(chara.image.box.center().x(), chara.image.box.center().y(),
@@ -259,6 +265,7 @@ void CountUp::update() {
 			now.arrow = 0;
 		}
 		if (now.arrow < 1) {
+			teamBox[now.team].setColor(tableColor);
 			now.team++;
 			now.arrow = 3;
 			if (now.team >= nTeam) {
@@ -289,6 +296,7 @@ void CountUp::update() {
 			if (now.member >= sd.teams.at(now.team).members.size()) {
 				now.member = 0;
 			}
+			teamBox[now.team].setColor(white);
 			record[attempt] = now;
 			return;
 		}

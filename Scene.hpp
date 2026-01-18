@@ -55,13 +55,6 @@ protected:
         sPicture selected, darts, thunder;
     };
 
-    // Screen
-    struct sBoxObj {
-        cBox box;
-        int color = 0;
-        int fill = TRUE;
-    };
-
 	// Color
     unsigned int white = 0U, black = 0U, gray = 0U,
 		red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
@@ -75,7 +68,7 @@ protected:
 	int mGameMode = 0;
 
     // Character
-    const std::string playerFolderPath = "./Image/Player";
+    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
     struct sCharaStatus {
         double winRate = 0;
         int rank = 0;
@@ -111,8 +104,6 @@ protected:
     void initCtrlKey();
     void initScreenSize();
     void changeWindow(int WindowModeFlag);
-    int drawBoxObj(cBox box, int color, int fill = TRUE);
-    int drawBoxObj(sBoxObj obj);
     int drawImage(sImage imag);
     bool isClicked(cBox box);
     bool isBoxClicked(int x1, int y1, int x2, int y2);

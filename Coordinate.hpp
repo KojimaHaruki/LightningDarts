@@ -1,14 +1,14 @@
 #pragma once
 #define _USE_MATH_DEFINES
-#include <cmath>
+#include "math.h"
 
-template<typename T> class Coordinate2d {
+template<typename T> class cCoordinate2d {
 private:
     T mX, mY;
 public:
-	Coordinate2d() : mX(), mY() {};
-    Coordinate2d(T x, T y) { mX = x; mY = y; };
-	~Coordinate2d () {};
+	cCoordinate2d() : mX(), mY() {};
+    cCoordinate2d(T x, T y) { mX = x; mY = y; };
+	~cCoordinate2d () {};
     void setXY(T x, T y) { mX = x; mY = y; return; }
     void setPolar(T r, T theta) { mX = r * cos(theta); mY = r * sin(theta); return; }
     void setX(T x) { mX = x; return; }

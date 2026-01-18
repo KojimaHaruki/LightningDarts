@@ -9,7 +9,7 @@ class cMouse : public Singleton<cMouse> {
     friend Singleton< cMouse >;
     private:
         static constexpr int KEY_NUM = 8;
-        Coordinate2d<int> cursor;
+        cCoordinate2d<int> cursor;
         int mPressKeyCount[KEY_NUM] = {}; // positive: pressed, negative: released
         int mPressKeyState[KEY_NUM] = {};
     public:
@@ -34,7 +34,7 @@ class cMouse : public Singleton<cMouse> {
         int pressBoxCount(int keyCode, int x1, int y1, int x2, int y2);
         int pressBoxState(int keyCode, cBox box);
         int pressBoxState(int keyCode, int x1, int y1, int x2, int y2);
-        inline Coordinate2d<int> xy() { return cursor; }
+        inline cCoordinate2d<int> xy() { return cursor; }
         inline int x() { return cursor.x(); }
         inline int y() { return cursor.y(); }
 };

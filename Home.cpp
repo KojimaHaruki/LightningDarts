@@ -17,10 +17,7 @@ Home::Home(ShareData shareData) {
 
 void Home::draw() {
     cScene::draw();
-    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon); drawImage(sd.ctrl.forward.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
-    drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
+    drawImage(sd.ctrl.forward.icon);
     DrawStringToHandle(screen.center().x() - 3 * XLfontSize,
         screen.center().y() - XLfontSize / 2, "Lightning Darts", yellow, XLfont);
     DrawGraph(screen.center().x() - 56, 11 * screen.center().y() / 8 - 12, sd.ctrl.start.key.image.handle, TRUE);

@@ -56,9 +56,7 @@ void cGameStart::draw() {
 				player.image.box.bottom() - SfontSize - 10, player.name.c_str(), white, Sfont);
 		}
 	}
-	DrawStringToHandle(screen.center().x() - 10, screen.center().y() - MfontSize / 2, "VS",
-		white, Mfont);
-	return;
+	DrawStringToHandle(screen.center().x() - 10, screen.center().y() - MfontSize / 2, "VS", white, Mfont);
 }
 
 void cGameStart::update() {

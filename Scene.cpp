@@ -74,7 +74,7 @@ void cScene::initScreenSize() {
     loadScreen();
     changeWindow(sd.window);
     // set icon
-    Coordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
+    cCoordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
     sd.ctrl.home.icon.box.setSize(30, DEFAULT_ICON_HEIGHT);
     sd.ctrl.home.icon.box.setUpperLeft(screen.upperLeft());
     sd.ctrl.back.icon.box.setSize(DEFAULT_ICON_SIZE);
@@ -322,14 +322,6 @@ void cScene::update() {
             cSound::instance()->playNextBGM();
         }
     }
-}
-
-int cScene::drawBoxObj(cBox box, int color, int fill) {
-    return DrawBox(box.left(), box.top(), box.right(), box.bottom(), color, fill);
-}
-
-int cScene::drawBoxObj(sBoxObj obj) {
-    return DrawBox(obj.box.left(), obj.box.top(), obj.box.right(), obj.box.bottom(), obj.color, obj.fill);
 }
 
 int cScene::drawImage(sImage image) {
