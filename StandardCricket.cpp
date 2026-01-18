@@ -7,7 +7,16 @@ cStandardCricket::cStandardCricket(ShareData shareData) : attempt(0), maxAttempt
 	sd = shareData;
 	nTeam = sd.teams.size();
 	mNowScene = STANDARD_CRICKET;
-	reset();
+	attempt = 0;
+	maxAttempt = 0;
+	now = {};
+	now.arrow = 3;
+	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
+	for (int point = cDarts::sPoint::MISS; point < cDarts::sPoint::MIN_CRICKET_POINT; point++)
+		cDarts::instance()->setPointValidation(point, false);
+	for (int point = cDarts::sPoint::MIN_CRICKET_POINT; point < cDarts::sPoint::NUM; point++)
+		cDarts::instance()->setPointValidation(point, true);
+
 	if (nTeam <= cTeam::MAX_DUO_TEAM_NUM) {
 		space = 6;
 		for (int team = 0, x = screen.right() - 400, y = upperFrame.bottom();
@@ -146,7 +155,7 @@ void cStandardCricket::draw() {
 				chara = sd.teams.at(team).members[member];
 				drawImage(chara.image);
 				unsigned int color = white;
-				if (team == now.team && member == now.member) {
+				if (team == now.team && member == min(now.member, sd.teams.at(team).members.size() - 1)) {
 					color = touchColor;
 				}
 				DrawStringToHandle(chara.image.box.left() + 5 * max(0, 10 - chara.name.size()),
@@ -258,8 +267,8 @@ void cStandardCricket::draw() {
 	}
 	DrawBox(screen.center().x() + 10, teamBox.at(0).bottom(),
 		screen.right(), teamBox.at(0).bottom() + space + MfontSize, pressColor, TRUE);
-	chara = sd.teams.at(now.team).members.at(now.member);
-	for (int arrow = 0, x = teamBox.at(now.team).right() - 10, y = teamBox.at(now.team).top();
+	chara = sd.teams.at(now.team).members.at(min(now.member, sd.teams.at(now.team).members.size() - 1));
+	for (int arrow = 0, x = teamBox.at(now.team).right() - 10, y = chara.image.box.top();
 		arrow < now.arrow; arrow++, x -= 10)
 		DrawGraph(x, y, cDarts::instance()->arrowImage(), TRUE);
 	DrawStringToHandle(screen.center().x() + 120, teamBox.at(0).bottom() + space / 2,
@@ -309,8 +318,8 @@ void cStandardCricket::update() {
 	else if (ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;
 	else if (ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;
 	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-	else if (ctrlRQ(sd.ctrl.config)) { mNextScene = CONFIG; cTimer::instance()->stop(); }
-	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->stop();
+	else if (ctrlRQ(sd.ctrl.config)) { mNextScene = CONFIG; cTimer::instance()->pause(); }
+	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->pause();
 	else if (isPaused && ctrlRQ(sd.ctrl.pause[TRUE])) cTimer::instance()->resume();
 }
 
@@ -380,7 +389,7 @@ bool cStandardCricket::changeTeam() {
 			now.round++;
 			now.member++;
 		}
-		if (now.member >= sd.teams.at(now.team).members.size()) {
+		if (now.member > cTeam::instance()->type()) {
 			now.member = 0;
 		}
 		if (!now.isTeamFin[now.team]) {
@@ -453,6 +462,8 @@ void cStandardCricket::checkGameFin() {
 	}
 	now.isGameFin = true;
 	for (int team = 0; team < nTeam; team++) now.isTeamFin[team] = true;
+	for (int point = 0; point < cDarts::sPoint::NUM; point++) 
+		cDarts::instance()->setPointValidation(point, false);
 }
 
 void cStandardCricket::fin() {

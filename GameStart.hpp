@@ -10,4 +10,7 @@ public:
 private:
     time_t nowTime, startTime;
     const time_t timeFromEntryToStart = 3;
+    const std::string PLAYER_NAME[cTeam::MAX_SOLO_PLAYER_NUM] = {
+        "1P", "2P", "3P", "4P", "5P", "6P", "7P", "8P"
+    };
 };

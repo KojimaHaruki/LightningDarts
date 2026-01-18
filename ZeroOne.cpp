@@ -9,7 +9,14 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	nTeam = sd.teams.size();
 	arrowImage = cDarts::instance()->arrowImage();
 	sd.ctrl.skip.icon.box.setLowerRight(screen.center().x() + 10, lowerFrame.top());
-	reset();
+	attempt = 0;
+	maxAttempt = 0;
+	now = {};
+	now.arrow = 3;
+	for (int playerNo = 0; playerNo < nTeam; playerNo++) {
+		now.teamRemain[playerNo] = INIT_POINT[mGameMode];
+		now.rank[playerNo] = playerNo;
+	}
 	for (int point = 0; point < cDarts::sPoint::NUM; point++) 
 		cDarts::instance()->setPointValidation(point, true);
 	if (nTeam <= 4) {
@@ -322,9 +329,9 @@ void ZeroOne::update() {
 	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
 	else if (ctrlRQ(sd.ctrl.config)) {
 		mNextScene = CONFIG;
-		cTimer::instance()->stop();
+		cTimer::instance()->pause();
 	}
-	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->stop();
+	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->pause();
 	else if (isPaused && ctrlRQ(sd.ctrl.pause[TRUE])) cTimer::instance()->resume();
 }
 

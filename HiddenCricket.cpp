@@ -14,7 +14,46 @@ HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), s
 	markPart[0].lineWidth = 3;
 	markPart[1].lineWidth = 3;
 	markPart[2].lineWidth = 2;
-	reset();
+	attempt = 0;
+	maxAttempt = 0;
+	now = {};
+	now.arrow = 3;
+	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
+	std::vector<int> randomPoint;
+	for (int point = 1; point <= 20; point++) randomPoint.push_back(point);
+	std::shuffle(randomPoint.begin(), randomPoint.end(), std::mt19937{ std::random_device{}() });
+	switch (mGameMode) {
+	case cGame::sMode::HIDDEN_CRICKET:
+		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
+			now.posScore[pos] = -point - 1;
+		}
+		now.posScore[POS_NUM - 1] = -25;
+		for (int point = 0; point <= 20; point++) {
+			cDarts::instance()->setPointValidation(point, true);
+		}
+		break;
+	case cGame::sMode::RANDOM_CRICKET:
+		now.posScore[POS_NUM - 1] = 25;
+		cDarts::instance()->setPointValidation(0, true); // BULL is valid
+		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
+			now.posScore[pos] = point;
+			cDarts::instance()->setPointValidation(point, true);
+		}
+		break;
+	case cGame::sMode::SELECT_A_CRICKET:
+		selectPos = 0;
+		for (int point = 0; point <= 20; point++) {
+			cDarts::instance()->setPointValidation(point, false);
+		}
+		now.arrow = 1;
+		break;
+	default:
+		cDarts::instance()->setPointValidation(0, true); // BULL is valid
+		for (int point = 15; point <= 20; point++) {
+			cDarts::instance()->setPointValidation(point, true);
+		}
+		break;
+	}
 	sChara chara;
 	if (nTeam <= 4) {
 		space = 8;
@@ -466,9 +505,9 @@ void HiddenCricket::update() {
 	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
 	else if (ctrlRQ(sd.ctrl.config)) {
 		mNextScene = CONFIG;
-		cTimer::instance()->stop();
+		cTimer::instance()->pause();
 	}
-	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->stop();
+	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->pause();
 	else if (isPaused && ctrlRQ(sd.ctrl.pause[TRUE])) cTimer::instance()->resume();
 }
 

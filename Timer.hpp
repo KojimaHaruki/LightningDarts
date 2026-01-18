@@ -14,22 +14,22 @@ struct sTime {
 class cTimer : public Singleton<cTimer> {
 	cTimer() {}
 	friend class Singleton<cTimer>;
-	int startTime = 0;
+	int mStartCount = 0, mLapseCount = 0;
 	sTime mLapseTime;
-	bool pause = true;
+	bool mPause = true;
 public:
 	sTime time(int t_ms);
 	sTime lapseTime() { return mLapseTime; }
-	int lapseCount() { return mLapseTime.mt; }
-	int drawLapseTime(int x, int y, unsigned int Color, int Mode = 0);
+	int lapseCount() { return mLapseCount; }
 	int drawLapseTime(int x, int y, unsigned int Color, int FontHandle, int Mode = 0);
-	void update();
-	void reset()  { pause = true; mLapseTime = {}; }
-	void start()  { pause = false; startTime = GetNowCount(); }
-	void restart() { reset(); start(); }
-	void stop()   { pause = true; }
-	void resume() { pause = false; startTime = GetNowCount() - mLapseTime.mt; }
-	bool isPaused() { return pause; }
+	void update() {
+		if (!mPause) { mLapseCount = GetNowCount() - mStartCount; mLapseTime = time(mLapseCount); }
+	}
+	void reset()  { mPause = true; mLapseTime = {}; }
+	void restart() { mPause = false; mLapseTime = {}; mStartCount = GetNowCount(); }
+	void pause()   { mPause = true; }
+	void resume() { mPause = false; mStartCount = GetNowCount() - mLapseCount; }
+	bool isPaused() { return mPause; }
 	struct Mode {
 		static constexpr int HMSmS = 0;
 		static constexpr int MSmS = 1;

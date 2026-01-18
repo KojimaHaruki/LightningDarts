@@ -24,7 +24,7 @@ public:
     int type() { return mType; }
     std::string typeName() { return TYPE_NAME[mType]; }
     std::string typeName(int teamType) {
-        return (teamType >= 0 && teamType < sType::NUM) ? TYPE_NAME[mType] : "None";
+        return (teamType >= 0 && teamType < sType::NUM) ? TYPE_NAME[teamType] : "None";
     }
 private:
     int mType = sType::SOLO;

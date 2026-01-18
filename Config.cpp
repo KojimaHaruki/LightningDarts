@@ -148,7 +148,12 @@ void Config::update() {
             (cSound::instance()->bgmPlayMode() + 1) % cSound::sPlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-    else if (ctrlRQ(sd.ctrl.back)) mNextScene = mNowScene;
+    else if (ctrlRQ(sd.ctrl.back)) { 
+        mNextScene = mNowScene;
+        if (mNowScene >= ZERO_ONE) {
+            cTimer::instance()->resume();
+        }
+    }
     else if (ctrlRQ(sd.ctrl.window[sd.window])) set();
     else if (ctrlRQ(sd.ctrl.reset)) reset();
     else if (mNowScene >= PLAYER_SELECT && ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;

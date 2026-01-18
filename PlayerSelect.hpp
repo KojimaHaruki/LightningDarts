@@ -13,4 +13,7 @@ private:
     cBox playerBox[cTeam::MAX_SOLO_PLAYER_NUM], teamTypeBox[cTeam::sType::NUM];
     sBoxObj shuffle;
 	std::vector<sChara> players, playersMem;
+    const std::string PLAYER_NAME[cTeam::MAX_SOLO_PLAYER_NUM] = {
+        "1P", "2P", "3P", "4P", "5P", "6P", "7P", "8P"
+    };
 };

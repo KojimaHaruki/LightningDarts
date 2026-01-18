@@ -8,7 +8,23 @@ CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	sd = shareData;
 	nTeam = sd.teams.size();
 	sd.ctrl.skip.icon.box.setLowerRight(screen.center().x() + 10, lowerFrame.top());
-	reset();
+	attempt = 0;
+	maxAttempt = 0;
+	now = {};
+	now.arrow = 3;
+	switch (mGameMode) {
+	case cGame::sMode::CRICKET_COUNT_UP:
+		for (int point = 0; point < cDarts::sPoint::NUM; point++) {
+			cDarts::instance()->setPointValidation(point, false);
+		}
+		cDarts::instance()->setPointValidation(20, true); // 20 is initially valid in Cricket Countup
+		break;
+	default:
+		for (int point = 0; point < cDarts::sPoint::NUM; point++) {
+			cDarts::instance()->setPointValidation(point, true);
+		}
+		break;
+	}
 	if (nTeam <= cTeam::MAX_DUO_TEAM_NUM) {
 		space = 4;
 		for (int team = 0, x = screen.right() - 400, y = upperFrame.bottom() + space;
@@ -299,7 +315,7 @@ void CountUp::update() {
 	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
 	else if (ctrlRQ(sd.ctrl.config)) {
 		mNextScene = CONFIG;
-		cTimer::instance()->stop();
+		cTimer::instance()->pause();
 	}
 }
 

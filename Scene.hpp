@@ -19,10 +19,7 @@ protected:
     cBox screen, upperFrame, lowerFrame;
 
     // Time
-    const std::string wday[7] = { "Sun","Mon","Tue","Wed","Thu", "Fri","Sat" };
-    time_t nowTime;
-    tm nowLocalTime;
-    errno_t timeError;
+    time_t nowTime; tm nowLocalTime; errno_t timeError;
 
     // Skill
     std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
@@ -78,7 +75,7 @@ protected:
 	int mGameMode = 0;
 
     // Character
-    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
+    const std::string playerFolderPath = "./Image/Player";
     struct sCharaStatus {
         double winRate = 0;
         int rank = 0;
@@ -93,20 +90,6 @@ protected:
     struct sGroup {
         std::string name = {};
         std::vector<sChara> members = {};
-    };
-
-    // Font
-    struct sFont {
-        std::string name;
-        int thick = 0;
-        int size = 0;
-        int type = DX_FONTTYPE_NORMAL;
-        int handle = 0;
-    };
-
-    // Darts
-    const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = { 
-        "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th" 
     };
 
     // Team

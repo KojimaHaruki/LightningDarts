@@ -37,4 +37,7 @@ private:
 		int color;
 		int lineWidth;
 	}; MarkPart markPart[3];
+	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
+		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
+	};
 };

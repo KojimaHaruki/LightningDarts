@@ -4,6 +4,7 @@
 #include "Darts.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
+#include "Timer.hpp"
 
 cGameStart::cGameStart(ShareData shareData) {
 	sd = shareData;
@@ -50,7 +51,7 @@ void cGameStart::draw() {
 			sChara player = sd.teams.at(team).members.at(member);
 			drawImage(player.image);
 			DrawStringToHandle(player.image.box.left(), player.image.box.top(),
-				rankName[player.status.rank].c_str(), white, Mfont);
+				PLAYER_NAME[player.status.rank].c_str(), white, Mfont);
 			DrawStringToHandle(player.image.box.left() + 5 * max(0, 10 - player.name.size()),
 				player.image.box.bottom() - SfontSize - 10, player.name.c_str(), white, Sfont);
 		}
@@ -67,14 +68,15 @@ void cGameStart::update() {
 	else if (ctrlRQ(sd.ctrl.skip) || nowTime >= startTime) {
 		switch (cGame::instance()->category()) {
 		case cGame::sCategory::ZERO_ONE: 
-			mNextScene = ZERO_ONE; return;
+			mNextScene = ZERO_ONE; break;
 		case cGame::sCategory::CRICKET:
-			mNextScene = STANDARD_CRICKET; return;
+			mNextScene = STANDARD_CRICKET; break;
 		case cGame::sCategory::COUNT_UP:
-			mNextScene = COUNT_UP; return;
+			mNextScene = COUNT_UP; break;
 		default:
 			mNextScene = GAME_SELECT; return;
 		}
+		cTimer::instance()->restart();
 	}
 	else if (ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;
 	else if (ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;

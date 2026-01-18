@@ -59,11 +59,12 @@ void sPlayerSelect::reset() {
 
 void sPlayerSelect::draw() {
     cScene::draw();
-    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon); drawImage(sd.ctrl.gameSelect.icon);
-    drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
+
+    // icons
+    drawImage(sd.ctrl.gameSelect.icon);
     drawImage(sd.ctrl.skip.icon);
+
+    // characters
     unsigned int color = white;
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
@@ -92,6 +93,9 @@ void sPlayerSelect::draw() {
                 sd.groups.at(group).members.at(member).name.c_str(), color, Sfont);
         }
     }
+
+    // players
+    DrawStringToHandle(screen.left(), lowerFrame.top() - MfontSize - 15, "Player", white, Mfont);
     for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
         div_t result = std::div(player, cTeam::instance()->type() + 1);
         int team = result.quot, member = result.rem;
@@ -99,7 +103,7 @@ void sPlayerSelect::draw() {
         if (player < players.size()) {
             drawImage(players.at(player).image);
             DrawStringToHandle(playerBox[player].left(), playerBox[player].top(),
-                rankName[players.at(player).status.rank].c_str(), white, Mfont);
+                PLAYER_NAME[players.at(player).status.rank].c_str(), white, Mfont);
             DrawStringToHandle(
                 playerBox[player].left() + 2 + 5 * max(0, 10 - (int)players.at(player).name.size()),
                 playerBox[player].bottom() - SfontSize - 10,
@@ -112,10 +116,14 @@ void sPlayerSelect::draw() {
         DrawStringToHandle(90 + 40 * player, lowerFrame.top() - MfontSize - 15,
             std::to_string(player + 1).c_str(), white, Mfont);
     }
-    drawBoxObj(teamTypeBox[cTeam::instance()->type()], gray, TRUE);
+
+    // team types
     for (int teamType = 0; teamType < cTeam::sType::NUM; teamType++) {
+        color = gray;
+        if (teamType == cTeam::instance()->type()) { color = white; }
+        drawBoxObj(teamTypeBox[teamType], color, TRUE);
         color = white;
-        if (cTeam::instance()->type() != teamType && players.size() > teamType) {
+        if (teamType != cTeam::instance()->type() && players.size() > teamType) {
             switch (cMouse::instance()->clickBoxState(teamTypeBox[teamType])) {
             case Key::RELEASED:
                 color = touchColor; break;
@@ -127,11 +135,12 @@ void sPlayerSelect::draw() {
             }
         }
         DrawStringToHandle(
-            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)cTeam::instance()->typeName().size()),
+            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)cTeam::instance()->typeName(teamType).size()),
             teamTypeBox[teamType].center().y() - MfontSize / 2,
-            cTeam::instance()->typeName().c_str(), color, Mfont);
+            cTeam::instance()->typeName(teamType).c_str(), color, Mfont);
     }
-    // Shuffle button
+
+    // shuffle button
     drawBoxObj(shuffle);
     color = white;
     switch (cMouse::instance()->clickBoxState(shuffle.box)) {
@@ -151,6 +160,7 @@ void sPlayerSelect::draw() {
     }
     DrawStringToHandle(shuffle.box.left() + 9, shuffle.box.center().y() - MfontSize / 2,
         "Shuffle", color, Mfont);
+    
     // OK button
     drawBoxObj(sd.ctrl.yes.icon.box, magenta);
     color = white;
@@ -176,8 +186,8 @@ void sPlayerSelect::draw() {
     int x1 = screen.left(), x2 = screen.right();
     for (int i = 0, y = upperFrame.bottom(); i <= 4; i++, y += 100)
         DrawLine(x1, y, x2, y, black);
-    DrawStringToHandle(screen.left(), lowerFrame.top() - MfontSize - 15,
-        "Player", white, Mfont);
+
+    // scene title
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
         upperFrame.center().y() - MfontSize / 2,
         (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);

@@ -54,4 +54,7 @@ private:
 	static constexpr int MARK_PART_ERROR[MARK_PART_NUM] = { -1, 1, 0 };
 	static constexpr int MARK_PART_LINETHICK[MARK_PART_NUM] = { 3, 3, 2 };
 	std::vector<sPosBox> teamMarks;
+	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
+		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
+	};
 };

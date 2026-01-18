@@ -31,4 +31,7 @@ private:
 	cBox teamBox[cTeam::MAX_SOLO_PLAYER_NUM];
 	int space = 0;
 	int nRound = 0, nScore = 0;
+	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
+		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
+	};
 };

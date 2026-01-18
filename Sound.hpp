@@ -59,7 +59,7 @@ private:
     const std::string mBGMPlayModeName[sPlayMode::NUM] = {
         "Loop", "Ascending order", "Descending order", "Random"
     };
-    const std::string BGMFolderPath = "C:/Users/miniy/Music/BGM";
+    const std::string BGMFolderPath = "./BGM";
     struct BGM {
         std::string path = {};
         std::string name = {};
