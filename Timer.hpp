@@ -1,7 +1,8 @@
 #pragma once
+#include "Singleton.hpp"
 #include "DxLib.h"
 
-struct Time {
+struct sTime {
 	int h = 0; // hour
 	int m = 0; // min
 	int s = 0; // second
@@ -10,22 +11,25 @@ struct Time {
 	int mt = 0; // total millisecond
 };
 
-class Timer {
+class cTimer : public Singleton<cTimer> {
+	cTimer() {}
+	friend class Singleton<cTimer>;
+	int startTime = 0;
+	sTime mLapseTime;
+	bool pause = true;
 public:
-	Timer();
-	~Timer() {}
-	Time time(int t_ms);
-	Time GetLapseTime() { return lapseTime; }
-	int GetLapseCount() { return lapseTime.mt; }
+	sTime time(int t_ms);
+	sTime lapseTime() { return mLapseTime; }
+	int lapseCount() { return mLapseTime.mt; }
 	int drawLapseTime(int x, int y, unsigned int Color, int Mode = 0);
 	int drawLapseTime(int x, int y, unsigned int Color, int FontHandle, int Mode = 0);
 	void update();
-	void reset()  { pause = TRUE; lapseTime = {}; }
-	void start()  { pause = FALSE; startTime = GetNowCount(); }
+	void reset()  { pause = true; mLapseTime = {}; }
+	void start()  { pause = false; startTime = GetNowCount(); }
 	void restart() { reset(); start(); }
-	void stop()   { pause = TRUE; }
-	void resume() { pause = FALSE; startTime = GetNowCount() - lapseTime.mt; }
-	int isPaused() { return pause; }
+	void stop()   { pause = true; }
+	void resume() { pause = false; startTime = GetNowCount() - mLapseTime.mt; }
+	bool isPaused() { return pause; }
 	struct Mode {
 		static constexpr int HMSmS = 0;
 		static constexpr int MSmS = 1;
@@ -36,11 +40,4 @@ public:
 		static constexpr int S = 6;
 		static constexpr int HM = 7;
 	};
-private:
-	int startTime;
-	Time lapseTime;
-	int pause;
 };
-
-
-

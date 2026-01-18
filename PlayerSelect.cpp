@@ -15,7 +15,7 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
             member++, chara++) {
             sd.groups.at(group).members.at(member).image.box.setSize(100, 100);
             sd.groups.at(group).members.at(member).image.box.setUpperLeft(
-                screenBox.left() + 100 * (chara % 7), sd.obj.upperFrame.bottom() + 100 * (chara / 7));
+                screen.left() + 100 * (chara % 7), upperFrame.bottom() + 100 * (chara / 7));
         }
     }
     for (int team = 0, player = 0;
@@ -24,7 +24,7 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
             member < cTeam::DUO_MEMBER_NUM && player < cTeam::MAX_SOLO_PLAYER_NUM; member++, player++) {
             playerBox[player].setSize(100, 100);
             playerBox[player].setUpperLeft(
-                screenBox.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
+                screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
         }
     }
     players.clear();
@@ -39,14 +39,14 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
     playersMem = players;
     for (int playModeNo = 0; playModeNo < cTeam::sType::NUM; playModeNo++) {
         teamTypeBox[playModeNo].setSize(
-            100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
-        teamTypeBox[playModeNo].setLowerLeft(100 * playModeNo + 400, sd.obj.lowerFrame.top());
+            100, lowerFrame.top() - upperFrame.bottom() - 400);
+        teamTypeBox[playModeNo].setLowerLeft(100 * playModeNo + 400, lowerFrame.top());
     }
     shuffle.box = teamTypeBox[cTeam::sType::DUO];
     shuffle.box.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
     shuffle.color = cColor::instance()->cyan();
-    sd.ctrl.yes.icon.box.setSize(100, sd.obj.lowerFrame.top() - sd.obj.upperFrame.bottom() - 400);
-    sd.ctrl.yes.icon.box.setLowerLeft(screenBox.right() - 200, sd.obj.lowerFrame.top());
+    sd.ctrl.yes.icon.box.setSize(100, lowerFrame.top() - upperFrame.bottom() - 400);
+    sd.ctrl.yes.icon.box.setLowerLeft(screen.right() - 200, lowerFrame.top());
 }
 
 void sPlayerSelect::reset() {
@@ -59,8 +59,8 @@ void sPlayerSelect::reset() {
 
 void sPlayerSelect::draw() {
     cScene::draw();
-    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon); 
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon); drawImage(sd.ctrl.gameSelect.icon); 
+    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon); drawImage(sd.ctrl.gameSelect.icon);
     drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); drawImage(sd.ctrl.quit.icon);
     drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
     drawImage(sd.ctrl.skip.icon);
@@ -104,12 +104,12 @@ void sPlayerSelect::draw() {
                 playerBox[player].left() + 2 + 5 * max(0, 10 - (int)players.at(player).name.size()),
                 playerBox[player].bottom() - SfontSize - 10,
                 players.at(player).name.c_str(), white, Sfont);
-            DrawCircle(95 + 40 * player, sd.obj.lowerFrame.top() - MfontSize / 2 - 15,
+            DrawCircle(95 + 40 * player, lowerFrame.top() - MfontSize / 2 - 15,
                 MfontSize + 2, teamColor[team], TRUE);
         }
-        DrawCircle(95 + 40 * player, sd.obj.lowerFrame.top() - MfontSize / 2 - 15,
+        DrawCircle(95 + 40 * player, lowerFrame.top() - MfontSize / 2 - 15,
             MfontSize + 2, teamColor[team], FALSE);
-        DrawStringToHandle(90 + 40 * player, sd.obj.lowerFrame.top() - MfontSize - 15,
+        DrawStringToHandle(90 + 40 * player, lowerFrame.top() - MfontSize - 15,
             std::to_string(player + 1).c_str(), white, Mfont);
     }
     drawBoxObj(teamTypeBox[cTeam::instance()->type()], gray, TRUE);
@@ -165,21 +165,21 @@ void sPlayerSelect::draw() {
     }
     DrawStringToHandle(sd.ctrl.yes.icon.box.left() + 5,
         sd.ctrl.yes.icon.box.center().y() - MfontSize / 2, "OK!!", color, Mfont);
-    DrawGraph(screenBox.right() - 140, sd.ctrl.yes.icon.box.center().y() - ICONSIZE_NORMAL.y() / 2,
+    DrawGraph(screen.right() - 140, sd.ctrl.yes.icon.box.center().y() - DEFAULT_ICON_HEIGHT / 2,
         sd.ctrl.yes.key.image.handle, TRUE);
-    int x = screenBox.left(), y1 = sd.obj.upperFrame.bottom(), y2 = y1 + 400;
+    int x = screen.left(), y1 = upperFrame.bottom(), y2 = y1 + 400;
     for (int i = 0; i < 4; i++, x += 100) DrawLine(x, y1, x, y2, black);
-    y2 = sd.obj.lowerFrame.top();
+    y2 = lowerFrame.top();
     for (int i = 4; i < 10; i++, x += 100) DrawLine(x, y1, x, y2, black);
     DrawLine(playerBox[0].left(), y1, playerBox[0].left(), y2, black, 2);
-    DrawLine(teamTypeBox[0].left(), y2, screenBox.right() - 100, y2, black);
-    int x1 = screenBox.left(), x2 = screenBox.right();
-    for (int i = 0, y = sd.obj.upperFrame.bottom(); i <= 4; i++, y += 100)
+    DrawLine(teamTypeBox[0].left(), y2, screen.right() - 100, y2, black);
+    int x1 = screen.left(), x2 = screen.right();
+    for (int i = 0, y = upperFrame.bottom(); i <= 4; i++, y += 100)
         DrawLine(x1, y, x2, y, black);
-    DrawStringToHandle(screenBox.left(), sd.obj.lowerFrame.top() - MfontSize - 15,
+    DrawStringToHandle(screen.left(), lowerFrame.top() - MfontSize - 15,
         "Player", white, Mfont);
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
-        sd.obj.upperFrame.center().y() - MfontSize / 2,
+        upperFrame.center().y() - MfontSize / 2,
         (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);
 }
 
@@ -220,7 +220,6 @@ void sPlayerSelect::update() {
 }
 
 void sPlayerSelect::setTeamType(int teamType) {
-    if (players.size() < 1) return;
     cTeam::instance()->setType((players.size() < 2) ? cTeam::sType::SOLO : teamType);
     sd.teams.clear();
     switch (cTeam::instance()->type()) {
@@ -228,8 +227,8 @@ void sPlayerSelect::setTeamType(int teamType) {
         for (int player = 0; player < players.size(); player++) {
             sd.teams.push_back(sGroup());
             players.at(player).image.box.setUpperLeft(
-                screenBox.right() - 200 + 100 * (player % cTeam::DUO_MEMBER_NUM),
-                sd.obj.upperFrame.bottom() + 100 * (player / cTeam::DUO_MEMBER_NUM));
+                screen.right() - 200 + 100 * (player % cTeam::DUO_MEMBER_NUM),
+                upperFrame.bottom() + 100 * (player / cTeam::DUO_MEMBER_NUM));
             players.at(player).status.rank = player;
             sd.teams.at(player).members.push_back(players.at(player));
         }
@@ -240,7 +239,7 @@ void sPlayerSelect::setTeamType(int teamType) {
             for (int member = 0;
                 member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
                 players.at(player).image.box.setUpperLeft(
-                    screenBox.right() - 200 + 100 * member, sd.obj.upperFrame.bottom() + 100 * team);
+                    screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
                 players.at(player).status.rank = team + (players.size() / 2) * member;
                 sd.teams.at(team).members.push_back(players.at(player));
             }

@@ -3,8 +3,9 @@
 #include "Scene.hpp"
 #include <random>
 #include <filesystem>
-#include <string>
+#include <iostream>
 #include "resource.h"
+#include "Keyboard.hpp"
 #include "Mouse.hpp"
 #include "Sound.hpp"
 #include "Darts.hpp"
@@ -15,11 +16,11 @@
 namespace fs = std::filesystem;
 
 cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
-mGameMode(cGame::instance()->mode()), screenBox(cScreen::instance()->box()), nTeam(sd.teams.size()) {
+mGameMode(cGame::instance()->mode()), nTeam(sd.teams.size()) {
     loadColor();
     loadFont();
+    loadScreen();
     timeError = localtime_s(&nowLocalTime, &nowTime);
-    ICONSIZE_NORMAL.setXY(25, 25);
     // load team color
     for (int i = 0; i < cTeam::MAX_SOLO_PLAYER_NUM; i++) teamColor[i] = cColor::instance()->teamColor(i);
 }
@@ -44,6 +45,12 @@ void cScene::loadFont() {
     XLfont = cFont::instance()->XLfont(); XLfontSize = cFont::instance()->XLfontSize();
 }
 
+void cScene::loadScreen() {
+    screen = cScreen::instance()->box();
+    upperFrame = cScreen::instance()->upperFrame();
+    lowerFrame = cScreen::instance()->lowerFrame();
+}
+
 void cScene::initCtrlKey() {
     sd.ctrl.home.key.code = KEY_INPUT_H;      sd.ctrl.back.key.code = KEY_INPUT_BACK;
     sd.ctrl.forward.key.code = KEY_INPUT_RETURN; sd.ctrl.quit.key.code = KEY_INPUT_ESCAPE;
@@ -64,48 +71,45 @@ void cScene::initCtrlKey() {
 
 void cScene::initScreenSize() {
     cScreen::instance()->init();
-    screenBox = cScreen::instance()->box();
+    loadScreen();
     changeWindow(sd.window);
-    // set frame
-    sd.obj.upperFrame.setSize(screenBox.width(), ICONSIZE_NORMAL.y());
-    sd.obj.upperFrame.setUpperLeft(screenBox.upperLeft());
-    sd.obj.lowerFrame.setSize(screenBox.width(), ICONSIZE_NORMAL.y());
-    sd.obj.lowerFrame.setLowerLeft(screenBox.lowerLeft());
     // set icon
-    sd.ctrl.home.icon.box.setSize(30, 25); sd.ctrl.home.icon.box.setUpperLeft(screenBox.upperLeft());
-    sd.ctrl.back.icon.box.setSize(ICONSIZE_NORMAL);
+    Coordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
+    sd.ctrl.home.icon.box.setSize(30, DEFAULT_ICON_HEIGHT);
+    sd.ctrl.home.icon.box.setUpperLeft(screen.upperLeft());
+    sd.ctrl.back.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.back.icon.box.setUpperLeft(sd.ctrl.home.icon.box.upperRight());
-    sd.ctrl.forward.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.forward.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.forward.icon.box.setUpperLeft(sd.ctrl.back.icon.box.upperRight());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].icon.box.setSize(ICONSIZE_NORMAL);
+        sd.ctrl.mute[i].icon.box.setSize(DEFAULT_ICON_SIZE);
         sd.ctrl.mute[i].icon.box.setUpperLeft(sd.ctrl.forward.icon.box.upperRight());
     }
-    sd.ctrl.quit.icon.box.setSize(ICONSIZE_NORMAL); sd.ctrl.quit.icon.box.setUpperRight(
-        screenBox.upperRight());
+    sd.ctrl.quit.icon.box.setSize(DEFAULT_ICON_SIZE); sd.ctrl.quit.icon.box.setUpperRight(
+        screen.upperRight());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.window[i].icon.box.setSize(ICONSIZE_NORMAL);
+        sd.ctrl.window[i].icon.box.setSize(DEFAULT_ICON_SIZE);
         sd.ctrl.window[i].icon.box.setUpperRight(sd.ctrl.quit.icon.box.upperLeft());
     }
-    sd.ctrl.config.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.config.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.config.icon.box.setUpperRight(sd.ctrl.window[0].icon.box.upperLeft());
-    sd.ctrl.gameSelect.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.gameSelect.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.gameSelect.icon.box.setUpperRight(sd.ctrl.config.icon.box.upperLeft());
-    sd.ctrl.playerSelect.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.playerSelect.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.playerSelect.icon.box.setUpperRight(sd.ctrl.gameSelect.icon.box.upperLeft());
     for (int i = 0; i < 2; i++) {
-        sd.ctrl.pause[i].icon.box.setSize(ICONSIZE_NORMAL);
+        sd.ctrl.pause[i].icon.box.setSize(DEFAULT_ICON_SIZE);
         sd.ctrl.pause[i].icon.box.setUpperRight(sd.ctrl.playerSelect.icon.box.upperLeft());
     }
-    sd.ctrl.skill.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.skill.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.skill.icon.box.setUpperRight(sd.ctrl.pause[0].icon.box.upperLeft());
-    sd.ctrl.skip.icon.box.setSize(76, 25);
-    sd.ctrl.skip.icon.box.setLowerRight(sd.obj.lowerFrame.upperRight());
-    sd.ctrl.init.icon.box.setSize(ICONSIZE_NORMAL);
-    sd.ctrl.init.icon.box.setLowerLeft(screenBox.lowerLeft());
-    sd.ctrl.reset.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.skip.icon.box.setSize(76, DEFAULT_ICON_HEIGHT);
+    sd.ctrl.skip.icon.box.setLowerRight(lowerFrame.upperRight());
+    sd.ctrl.init.icon.box.setSize(DEFAULT_ICON_SIZE);
+    sd.ctrl.init.icon.box.setLowerLeft(screen.lowerLeft());
+    sd.ctrl.reset.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.reset.icon.box.setLowerLeft(sd.ctrl.init.icon.box.lowerRight());
-    sd.ctrl.bgm.icon.box.setSize(ICONSIZE_NORMAL);
+    sd.ctrl.bgm.icon.box.setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.bgm.icon.box.setLowerLeft(sd.ctrl.reset.icon.box.lowerRight());
     // set image
     sd.pic.selected.image.box.setSize(100, 86);
@@ -129,21 +133,19 @@ void cScene::init() {
         DrawStringToHandle(100, 50, "Powered by", white, XLfont);
         DrawGraph(200, 100 + XLfontSize, cpp, TRUE);
         DrawGraph(500, 100 + XLfontSize, dxlib, TRUE);
-        DrawStringToHandle(screenBox.right() - 180, screenBox.bottom() - MfontSize - 10,
+        DrawStringToHandle(screen.right() - 180, screen.bottom() - MfontSize - 10,
             "now loading...", white, Mfont);
         ScreenFlip();
         sd.ctrl.home.name = "Home"; sd.ctrl.back.name = "Back"; sd.ctrl.forward.name = "Forward";
         sd.ctrl.mute[0].name = "Unmute"; sd.ctrl.mute[1].name = "Mute"; sd.ctrl.quit.name = "Quit";
         sd.ctrl.window[0].name = "Another window"; sd.ctrl.window[1].name = "Maximize window";
         sd.ctrl.pause[0].name = "Pause"; sd.ctrl.pause[1].name = "Resume"; sd.ctrl.config.name = "Config";
-        sd.ctrl.playerSelect.name = "Restart from Player select"; sd.ctrl.gameSelect.name = "Restart from Game select";
+        sd.ctrl.playerSelect.name = "Player select"; sd.ctrl.gameSelect.name = "Game select";
         sd.ctrl.skill.name = "Skill"; sd.ctrl.skip.name = "Skip"; sd.ctrl.init.name = "Initialize";
-        sd.ctrl.reset.name = "Reset the current scene"; sd.ctrl.bgm.name = "Change BGM";
+        sd.ctrl.reset.name = "Reset"; sd.ctrl.bgm.name = "Change BGM";
         // load BGM
         cSound::instance()->load();
-        cDarts::instance()->setCenter(
-            screenBox.left() + 0.25 * screenBox.width() + 5,
-            screenBox.center().y());
+        cDarts::instance()->setCenter(screen.left() + 0.25 * screen.width() + 5, screen.center().y());
     }
     cSound::instance()->initSoundVol();
     StopSound();
@@ -273,21 +275,25 @@ void cScene::reset() {
 void cScene::draw() {
     drawImage(sd.pic.darts.image);
     drawImage(sd.pic.thunder.image);
+    drawImage(sd.ctrl.home.icon); drawImage(sd.ctrl.back.icon);
+    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
+    drawImage(sd.ctrl.config.icon); drawImage(sd.ctrl.window[sd.window].icon); 
+    drawImage(sd.ctrl.quit.icon);
+    drawImage(sd.ctrl.init.icon); drawImage(sd.ctrl.reset.icon); drawImage(sd.ctrl.bgm.icon);
     DrawStringToHandle(
-        sd.ctrl.bgm.icon.box.right(), sd.obj.lowerFrame.center().y() - SfontSize / 2,
+        sd.ctrl.bgm.icon.box.right(), cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
         cSound::instance()->playingBGMName().c_str(), white, Sfont);
-    DrawStringToHandle(screenBox.right() - 340, sd.obj.lowerFrame.center().y() - SfontSize / 2,
+    DrawStringToHandle(screen.right() - 340, lowerFrame.center().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
-    DrawCircleAA(screenBox.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
+    DrawCircleAA(screen.right() - 210.5f, (float)lowerFrame.center().y(),
         SfontSize / 2.0f, 1000, black, FALSE, 3.0f);
-    DrawCircleAA(screenBox.right() - 210.5f, (float)sd.obj.lowerFrame.center().y(),
+    DrawCircleAA(screen.right() - 210.5f, (float)lowerFrame.center().y(),
         SfontSize / 2.0f, 1000, yellow, FALSE, 1.0f);
     if (!timeError) {
         DrawFormatStringToHandle(
-            screenBox.right() - 42, sd.obj.lowerFrame.center().y() - SfontSize / 2,
+            screen.right() - 42, lowerFrame.center().y() - SfontSize / 2,
             white, Sfont, "%02d:%02d", nowLocalTime.tm_hour, nowLocalTime.tm_min);
     }
-    return;
 }
 void cScene::fin() {
 }

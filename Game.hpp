@@ -64,6 +64,6 @@ private:
     const std::string CATEGORY_NAME[sCategory::NUM] = { "01", "Cricket", "Count-up" };
     const std::string MODE_NAME[sMode::NUM] = {
         "301", "501", "701", "901", "1101", "1501", "Standard Cricket", "Random Cricket", "Hidden Cricket",
-        "Select-a-Cricket", "All numbers Cricket", "Cricket Count-up", "Count-up" 
+        "Select-a-Cricket", "All numbers Cricket", "Count-up", "Cricket Count-up"
     };
 };

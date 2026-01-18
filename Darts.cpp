@@ -7,6 +7,7 @@
 #include "Color.hpp"
 #include "Font.hpp"
 #include "Game.hpp"
+#include "Screen.hpp"
 
 void cDarts::loadImage() {
     for (int pos = 0; pos < 4; pos++) {
@@ -28,13 +29,15 @@ void cDarts::draw() {
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::OUTSIDE], 100, black);
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::DOUBLE], 100, gray);
 
+    DrawStringToHandle(0, cScreen::instance()->lowerFrame().top() - MFontSize - 5, 
+        pointName().c_str(), white, MFont);
     // draw point part
 	float phi = -M_PI, r = sRadialPos::RADIUS[sRadialPos::OUTSIDE] - MFontSize + 2.0f,
         x = -11.0f, y = -10.0f;
     for (int i = 0; i < 20; i++, phi += 0.1 * M_PI) {
         if (mIsValidPoint[cDarts::BOARD_POINT[i]]) {
             DrawStringToHandle(real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
-                pointName[cDarts::BOARD_POINT[i]].c_str(), white, MFont);
+                POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), white, MFont);
             for (int posNo = sRadialPos::DOUBLE, state = 0; posNo > sRadialPos::OUTER_BULL; posNo--) {
                 if (mPoint == cDarts::BOARD_POINT[i] && mRadialPos == posNo) {
                     if (mIsTouched) {
@@ -43,8 +46,6 @@ void cDarts::draw() {
                     else if (mIsThrowed) {
 						state = 3;
                     }
-                    DrawStringToHandle(0, 475 - MFontSize - 5,
-                        (std::to_string(mPoint) + radialPosName[mRadialPos]).c_str(), white, MFont);
                 }
                 else {
                     state = i % 2;
@@ -56,7 +57,7 @@ void cDarts::draw() {
         }
         DrawStringToHandle(
             real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
-            pointName[cDarts::BOARD_POINT[i]].c_str(), gray, MFont);
+            POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), gray, MFont);
     }
 
 	// draw outer bull
@@ -69,7 +70,6 @@ void cDarts::draw() {
         else if (mIsTouched) {
 			color = touchColor;
         }
-        DrawStringToHandle(0, 475 - MFontSize - 5, pointName[sPoint::OUTER_BULL].c_str(), white, MFont);
     }
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::OUTER_BULL], 100, color);
 
@@ -83,7 +83,6 @@ void cDarts::draw() {
         else if (mIsTouched) {
             color = touchColor;
         }
-        DrawStringToHandle(0, 475 - MFontSize - 5, pointName[sPoint::INNER_BULL].c_str(), white, MFont);
     }
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::INNER_BULL], 100, color);
 
@@ -148,7 +147,7 @@ void cDarts::updateByMouse() {
     float r = abs(cursor), theta = arg(cursor);
 
 	// check radial position
-    for (int radialPosNo = sRadialPos::INNER_BULL; radialPosNo < sRadialPos::OUTSIDE; radialPosNo++) {
+    for (int radialPosNo = sRadialPos::INNER_BULL; radialPosNo < sRadialPos::NUM; radialPosNo++) {
         if (r < sRadialPos::RADIUS[radialPosNo]) {
             mRadialPos = radialPosNo; mPower = sRadialPos::POWER[radialPosNo];
             if (cMouse::instance()->clickState() == Key::PRESSEDtoRELEASED) {
@@ -164,15 +163,13 @@ void cDarts::updateByMouse() {
     float phi = -M_PI + 0.05 * M_PI;
     switch (mRadialPos) {
     case sRadialPos::INNER_BULL:
-        mPoint = 25; mTotalPoint = 50;
-        return;
+        mPoint = 25; mTotalPoint = 50; return;
     case sRadialPos::OUTER_BULL:
         mPoint = 25;
         if (cGame::instance()->category() == cGame::sCategory::CRICKET) {
             mTotalPoint = 25; return;
         }
-        mTotalPoint = 50;
-        return;
+        mTotalPoint = 50; return;
     default:
         for (int i = 0; i < 21; i++, phi += 0.1 * M_PI) {
             if (theta < phi) {
@@ -186,8 +183,6 @@ void cDarts::updateByMouse() {
 }
 
 void cDarts::update() {
-    mTimer.update();
-
     // initialize darts
     mRadialPos = sRadialPos::OUTSIDE; mPoint = 0; mPower = 0; mTotalPoint = 0;
     mIsTouched = false; mIsThrowed = false;
@@ -208,4 +203,22 @@ bool cDarts::isValidPoint(int point) {
     if (point == 25) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
     if (point < 0 || point >= sPoint::NUM) return false;
     return mIsValidPoint[point];
+}
+
+std::string cDarts::pointName() {
+    return pointName(mPoint, mPower);
+}
+
+std::string cDarts::pointName(int point) {
+    if (point == 25) return POINT_NAME[sPoint::OUTER_BULL];
+    if (point < 0 || point >= sPoint::NUM) return "None";
+    return POINT_NAME[point];
+}
+
+std::string cDarts::pointName(int point, int power) {
+    if (point == 25) return POINT_NAME[sPoint::OUTER_BULL + power - 1];
+    if (point < 0 || point >= sPoint::NUM) return "None";
+    if (power < 0 || power >= sPower::NUM) return "None";
+    if (!point || !power) return "Miss";
+    return POINT_NAME[point] + POWER_NAME[power];
 }

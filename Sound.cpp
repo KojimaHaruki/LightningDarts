@@ -3,12 +3,11 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
-#include <string>
 #include "resource.h"
 namespace fs = std::filesystem;
 
 std::string cSound::name(int SoundNo) {
-    if (SoundNo < 0 || SoundNo >= Kind::NUM) return ""; 
+    if (SoundNo < 0 || SoundNo >= sKind::NUM) return ""; 
     return mName[SoundNo];
 }
 
@@ -55,8 +54,8 @@ void cSound::load() {
 }
 
 void cSound::initSoundVol() {
-    for (int i = 0; i < Kind::NUM; i++) mVol[i] = MAX_VOL;
-    setVol(Kind::TOTAL, MAX_VOL);
+    for (int i = 0; i < sKind::NUM; i++) mVol[i] = MAX_VOL;
+    setVol(sKind::TOTAL, MAX_VOL);
 }
 
 void cSound::mute() {
@@ -67,7 +66,7 @@ void cSound::mute() {
 void cSound::unmute() {
     ChangeVolumeSoundMem(mBGMVol, mPlayingBGMHandle);
     // play BGM
-    if (mBGMPlayMode == PlayMode::LOOP)
+    if (mBGMPlayMode == sPlayMode::LOOP)
         PlaySoundMem(mPlayingBGMHandle, DX_PLAYTYPE_BACK | DX_PLAYTYPE_LOOP, 0);
     else
         PlaySoundMem(mPlayingBGMHandle, DX_PLAYTYPE_BACK, 0);
@@ -75,7 +74,7 @@ void cSound::unmute() {
 }
 
 bool cSound::setVol(int SoundNo, int Vol) {
-    if (SoundNo < 0 || SoundNo >= Kind::NUM) return false; // if sound doesn't exist, exit
+    if (SoundNo < 0 || SoundNo >= sKind::NUM) return false; // if sound doesn't exist, exit
     if (Vol > MAX_VOL) { // if sound's volume is above maximum volume,
         mVol[SoundNo] = MAX_VOL; // set maximum volume
     }
@@ -83,12 +82,12 @@ bool cSound::setVol(int SoundNo, int Vol) {
         mVol[SoundNo] = MIN_VOL; // set minimum volume
     }
     else mVol[SoundNo] = Vol; // othewise set sound's volume
-    if (SoundNo != Kind::SE) { // if sound is BGMs or total sounds,
-        mBGMVol = (int)(0.0064 * mVol[Kind::TOTAL] * mVol[Kind::BGM]); // set BGMs' volume
+    if (SoundNo != sKind::SE) { // if sound is BGMs or total sounds,
+        mBGMVol = (int)(0.0064 * mVol[sKind::TOTAL] * mVol[sKind::BGM]); // set BGMs' volume
         ChangeVolumeSoundMem(mBGMVol, mPlayingBGMHandle); // change volume of BGM which is now playing
     }
-    if (SoundNo != Kind::BGM) { // if sound is SEs or total sounds,
-        mSEVol = (int)(0.0064 * mVol[Kind::TOTAL] * mVol[Kind::SE]); // set SEs' volume
+    if (SoundNo != sKind::BGM) { // if sound is SEs or total sounds,
+        mSEVol = (int)(0.0064 * mVol[sKind::TOTAL] * mVol[sKind::SE]); // set SEs' volume
         // change SEs'volume
         for (int i = 0; i < SE_NUM; i++) { ChangeVolumeSoundMem(mSEVol, mSE[i]); }
         for (int i = 0; i < COMBO_SE_NUM; i++) { ChangeVolumeSoundMem(mSEVol, mComboSE[i]); }
@@ -99,7 +98,7 @@ bool cSound::playBGM(int BGMNo) {
     if (BGMNo < 0 || BGMNo >= mBGMs.size()) // if BGM doesn't exist,
         return false; // exit
     int nextBGMHandle = -1;
-    if (mBGMPlayMode == PlayMode::RANDAM) {
+    if (mBGMPlayMode == sPlayMode::RANDAM) {
         nextBGMHandle = LoadSoundMem(mRandomBGMs[BGMNo].path.c_str());
         mPlayingBGMName = mRandomBGMs[BGMNo].name;
     }
@@ -118,7 +117,7 @@ bool cSound::playBGM(int BGMNo) {
 
 bool cSound::playNextBGM() {
     int nextBGMNo = mPlayingBGMNo + 1;
-    if (mBGMPlayMode == PlayMode::RANDAM && nextBGMNo >= mBGMs.size()) {
+    if (mBGMPlayMode == sPlayMode::RANDAM && nextBGMNo >= mBGMs.size()) {
         nextBGMNo = 0;
         std::mt19937_64 get_random_mt(std::random_device{}());
         std::shuffle(mRandomBGMs.begin(), mRandomBGMs.end(), get_random_mt);
@@ -135,10 +134,10 @@ void cSound::update() {
     if (mIsBGMPlayed && !CheckSoundMem(mPlayingBGMHandle)) {
         int nextBGMNo = mPlayingBGMNo;
         switch (mBGMPlayMode) {
-        case PlayMode::RANDAM: case PlayMode::ASCEND: 
+        case sPlayMode::RANDAM: case sPlayMode::ASCEND: 
             playNextBGM(); 
             break;
-        case PlayMode::DESCEND: 
+        case sPlayMode::DESCEND: 
             playLastBGM(); 
             break;
         default:

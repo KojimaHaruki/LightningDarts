@@ -11,13 +11,13 @@ GameSelect::GameSelect(ShareData shareData) {
         category++) {
         gameCategoryBox[category].setSize(230, XLfontSize + 40);
         gameCategoryBox[category].setUpperLeft(
-            screenBox.left() + screenBox.width() * category / 3, sd.obj.upperFrame.bottom());
+            screen.left() + screen.width() * category / 3, upperFrame.bottom());
         for (int categoryMode = 0; 
             categoryMode < cGame::CATEGORY_MODE_NUM[category] && mode < cGame::sMode::NUM; 
             categoryMode++, mode++) {
             gameModeBox[mode].setSize(250, MfontSize + 12);
             gameModeBox[mode].setUpperLeft(gameCategoryBox[category].left() + 15,
-                gameCategoryBox[category].bottom() + screenBox.height() * categoryMode / 10);
+                gameCategoryBox[category].bottom() + screen.height() * categoryMode / 10);
         }
     }
 }
@@ -53,7 +53,7 @@ void GameSelect::draw() {
             cGame::instance()->modeName(game).c_str(), color, Mfont);
     }
     DrawStringToHandle(sd.ctrl.mute[0].icon.box.right() + 5,
-        sd.obj.upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
+        upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
 
 void GameSelect::update() {

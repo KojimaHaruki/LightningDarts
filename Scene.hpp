@@ -1,9 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "Box.hpp"
-#include "Keyboard.hpp"
-#include "Timer.hpp"
-#include <iostream>
+#include <string>
 #include <vector>
 #include "Team.hpp"
 
@@ -11,12 +9,14 @@ class cScene {
 public:
     static constexpr int MAX_CHARA_NUM = 28;
     static constexpr int MAX_GROUP_NUM = 10;
+    static constexpr int DEFAULT_ICON_WIDTH = 25;
+    static constexpr int DEFAULT_ICON_HEIGHT = 25;
 protected:
     // Scene
     int mNowScene, mNextScene;
 
     // Screen
-    cBox screenBox;
+    cBox screen, upperFrame, lowerFrame;
 
     // Time
     const std::string wday[7] = { "Sun","Mon","Tue","Wed","Thu", "Fri","Sat" };
@@ -33,8 +33,6 @@ protected:
         int handle = 0;
         int trans = TRUE;
     };
-    Coordinate2d<int> ICONSIZE_NORMAL;
-
     // Key for control
     struct sCtrlKey {
         sImage image;
@@ -65,9 +63,6 @@ protected:
         cBox box;
         int color = 0;
         int fill = TRUE;
-    };
-    struct sScreenObjKind {
-        cBox upperFrame, lowerFrame;
     };
 
 	// Color
@@ -121,7 +116,6 @@ protected:
         int window = FALSE;
         sCtrlKind ctrl;
         PictureKind pic;
-        sScreenObjKind obj;
         std::vector<sGroup> groups, teams;
         int SkillEffectMode = TRUE;
     }; ShareData sd;
@@ -130,6 +124,7 @@ protected:
     // Functions
     void loadColor();
     void loadFont();
+    void loadScreen();
     void initCtrlKey();
     void initScreenSize();
     void changeWindow(int WindowModeFlag);
@@ -160,9 +155,8 @@ public:
     static constexpr int PLAYER_SELECT =  3;
     static constexpr int GAME_START    =  4;
     static constexpr int ZERO_ONE      =  5;
-    static constexpr int STANDARD_CRICKET       =  6;
+    static constexpr int STANDARD_CRICKET =  6;
     static constexpr int COUNT_UP      =  7;
-    static constexpr int OTHER_GAME    =  8;
-    static constexpr int QUIT          =  9;
+    static constexpr int QUIT          =  8;
     ShareData shareData() { return sd; }
 };

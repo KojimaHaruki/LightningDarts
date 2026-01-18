@@ -1,7 +1,7 @@
 #include "Config.hpp"
 #include "Mouse.hpp"
 #include "Sound.hpp"
-#include "Darts.hpp"
+#include "Timer.hpp"
 
 Config::Config(int priorScene, ShareData shareData) {
     sd = shareData;
@@ -28,10 +28,9 @@ void Config::set() {
     ctrl = sd.ctrl;
     ctrl.bgm.icon.box.setUpperLeft(10, 210);
     ctrl.bgm.key.image.box.setUpperLeft(200, 210);
-    int iconX[2] = { screenBox.center().x() + 5, screenBox.center().x() + 5 + screenBox.width() / 4 };
-    int keyX[2] = {};
-    for (int i = 0; i < 2; i++) keyX[i] = iconX[i] + 150;
-    ctrl.home.icon.box.setUpperLeft(iconX[0], sd.obj.upperFrame.bottom() + XLfontSize + 5);
+    int iconX[2] = { screen.center().x(), screen.center().x() + 20 + screen.width() / 4 };
+    int keyX[2] = { iconX[0] + 190, iconX[1] + 150 };
+    ctrl.home.icon.box.setUpperLeft(iconX[0], upperFrame.bottom() + XLfontSize + 30);
     ctrl.home.key.image.box.setUpperLeft(keyX[0], ctrl.home.icon.box.top());
     ctrl.skill.icon.box.setUpperLeft(iconX[0], ctrl.home.icon.box.bottom() + 5);
     ctrl.skill.key.image.box.setUpperLeft(keyX[0], ctrl.skill.icon.box.top());
@@ -47,15 +46,15 @@ void Config::set() {
         ctrl.mute[i].icon.box.setUpperLeft(iconX[1], ctrl.home.icon.box.top());
         ctrl.mute[i].key.image.box.setUpperLeft(keyX[1], ctrl.home.icon.box.top());
         ctrl.pause[i].icon.box.setUpperLeft(iconX[1], ctrl.skill.icon.box.top());
-        ctrl.pause[i].key.image.box.setUpperLeft(keyX[1] - 30, ctrl.skill.icon.box.top());
+        ctrl.pause[i].key.image.box.setUpperLeft(keyX[1], ctrl.skill.icon.box.top());
         ctrl.window[i].icon.box.setUpperLeft(iconX[0], ctrl.init.icon.box.bottom() + 5);
-        ctrl.window[i].key.image.box.setUpperLeft(keyX[1], ctrl.window[i].icon.box.top());
+        ctrl.window[i].key.image.box.setUpperLeft(keyX[0], ctrl.window[i].icon.box.top());
     }
-    ctrl.gameSelect.icon.box.setUpperLeft(iconX[0], ctrl.window[0].icon.box.bottom() + 5);
+    ctrl.gameSelect.icon.box.setUpperLeft(iconX[1], ctrl.window[0].icon.box.top());
     ctrl.gameSelect.key.image.box.setUpperLeft(keyX[1], ctrl.gameSelect.icon.box.top());
     ctrl.playerSelect.icon.box.setUpperLeft(iconX[0], ctrl.gameSelect.icon.box.bottom() + 5);
-    ctrl.playerSelect.key.image.box.setUpperLeft(keyX[1], ctrl.playerSelect.icon.box.top());
-    ctrl.reset.icon.box.setUpperLeft(iconX[0], ctrl.playerSelect.icon.box.bottom() + 5);
+    ctrl.playerSelect.key.image.box.setUpperLeft(keyX[0], ctrl.playerSelect.icon.box.top());
+    ctrl.reset.icon.box.setUpperLeft(iconX[1], ctrl.playerSelect.icon.box.top());
     ctrl.reset.key.image.box.setUpperLeft(keyX[1], ctrl.reset.icon.box.top());
     ctrl.back.icon.box.setUpperLeft(iconX[0], ctrl.reset.icon.box.bottom() + 5);
     ctrl.back.key.image.box.setUpperLeft(keyX[0], ctrl.back.icon.box.top());
@@ -66,25 +65,21 @@ void Config::set() {
 
 void Config::draw() {
     cScene::draw();
-    drawImage(sd.ctrl.pause[cDarts::instance()->timer().isPaused()].icon);
+
+    // draw icon
+    if (cTimer::instance()->isPaused()) drawImage(sd.ctrl.pause[TRUE].icon);
+    else drawImage(sd.ctrl.pause[FALSE].icon);
     drawImage(sd.ctrl.skill.icon);
     if (mNowScene >= PLAYER_SELECT) drawImage(sd.ctrl.playerSelect.icon);
     if (mNowScene >= GAME_SELECT) drawImage(sd.ctrl.gameSelect.icon);
-    if (mNowScene >= HOME) drawImage(sd.ctrl.home.icon);
-    drawImage(sd.ctrl.back.icon);
-    drawImage(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon);
-    drawImage(sd.ctrl.window[sd.window].icon);
-    drawImage(sd.ctrl.quit.icon);
-    drawImage(sd.ctrl.init.icon);
-    drawImage(sd.ctrl.reset.icon);
-    drawImage(sd.ctrl.bgm.icon);
+
     // control setting
     draw(ctrl.home);
     draw(ctrl.mute[cSound::instance()->isBGMPlayed()]);
     draw(ctrl.playerSelect);
     draw(ctrl.gameSelect);
     draw(ctrl.skill);
-    draw(ctrl.pause[cDarts::instance()->timer().isPaused()]);
+    if (cTimer::instance()->isPaused()) draw(ctrl.pause[TRUE]); else draw(ctrl.pause[FALSE]);
     draw(ctrl.config);
     draw(ctrl.window[sd.window]);
     draw(ctrl.quit);
@@ -94,14 +89,15 @@ void Config::draw() {
     draw(ctrl.skip);
     draw(ctrl.back);
     draw(ctrl.forward);
+
     // music setting 
-    DrawStringToHandle(5, 25, "Sound", white, XLfont);
-    DrawStringToHandle(screenBox.center().x(), 25, "System", white, XLfont);
+    DrawStringToHandle(5, upperFrame.bottom() + 10, "Sound", white, XLfont);
+    DrawStringToHandle(screen.center().x(), upperFrame.bottom() + 10, "System", white, XLfont);
     DrawStringToHandle(10, 180, ("Play mode: " + cSound::instance()->bgmPlayModeName()).c_str(),
         white, Mfont);
     DrawGraph(355, 175, sd.ctrl.down.icon.handle, TRUE);
     DrawGraph(380, 175, sd.ctrl.up.icon.handle, TRUE);
-    for (int i = 0; i < cSound::Kind::NUM; i++) {
+    for (int i = 0; i < cSound::sKind::NUM; i++) {
         DrawStringToHandle(10, 90 + 30 * i,
             cSound::instance()->name(i).c_str(), white, Mfont);
         int vol = cSound::instance()->vol(i);
@@ -136,7 +132,7 @@ void Config::draw() {
         }
     }
     DrawStringToHandle(sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.box.upperRight().x(),
-        sd.obj.upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
+        upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
 }
 
 void Config::update() {
@@ -144,12 +140,12 @@ void Config::update() {
     if (isBoxClicked(355, 175, 380, 200)) {
         cSound::instance()->playSE(1);
         cSound::instance()->setBgmPlayMode(
-            (cSound::instance()->bgmPlayMode() - 1 + cSound::PlayMode::NUM) % cSound::PlayMode::NUM);
+            (cSound::instance()->bgmPlayMode() - 1 + cSound::sPlayMode::NUM) % cSound::sPlayMode::NUM);
     }
     else if (isBoxClicked(380, 175, 405, 200)) {
         cSound::instance()->playSE(1);
         cSound::instance()->setBgmPlayMode(
-            (cSound::instance()->bgmPlayMode() + 1) % cSound::PlayMode::NUM);
+            (cSound::instance()->bgmPlayMode() + 1) % cSound::sPlayMode::NUM);
     }
     else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
     else if (ctrlRQ(sd.ctrl.back)) mNextScene = mNowScene;
