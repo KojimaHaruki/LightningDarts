@@ -2,10 +2,10 @@
 #include "BaseScene.hpp"
 #include "Game.hpp"
 
-class ZeroOne : public cBaseScene {
+class cZeroOne : public cBaseScene {
 public:
-	ZeroOne(ShareData shareData);
-	~ZeroOne() {}
+	cZeroOne();
+	~cZeroOne() {}
 	void reset();
 	void draw();
 	void update();

@@ -3,9 +3,8 @@
 #include "Timer.hpp"
 #include "Control.hpp"
 
-ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
+cZeroOne::cZeroOne() : attempt(0), maxAttempt(0) {
 	mNowScene = ZERO_ONE;
-	sd = shareData;
 	nTeam = cPlayer::instance()->nTeam();
 	arrowImage = cDarts::instance()->arrowImage();
 	attempt = 0;
@@ -64,7 +63,7 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	record[attempt] = now;
 }
 
-void ZeroOne::reset() {
+void cZeroOne::reset() {
 	cBaseScene::reset();
 	cTimer::instance()->restart();
 	attempt = 0;
@@ -77,7 +76,7 @@ void ZeroOne::reset() {
 	}
 }
 
-void ZeroOne::draw() {
+void cZeroOne::draw() {
 	cBaseScene::draw();
 
 	// draw icon
@@ -220,7 +219,7 @@ void ZeroOne::draw() {
 		(chara.name + ", throw darts!").c_str(), white, Mfont);
 }
 
-void ZeroOne::update() {
+void cZeroOne::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
 	cTimer::instance()->update();
@@ -329,7 +328,7 @@ void ZeroOne::update() {
 	}
 }
 
-void ZeroOne::fin() {
+void cZeroOne::fin() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teamMember(player, 0).image.box().setHeight(100);

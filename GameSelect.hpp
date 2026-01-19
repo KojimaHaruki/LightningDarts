@@ -2,10 +2,10 @@
 #include "BaseScene.hpp"
 #include "Game.hpp"
 
-class GameSelect : public cBaseScene {
+class cGameSelect : public cBaseScene {
 public:
-    GameSelect(ShareData shareData);
-    ~GameSelect() {}
+    cGameSelect();
+    ~cGameSelect() {}
     void reset();
     void draw();
     void update();

@@ -2,10 +2,10 @@
 #include "BaseScene.hpp"
 #include "Control.hpp"
 
-class Config : public cBaseScene {
+class cConfig : public cBaseScene {
 public:
-    Config(int priorScene, ShareData sd);
-    ~Config() {}
+    cConfig(int priorScene);
+    ~cConfig() {}
     void reset();
     void set();
     void update();

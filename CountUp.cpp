@@ -4,9 +4,8 @@
 #include "Timer.hpp"
 #include "Control.hpp"
 
-CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
+cCountUp::cCountUp() : attempt(0), maxAttempt(0) {
 	mNowScene = COUNT_UP;
-	sd = shareData;
 	nTeam = cPlayer::instance()->nTeam();
 	attempt = 0;
 	maxAttempt = 0;
@@ -66,7 +65,7 @@ CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	record[attempt] = now;
 }
 
-void CountUp::reset() {
+void cCountUp::reset() {
 	cBaseScene::reset();
 	cTimer::instance()->restart();
 	attempt = 0;
@@ -88,7 +87,7 @@ void CountUp::reset() {
 	}
 }
 
-void CountUp::draw() {
+void cCountUp::draw() {
 	cBaseScene::draw();
 
 	// draw icon
@@ -195,7 +194,7 @@ void CountUp::draw() {
 		(chara.name + ", throw darts!").c_str(), white, Mfont);
 }
 
-void CountUp::update() {
+void cCountUp::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
 	cTimer::instance()->update();
@@ -315,7 +314,7 @@ void CountUp::update() {
 	}
 }
 
-void CountUp::fin() {
+void cCountUp::fin() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teamMember(player, 0).image.box().setHeight(100);

@@ -3,7 +3,7 @@
 
 class HiddenCricket : public cBaseScene {
 public:
-	HiddenCricket(ShareData shareData);
+	HiddenCricket();
 	~HiddenCricket() {}
 	void reset();
 	void draw();

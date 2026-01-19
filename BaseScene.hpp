@@ -27,11 +27,6 @@ protected:
     // Team
     int nTeam = 0;
 
-    struct ShareData {
-        cImage selected, darts, thunder;
-    }; ShareData sd;
-    const char* ShareDataFileName = "ShareData.dat";
-
     // Functions
     void loadColor();
     void loadFont();
@@ -60,5 +55,4 @@ public:
     static constexpr int ZERO_ONE      =  6;
     static constexpr int STANDARD_CRICKET =  7;
     static constexpr int COUNT_UP      =  8;
-    ShareData shareData() { return sd; }
 };

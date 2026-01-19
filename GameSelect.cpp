@@ -5,8 +5,7 @@
 #include "Sound.hpp"
 #include "Control.hpp"
 
-GameSelect::GameSelect(ShareData shareData) {
-    sd = shareData;
+cGameSelect::cGameSelect() {
     mNowScene = GAME_SELECT;
     for (int category = 0, mode = 0; category < cGame::sCategory::NUM && mode < cGame::sMode::NUM;
         category++) {
@@ -23,12 +22,12 @@ GameSelect::GameSelect(ShareData shareData) {
     }
 }
 
-void GameSelect::reset() {
+void cGameSelect::reset() {
     cBaseScene::reset();
     cGame::instance()->init();
 }
 
-void GameSelect::draw() {
+void cGameSelect::draw() {
     cBaseScene::draw();
 
     // icons
@@ -60,7 +59,7 @@ void GameSelect::draw() {
         upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
 
-void GameSelect::update() {
+void cGameSelect::update() {
     cBaseScene::update();
     if (cControl::instance()->isRequested(cControl::FORWARD) ||
         cControl::instance()->isRequested(cControl::SKIP))

@@ -3,8 +3,7 @@
 #include "Timer.hpp"
 #include "Control.hpp"
 
-cStandardCricket::cStandardCricket(ShareData shareData) : attempt(0), maxAttempt(0) {
-	sd = shareData;
+cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 	nTeam = cPlayer::instance()->nTeam();
 	mNowScene = STANDARD_CRICKET;
 	attempt = 0;

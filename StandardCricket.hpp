@@ -3,7 +3,7 @@
 
 class cStandardCricket : public cBaseScene {
 public:
-	cStandardCricket(ShareData shareData);
+	cStandardCricket();
 	~cStandardCricket() {}
 
 	// Functions

@@ -6,7 +6,7 @@
 class cFont : public Singleton<cFont> {
     cFont() {}
     friend class Singleton<cFont>;
-    int mXLFontHandle, mMFontHandle, mSFontHandle;
+    int mXLFontHandle = -1, mMFontHandle = -1, mSFontHandle = -1;
     struct Data {
         std::string name;
         int size = 0;
@@ -18,15 +18,10 @@ class cFont : public Singleton<cFont> {
         mMFont = { "Times New Roman Bold", 18, 5, DX_FONTTYPE_ANTIALIASING_EDGE, 0 },
         mSFont = { "Times New Roman Bold", 14, 1, DX_FONTTYPE_ANTIALIASING_EDGE, 0 };
     // Functions
-    int createFont(Data font) {
-        return CreateFontToHandle(font.name.c_str(), font.size, font.thick, font.type, font.edge);
-    }
+    int createFont(Data font);
+
 public:
-    void load() {
-        mXLFontHandle = createFont(mXLFont);
-        mMFontHandle = createFont(mMFont);
-        mSFontHandle = createFont(mSFont);
-    }
+    void load();
 	int XLfont() { return mXLFontHandle; }
 	int MFont() { return mMFontHandle; }
 	int Sfont() { return mSFontHandle; }

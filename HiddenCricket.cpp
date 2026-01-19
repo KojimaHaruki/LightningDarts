@@ -6,8 +6,7 @@
 #include "Timer.hpp"
 #include "Control.hpp"
 
-HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
-	sd = shareData;
+HiddenCricket::HiddenCricket() : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 	nTeam = cPlayer::instance()->nTeam();
 	mNowScene = STANDARD_CRICKET;
 	markPart[0].color = white;

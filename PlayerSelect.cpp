@@ -9,8 +9,7 @@
 #include "Control.hpp"
 #include "Keyboard.hpp"
 
-sPlayerSelect::sPlayerSelect(ShareData shareData) {
-    sd = shareData;
+cPlayerSelect::cPlayerSelect() {
     mNowScene = PLAYER_SELECT;
     for (int group = 0, chara = 0;
         group < cPlayer::instance()->nGroup() && chara < cPlayer::MAX_CHARA_NUM; group++) {
@@ -63,14 +62,14 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
         cControl::instance()->icon(cControl::YES).box().centerY());
 }
 
-void sPlayerSelect::reset() {
+void cPlayerSelect::reset() {
     cBaseScene::reset();
     players.clear();
     playersMem = players;
     cPlayer::instance()->init();
 }
 
-void sPlayerSelect::draw() {
+void cPlayerSelect::draw() {
     cBaseScene::draw();
 
     // icons
@@ -204,7 +203,7 @@ void sPlayerSelect::draw() {
         (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);
 }
 
-void sPlayerSelect::update() {
+void cPlayerSelect::update() {
     cBaseScene::update();
     if (players.size() < playersMem.size()) {
         cControl::instance()->icon(cControl::FORWARD).draw();
@@ -244,7 +243,7 @@ void sPlayerSelect::update() {
     }
 }
 
-void sPlayerSelect::setTeamType(int teamType) {
+void cPlayerSelect::setTeamType(int teamType) {
     cPlayer::instance()->setTeamType((players.size() < 2) ? cPlayer::sTeamType::SOLO : teamType);
     cPlayer::instance()->teams().clear();
     if (cPlayer::instance()->teamType() == cPlayer::sTeamType::SOLO) {

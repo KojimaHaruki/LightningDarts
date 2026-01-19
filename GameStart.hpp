@@ -3,7 +3,7 @@
 
 class cGameStart : public cBaseScene {
 public:
-    cGameStart(ShareData shareData);
+    cGameStart();
     ~cGameStart() {}
     void reset();
     void update();

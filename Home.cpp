@@ -6,20 +6,14 @@
 #include "Control.hpp"
 #include "Keyboard.hpp"
 
-Home::Home() {
+cHome::cHome() {
     mNowScene = NO_CHANGE;
     timeError = localtime_s(&nowLocalTime, &nowTime);
-}
-
-Home::Home(ShareData shareData) {
-    sd = shareData;
-    mNowScene = HOME;
-    timeError = localtime_s(&nowLocalTime, &nowTime);
     cKeyboard::instance()->keyBox(cControl::instance()->keyCode(cControl::START)).setUpperLeft(
-		screen.center().x() - 56, 11 * screen.center().y() / 8 - 12);
+        screen.center().x() - 56, 11 * screen.center().y() / 8 - 12);
 }
 
-void Home::draw() {
+void cHome::draw() {
     cBaseScene::draw();
     cControl::instance()->icon(cControl::FORWARD).draw();
     DrawStringToHandle(screen.center().x() - 3 * XLfontSize,
@@ -38,7 +32,7 @@ void Home::draw() {
     DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().upperRight().x(),
         upperFrame.center().y() - MfontSize / 2, "Home", white, Mfont);
 }
-void Home::update() {
+void cHome::update() {
     cBaseScene::update();
     if (cControl::instance()->isKeyTyped(cControl::START)) mNextScene = GAME_SELECT;
     else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;

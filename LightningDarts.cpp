@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     SRand(GetNowCount()); // initialize random number by the lapse time in Windows
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
-    cBaseScene *scene = new Home();
+    cBaseScene *scene = new cHome();
     while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
         scene->init();
         if (scene->nextScene() == cBaseScene::HOME) { break; }
@@ -33,14 +33,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         }
         switch (scene->nextScene()) {
         case cBaseScene::NO_CHANGE: break;
-        case cBaseScene::CONFIG: scene = new Config(scene->currentScene(), scene->shareData()); break;
-        case cBaseScene::HOME:          scene = new Home(scene->shareData());                   break;
-        case cBaseScene::GAME_SELECT:   scene = new GameSelect(scene->shareData());             break;
-        case cBaseScene::PLAYER_SELECT: scene = new sPlayerSelect(scene->shareData());           break;
-        case cBaseScene::GAME_START:    scene = new cGameStart(scene->shareData());             break;
-        case cBaseScene::ZERO_ONE:      scene = new ZeroOne(scene->shareData());                break;
-        case cBaseScene::STANDARD_CRICKET: scene = new cStandardCricket(scene->shareData());     break;
-        case cBaseScene::COUNT_UP:      scene = new CountUp(scene->shareData());                break;
+        case cBaseScene::CONFIG: scene = new cConfig(scene->currentScene()); break;
+        case cBaseScene::HOME:          scene = new cHome();                   break;
+        case cBaseScene::GAME_SELECT:   scene = new cGameSelect();             break;
+        case cBaseScene::PLAYER_SELECT: scene = new cPlayerSelect();           break;
+        case cBaseScene::GAME_START:    scene = new cGameStart();             break;
+        case cBaseScene::ZERO_ONE:      scene = new cZeroOne();                break;
+        case cBaseScene::STANDARD_CRICKET: scene = new cStandardCricket();     break;
+        case cBaseScene::COUNT_UP:      scene = new cCountUp();                break;
         case cBaseScene::QUIT:          delete scene; return 0;
         default: return -1;
         }

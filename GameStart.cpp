@@ -7,8 +7,7 @@
 #include "Timer.hpp"
 #include "Control.hpp"
 
-cGameStart::cGameStart(ShareData shareData) {
-	sd = shareData;
+cGameStart::cGameStart() {
 	mNowScene = GAME_START;
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;

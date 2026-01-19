@@ -5,27 +5,26 @@
 #include "Keyboard.hpp"
 #include "Control.hpp"
 
-Config::Config(int priorScene, ShareData shareData) {
-    sd = shareData;
+cConfig::cConfig(int priorScene) {
     mNowScene = priorScene;
     set();
 }
 
-void Config::draw(int ctrl) {
+void cConfig::draw(int ctrl) {
     mIcon[ctrl].draw();
     DrawStringToHandle(mIcon[ctrl].box().right() + 5, mIcon[ctrl].box().center().y() - MfontSize / 2,
         cControl::instance()->name(ctrl).c_str(), white, Mfont);
     cKeyboard::instance()->keyImage(cControl::instance()->keyCode(ctrl)).draw();
 }
 
-void Config::reset() {
+void cConfig::reset() {
     cBaseScene::reset();
     cControl::instance()->initKey();
     initScreenSize();
     cSound::instance()->initSoundVol();
 }
 
-void Config::set() {
+void cConfig::set() {
     for (int ctrl = 0; ctrl < cControl::NUM; ctrl++) 
         mIcon[ctrl] = cControl::instance()->icon(ctrl);
     mIcon[cControl::CHANGE_BGM].box().setUpperLeft(10, 210);
@@ -80,7 +79,7 @@ void Config::set() {
         keyX[1], mIcon[cControl::BACK].box().top());
 }
 
-void Config::draw() {
+void cConfig::draw() {
     cBaseScene::draw();
 
     // draw icon
@@ -154,7 +153,7 @@ void Config::draw() {
         upperFrame.center().y() - MfontSize / 2, "Config", white, Mfont);
 }
 
-void Config::update() {
+void cConfig::update() {
     cBaseScene::update();
     if (cMouse::instance()->clickBoxState(355, 175, 380, 200) == sKey::RELEASEDtoPRESSED) {
         cSound::instance()->playSE(1);

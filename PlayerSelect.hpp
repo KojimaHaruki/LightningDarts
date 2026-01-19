@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseScene.hpp"
 
-class sPlayerSelect : public cBaseScene {
+class cPlayerSelect : public cBaseScene {
 public:
-    sPlayerSelect(ShareData shareData);
-    ~sPlayerSelect() {}
+    cPlayerSelect();
+    ~cPlayerSelect() {}
     void reset();
     void draw();
     void update();

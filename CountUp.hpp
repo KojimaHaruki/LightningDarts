@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseScene.hpp"
 
-class CountUp : public cBaseScene {
+class cCountUp : public cBaseScene {
 public:
-	CountUp(ShareData shareData);
-	~CountUp() {}
+	cCountUp();
+	~cCountUp() {}
 	void reset();
 	void draw();
 	void update();

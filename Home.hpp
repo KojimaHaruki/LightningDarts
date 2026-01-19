@@ -1,11 +1,10 @@
 #pragma once
 #include "BaseScene.hpp"
 
-class Home : public cBaseScene {
+class cHome : public cBaseScene {
 public:
-    Home();
-    Home(ShareData shareData);
-    ~Home() {}
+    cHome();
+    ~cHome() {}
     void draw();
     void update();
 private:

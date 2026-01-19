@@ -44,18 +44,11 @@ void cBaseScene::loadScreen() {
 }
 
 void cBaseScene::initScreenSize() {
-    cScreen::instance()->init();
+    cScreen::instance()->initSize();
     cDarts::instance()->loadScreen();
     loadScreen();
     setWindow(FALSE);
-    // set icon
     cControl::instance()->initIconBox();
-    // set image
-    sd.selected.box().setSize(100, 86);
-    sd.darts.box().setSize(900, 600);
-    sd.darts.box().setUpperLeft(0, 0);
-    sd.thunder.box().setSize(900, 945);
-    sd.thunder.box().setUpperLeft(-50, -200);
 }
 
 void cBaseScene::init() {
@@ -99,28 +92,24 @@ void cBaseScene::setWindow(int window) {
     cDarts::instance()->loadFont();
     loadFont();
 
-    if (cPlayer::instance()->nGroup() > 0) {
-        // reload images
-        cKeyboard::instance()->reloadKeyImage();
-        cControl::instance()->reloadIcon();
-        sd.darts.reload();
-        sd.selected.reload();
-        sd.thunder.reload();
-    }
-    else {
+    if (mNowScene == NO_CHANGE) {
         // load images
         cKeyboard::instance()->loadKeyImage();
         cControl::instance()->loadIcon();
-        sd.darts.load(IDB_JPG1, "JPG");
-        sd.selected.load(IDB_PNG90, "PNG");
-        sd.thunder.load(IDB_PNG91, "PNG");
+        cScreen::instance()->loadImage();
+    }
+    else {
+        // reload images
+        cKeyboard::instance()->reloadKeyImage();
+        cControl::instance()->reloadIcon();
+        cScreen::instance()->reloadImage();
     }
     cPlayer::instance()->loadImage();
     cDarts::instance()->loadImage();
 }
 
 void cBaseScene::draw() {
-    sd.darts.draw(); sd.thunder.draw();
+	cScreen::instance()->draw();
     cControl::instance()->icon(cControl::HOME).draw();
     cControl::instance()->icon(cControl::BACK).draw();
     cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
@@ -175,7 +164,7 @@ void cBaseScene::update() {
 }
 
 cBaseScene::~cBaseScene() {
-    FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file
-    if (!error) { fwrite(&sd, sizeof(sd), 1, osdf); fclose(osdf); }
+    //FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file
+    //if (!error) { fwrite(&sd, sizeof(sd), 1, osdf); fclose(osdf); }
     PlaySound(NULL, 0, 0); InitSoundMem(); DxLib_End();
 }
