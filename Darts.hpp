@@ -96,4 +96,6 @@ private:
         "Outer Bull", "Inner Bull"
     };
     const std::string POWER_NAME[sPower::NUM] = { "Miss", "Single", "Double", "Triple" };
+
+    int SkillEffectMode = TRUE;
 };

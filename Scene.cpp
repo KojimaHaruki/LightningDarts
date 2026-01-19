@@ -51,7 +51,7 @@ void cScene::initScreenSize() {
     cScreen::instance()->init();
     cDarts::instance()->loadScreen();
     loadScreen();
-    changeWindow(sd.window);
+    setWindow(FALSE);
     // set icon
     cControl::instance()->initIconBox();
     // set image
@@ -91,8 +91,13 @@ void cScene::init() {
     mNextScene = HOME;
 }
 
-void cScene::changeWindow(int WindowModeFlag) {
-    ChangeWindowMode(WindowModeFlag);
+void cScene::changeWindow() {
+    if (GetWindowModeFlag() == TRUE) setWindow(FALSE);
+    else setWindow(TRUE);
+}
+
+void cScene::setWindow(int window) {
+    ChangeWindowMode(window);
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
     cFont::instance()->load();
@@ -152,7 +157,7 @@ void cScene::changeWindow(int WindowModeFlag) {
             std::cout << err.message() << std::endl;
         }
     }
-    if (nTeam > 0) {
+    if (sd.teams.size() > 0) {
         for (int team = 0; team < sd.teams.size(); team++) {
             for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
                 sd.teams.at(team).members.at(member).image.reload();
@@ -160,7 +165,6 @@ void cScene::changeWindow(int WindowModeFlag) {
         }
     }
     cDarts::instance()->loadImage();
-    sd.window = GetWindowModeFlag();
 }
 
 void cScene::draw() {
@@ -169,7 +173,7 @@ void cScene::draw() {
     cControl::instance()->icon(cControl::BACK).draw();
     cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
     cControl::instance()->icon(cControl::CONFIG).draw();
-    cControl::instance()->icon(cControl::ANOTHER_WINDOW + sd.window).draw();
+    cControl::instance()->icon(cControl::ANOTHER_WINDOW + GetWindowModeFlag()).draw();
     cControl::instance()->icon(cControl::QUIT).draw();
     cControl::instance()->icon(cControl::INITIALIZE).draw();
     cControl::instance()->icon(cControl::RESET).draw();
@@ -206,8 +210,8 @@ void cScene::update() {
         }
         cSound::instance()->unmute();
     }
-    else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + sd.window)) 
-        changeWindow((sd.window + 1) % 2);
+    else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + GetWindowModeFlag()))
+        changeWindow();
     else if (cControl::instance()->isRequested(cControl::CHANGE_BGM)) {
         if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == sKey::PRESSED) {
             cSound::instance()->playLastBGM();

@@ -203,11 +203,10 @@ void sPlayerSelect::draw() {
 
 void sPlayerSelect::update() {
     cScene::update();
-    int nPlayer = players.size();
-    if (nPlayer < playersMem.size()) {
+    if (players.size() < playersMem.size()) {
         cControl::instance()->icon(cControl::FORWARD).draw();
         if (cControl::instance()->isRequested(cControl::FORWARD)) {
-            players.push_back(playersMem.at(nPlayer));
+            players.push_back(playersMem.at(players.size()));
             return;
         }
     }
@@ -223,9 +222,9 @@ void sPlayerSelect::update() {
         }
         setTeamType(cTeam::instance()->type());
     }
-    else if (nPlayer > 0 && cControl::instance()->isRequested(cControl::YES)) mNextScene = GAME_START;
+    else if (players.size() > 0 && cControl::instance()->isRequested(cControl::YES)) mNextScene = GAME_START;
     else if (cControl::instance()->isRequested(cControl::BACK)) {
-        if (nPlayer > 0) {
+        if (players.size() > 0) {
             players.pop_back();
             setTeamType(cTeam::instance()->type());
             return;
@@ -235,6 +234,11 @@ void sPlayerSelect::update() {
     else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
     else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
     else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
+    else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + GetWindowModeFlag())) {
+        for (int player = 0; player < players.size(); player++) {
+            players.at(player).image.reload();
+        }
+    }
 }
 
 void sPlayerSelect::setTeamType(int teamType) {

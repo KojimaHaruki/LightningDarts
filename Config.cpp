@@ -99,7 +99,7 @@ void Config::draw() {
     if (cTimer::instance()->isPaused()) draw(cControl::PAUSE); 
     else draw(cControl::RESUME);
     draw(cControl::CONFIG);
-    draw(cControl::ANOTHER_WINDOW + sd.window);
+    draw(cControl::ANOTHER_WINDOW + GetWindowModeFlag());
     draw(cControl::QUIT);
     draw(cControl::INITIALIZE);
     draw(cControl::RESET);

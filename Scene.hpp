@@ -35,7 +35,7 @@ protected:
 	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
 
     // Character
-    const std::string playerFolderPath = "./Image/Player";
+    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
     struct sCharaStatus {
         double winRate = 0;
         int rank = 0;
@@ -55,10 +55,8 @@ protected:
     int nTeam = 0;
 
     struct ShareData {
-        int window = FALSE;
         cImage selected, darts, thunder;
         std::vector<sGroup> groups, teams;
-        int SkillEffectMode = TRUE;
     }; ShareData sd;
     const char* ShareDataFileName = "ShareData.dat";
 
@@ -67,7 +65,8 @@ protected:
     void loadFont();
     void loadScreen();
     void initScreenSize();
-    void changeWindow(int WindowModeFlag);
+    void changeWindow();
+    void setWindow(int window);
 
 public:
     cScene();
