@@ -1,10 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib, "winmm.lib")   // MSVC —p
-#include "Scene.hpp"
-#include <random>
-#include <filesystem>
-#include <iostream>
-#include "resource.h"
+#include "BaseScene.hpp"
 #include "Keyboard.hpp"
 #include "Mouse.hpp"
 #include "Sound.hpp"
@@ -14,8 +10,6 @@
 #include "Game.hpp"
 #include "Screen.hpp"
 #include "Control.hpp"
-#include "Player.hpp"
-namespace fs = std::filesystem;
 
 cBaseScene::cBaseScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
 nTeam(cPlayer::instance()->nTeam()){

@@ -2,7 +2,6 @@
 #include "Darts.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
-#include "Player.hpp"
 
 ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = ZERO_ONE;

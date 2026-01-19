@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.hpp"
+#include "BaseScene.hpp"
 #include "Control.hpp"
 
 class Config : public cBaseScene {

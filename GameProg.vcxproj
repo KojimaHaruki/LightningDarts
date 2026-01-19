@@ -206,7 +206,7 @@
     <ClInclude Include="Mouse.hpp" />
     <ClInclude Include="PlayerSelect.hpp" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="BaseScene.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="Timer.hpp" />
     <ClInclude Include="Home.hpp" />

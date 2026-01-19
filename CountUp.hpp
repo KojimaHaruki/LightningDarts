@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.hpp"
+#include "BaseScene.hpp"
 
 class CountUp : public cBaseScene {
 public:

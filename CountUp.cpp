@@ -3,7 +3,6 @@
 #include "Game.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
-#include "Player.hpp"
 
 CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = COUNT_UP;

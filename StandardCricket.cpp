@@ -2,7 +2,6 @@
 #include "Darts.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
-#include "Player.hpp"
 
 cStandardCricket::cStandardCricket(ShareData shareData) : attempt(0), maxAttempt(0) {
 	sd = shareData;

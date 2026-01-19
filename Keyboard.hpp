@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Singleton.hpp"
 #include "Key.hpp"
 #include "Image.hpp"

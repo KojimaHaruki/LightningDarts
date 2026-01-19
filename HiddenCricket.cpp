@@ -5,7 +5,6 @@
 #include "Game.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
-#include "Player.hpp"
 
 HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 	sd = shareData;

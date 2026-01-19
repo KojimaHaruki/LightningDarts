@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.hpp"
+#include "BaseScene.hpp"
 #include "Game.hpp"
 
 class GameSelect : public cBaseScene {

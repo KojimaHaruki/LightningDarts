@@ -1,6 +1,5 @@
 #pragma once
-#include "Scene.hpp"
-#include "Player.hpp"
+#include "BaseScene.hpp"
 
 class cGameStart : public cBaseScene {
 public:
