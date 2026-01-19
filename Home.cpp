@@ -20,7 +20,7 @@ Home::Home(ShareData shareData) {
 }
 
 void Home::draw() {
-    cScene::draw();
+    cBaseScene::draw();
     cControl::instance()->icon(cControl::FORWARD).draw();
     DrawStringToHandle(screen.center().x() - 3 * XLfontSize,
         screen.center().y() - XLfontSize / 2, "Lightning Darts", yellow, XLfont);
@@ -39,7 +39,7 @@ void Home::draw() {
         upperFrame.center().y() - MfontSize / 2, "Home", white, Mfont);
 }
 void Home::update() {
-    cScene::update();
+    cBaseScene::update();
     if (cControl::instance()->isKeyTyped(cControl::START)) mNextScene = GAME_SELECT;
     else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
     else if (cControl::instance()->isRequested(cControl::FORWARD)) mNextScene = GAME_SELECT;

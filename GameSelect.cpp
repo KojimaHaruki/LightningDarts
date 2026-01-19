@@ -24,12 +24,12 @@ GameSelect::GameSelect(ShareData shareData) {
 }
 
 void GameSelect::reset() {
-    cScene::reset();
+    cBaseScene::reset();
     cGame::instance()->init();
 }
 
 void GameSelect::draw() {
-    cScene::draw();
+    cBaseScene::draw();
 
     // icons
     cControl::instance()->icon(cControl::FORWARD).draw();
@@ -61,7 +61,7 @@ void GameSelect::draw() {
 }
 
 void GameSelect::update() {
-    cScene::update();
+    cBaseScene::update();
     if (cControl::instance()->isRequested(cControl::FORWARD) ||
         cControl::instance()->isRequested(cControl::SKIP))
         mNextScene = PLAYER_SELECT;

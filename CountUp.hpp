@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.hpp"
 
-class CountUp : public cScene {
+class CountUp : public cBaseScene {
 public:
 	CountUp(ShareData shareData);
 	~CountUp() {}

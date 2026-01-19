@@ -69,14 +69,20 @@
     <ClCompile Include="HiddenCricket.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Team.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Box.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.hpp">
+      <Filter>ヘッダー ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

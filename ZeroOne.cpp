@@ -1,13 +1,13 @@
 #include "ZeroOne.hpp"
 #include "Darts.hpp"
-#include "Game.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
+#include "Player.hpp"
 
 ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	mNowScene = ZERO_ONE;
 	sd = shareData;
-	nTeam = sd.teams.size();
+	nTeam = cPlayer::instance()->nTeam();
 	arrowImage = cDarts::instance()->arrowImage();
 	attempt = 0;
 	maxAttempt = 0;
@@ -28,8 +28,8 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 			teamBox[team].setSize(
 				100, 100 + cPlayer::instance()->teamType() * 100 + nScore * (MfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
-			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
-				sd.teams.at(team).members.at(member).image.box().setUpperLeft(x, y);
+			for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++, y += 100) {
+				cPlayer::instance()->teamMemberImageBox(team, member).setUpperLeft(x, y);
 			}
 			if (team == now.team) {
 				teamBox[team].setColor(white); continue;
@@ -42,22 +42,23 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 		nRound = 7;
 		nScore = nRound + 1;
 		for (int team = 0; team < nTeam; team++) {
-			sd.teams.at(team).members.at(0).image.box().setSize(100, 70);
+			cPlayer::instance()->teamMemberImageBox(team, 0).setSize(100, 70);
 			teamBox[team].setSize(100,
-				sd.teams.at(team).members.at(0).image.box().size().y() + nScore * (SfontSize + space));
+				cPlayer::instance()->teamMemberImageBox(team, 0).size().y() + nScore * (SfontSize + space));
 			if (team == now.team) {
 				teamBox[team].setColor(white); continue;
 			}
 			teamBox[team].setColor(tableColor);
 		}
 		for (int player = 0; player < 4; player++) {
-			sd.teams.at(player).members.at(0).image.box().setUpperLeft(
+			cPlayer::instance()->teamMemberImageBox(player, 0).setUpperLeft(
 				screen.right() + 100 * (player - 4), upperFrame.bottom() + space);
-			teamBox[player].setUpperLeft(sd.teams.at(player).members.at(0).image.box().upperLeft());
+			teamBox[player].setUpperLeft(cPlayer::instance()->teamMemberImageBox(player, 0).upperLeft());
 			if (player + 4 < nTeam) {
-				sd.teams.at(player + 4).members.at(0).image.box().setUpperLeft(
+				cPlayer::instance()->teamMemberImageBox(player + 4, 0).setUpperLeft(
 					teamBox[player].left(), teamBox[player].bottom() + MfontSize + space);
-				teamBox[player + 4].setUpperLeft(sd.teams.at(player + 4).members.at(0).image.box().upperLeft());
+				teamBox[player + 4].setUpperLeft(
+					cPlayer::instance()->teamMemberImageBox(player + 4, 0).upperLeft());
 			}
 		}
 	}
@@ -65,7 +66,7 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 }
 
 void ZeroOne::reset() {
-	cScene::reset();
+	cBaseScene::reset();
 	cTimer::instance()->restart();
 	attempt = 0;
 	maxAttempt = 0;
@@ -78,7 +79,7 @@ void ZeroOne::reset() {
 }
 
 void ZeroOne::draw() {
-	cScene::draw();
+	cBaseScene::draw();
 
 	// draw icon
 	if (attempt < maxAttempt) cControl::instance()->icon(cControl::FORWARD).draw();
@@ -92,14 +93,14 @@ void ZeroOne::draw() {
 
 	// draw score table
 	int recordNo = 0;
-	sChara chara;
+	cPlayer::sChara chara;
 	if (nTeam <= 4) {
 		DrawBox(screen.center().x() + 10, teamBox[0].top(),
 			teamBox[nTeam - 1].right(), teamBox[0].bottom(), tableColor, TRUE);
 		teamBox[now.team].draw();
 		for (int team = 0; team < nTeam; team++) {
-			for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
-				chara = sd.teams.at(team).members.at(member);
+			for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
+				chara = cPlayer::instance()->teamMember(team, member);
 				chara.image.draw();
 				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
 					chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(), white, Sfont);
@@ -132,7 +133,7 @@ void ZeroOne::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members.at(cPlayer::instance()->teamType()).image.box().bottom();
+		int y = cPlayer::instance()->teamMemberImageBox(0, cPlayer::instance()->teamType()).bottom();
 		if (now.round < nRound) {
 			recordNo = 0;
 		}
@@ -156,7 +157,7 @@ void ZeroOne::draw() {
 			teamBox[nTeam - 1].right(), teamBox[4].bottom(), tableColor, TRUE);
 		teamBox[now.team].draw();
 		for (int team = 0; team < nTeam; team++) {
-			chara = sd.teams.at(team).members.at(0);
+			chara = cPlayer::instance()->teamMember(team, 0);
 			DrawRotaGraph(chara.image.box().center().x(), chara.image.box().center().y(),
 				0.7, 0.0, chara.image.handle(), TRUE);
 			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
@@ -191,13 +192,13 @@ void ZeroOne::draw() {
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
 		for (int pointNo = 0, y = 0; pointNo < nScore; pointNo++) {
-			y = sd.teams.at(0).members.at(0).image.box().bottom() + pointNo * (SfontSize + space);
+			y = cPlayer::instance()->teamMemberImageBox(0, 0).bottom() + pointNo * (SfontSize + space);
 			DrawLine(screen.center().x() + 10, y, teamBox[3].right(), y, black);
-			y = sd.teams.at(4).members.at(0).image.box().bottom() + pointNo * (SfontSize + space);
+			y = cPlayer::instance()->teamMemberImageBox(4, 0).bottom() + pointNo * (SfontSize + space);
 			DrawLine(screen.center().x() + 10, y, teamBox[nTeam - 1].right(), y, black);
 		}
 		for (int i = 0; i < 2; i++) {
-			chara = sd.teams.at(4 * i).members.at(0);
+			chara = cPlayer::instance()->teamMember(4 * i, 0);
 			if (now.round < nRound) {
 				recordNo = 0;
 			}
@@ -211,7 +212,7 @@ void ZeroOne::draw() {
 			}
 		}
 	}
-	chara = sd.teams.at(now.team).members.at(now.member);
+	chara = cPlayer::instance()->teamMember(now.team, now.member);
 	for (int arrow = 0, x = chara.image.box().right(), y = chara.image.box().top(); arrow < now.arrow; arrow++)
 		DrawGraph(x - 10 * (arrow + 1), y, arrowImage, TRUE);
 	DrawBox(screen.center().x() + 10, teamBox[0].bottom(),
@@ -221,7 +222,7 @@ void ZeroOne::draw() {
 }
 
 void ZeroOne::update() {
-	cScene::update();
+	cBaseScene::update();
 	cDarts::instance()->update();
 	cTimer::instance()->update();
 	bool isPaused = cTimer::instance()->isPaused();
@@ -298,7 +299,7 @@ void ZeroOne::update() {
 						}
 					}
 				}
-				if (now.member >= sd.teams.at(now.team).members.size()) {
+				if (now.member >= cPlayer::instance()->teams().at(now.team).members.size()) {
 					now.member = 0;
 				}
 				if (!now.isTeamFin[now.team]) {
@@ -332,7 +333,7 @@ void ZeroOne::update() {
 void ZeroOne::fin() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
-			sd.teams.at(player).members.at(0).image.box().setHeight(100);
+			cPlayer::instance()->teamMember(player, 0).image.box().setHeight(100);
 		}
 	}
 }

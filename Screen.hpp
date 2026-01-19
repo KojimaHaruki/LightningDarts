@@ -2,7 +2,7 @@
 #include "Singleton.hpp"
 #include "DxLib.h"
 #include "Box.hpp"
-#include "Scene.hpp"
+#include "Control.hpp"
 
 class cScreen : public Singleton<cScreen> {
     cScreen() {}
@@ -17,9 +17,9 @@ public:
     void init() { 
         SetGraphMode(DEFAULT_WIDTH, DEFAULT_HEIGHT, 32); mColorDepth = 32; mFPS = 60;
         mBox.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT); mBox.setUpperLeft(0, 0); 
-        mUpperFrame.setSize(DEFAULT_WIDTH, cScene::DEFAULT_ICON_HEIGHT);
+        mUpperFrame.setSize(DEFAULT_WIDTH, cControl::DEFAULT_ICON_HEIGHT);
         mUpperFrame.setUpperLeft(mBox.upperLeft());
-        mLowerFrame.setSize(DEFAULT_WIDTH, cScene::DEFAULT_ICON_HEIGHT);
+        mLowerFrame.setSize(DEFAULT_WIDTH, cControl::DEFAULT_ICON_HEIGHT);
         mLowerFrame.setLowerLeft(mBox.lowerLeft());
     }
     void setSize(int width, int height, int colorDepth = 32, int FPS = 60) { 

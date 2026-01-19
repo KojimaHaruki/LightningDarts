@@ -2,7 +2,7 @@
 #include "Scene.hpp"
 #include "Control.hpp"
 
-class Config : public cScene {
+class Config : public cBaseScene {
 public:
     Config(int priorScene, ShareData sd);
     ~Config() {}

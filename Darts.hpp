@@ -97,5 +97,7 @@ private:
     };
     const std::string POWER_NAME[sPower::NUM] = { "Miss", "Single", "Double", "Triple" };
 
+    // Skill
+    std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
     int SkillEffectMode = TRUE;
 };

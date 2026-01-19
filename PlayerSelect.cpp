@@ -12,11 +12,13 @@
 sPlayerSelect::sPlayerSelect(ShareData shareData) {
     sd = shareData;
     mNowScene = PLAYER_SELECT;
-    for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
-        for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
+    for (int group = 0, chara = 0;
+        group < cPlayer::instance()->nGroup() && chara < cPlayer::MAX_CHARA_NUM; group++) {
+        for (int member = 0;
+            member < cPlayer::instance()->nGroupMember(group) && chara < cPlayer::MAX_CHARA_NUM;
             member++, chara++) {
-            sd.groups.at(group).members.at(member).image.box().setSize(100, 100);
-            sd.groups.at(group).members.at(member).image.box().setUpperLeft(
+            cPlayer::instance()->groupMemberImageBox(group, member).setSize(100, 100);
+            cPlayer::instance()->groupMemberImageBox(group, member).setUpperLeft(
                 screen.left() + 100 * (chara % 7), upperFrame.bottom() + 100 * (chara / 7));
         }
     }
@@ -30,11 +32,11 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
         }
     }
     players.clear();
-    for (int team = 0, player = 0; team < sd.teams.size() && player < cPlayer::MAX_SOLO_PLAYER_NUM; team++) {
+    for (int team = 0, player = 0; team < cPlayer::instance()->nTeam() && player < cPlayer::MAX_SOLO_PLAYER_NUM; team++) {
         for (int member = 0;
-            member < sd.teams.at(team).members.size() && player < cPlayer::MAX_SOLO_PLAYER_NUM;
+            member < cPlayer::instance()->nTeamMember(team) && player < cPlayer::MAX_SOLO_PLAYER_NUM;
             member++, player++) {
-            players.push_back(sd.teams.at(team).members.at(member));
+            players.push_back(cPlayer::instance()->teamMember(team, member));
             players.at(player).image.box() = playerBox[player];
         }
     }
@@ -62,15 +64,14 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
 }
 
 void sPlayerSelect::reset() {
-    cScene::reset();
+    cBaseScene::reset();
     players.clear();
     playersMem = players;
-    sd.teams.clear();
     cPlayer::instance()->init();
 }
 
 void sPlayerSelect::draw() {
-    cScene::draw();
+    cBaseScene::draw();
 
     // icons
     cControl::instance()->icon(cControl::GAME_SELECT).draw();
@@ -78,31 +79,33 @@ void sPlayerSelect::draw() {
 
     // characters
     unsigned int color = white;
-    for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
-        for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
+    for (int group = 0, chara = 0; group < cPlayer::instance()->nGroup() && chara < cPlayer::MAX_CHARA_NUM; group++) {
+        for (int member = 0; member < cPlayer::instance()->nGroupMember(group) && chara < cPlayer::MAX_CHARA_NUM;
             member++, chara++, color = white) {
             if (players.size() < cPlayer::MAX_SOLO_PLAYER_NUM) {
-                switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box())) {
+                switch (cMouse::instance()->clickBoxState(
+                    cPlayer::instance()->groupMemberImageBox(group, member))) {
                 case sKey::RELEASED:
                     color = touchColor; break;
                 case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
                     color = pressColor; break;
                 case sKey::PRESSEDtoRELEASED:
-                    color = executeColor; players.push_back(sd.groups.at(group).members.at(member));
+                    color = executeColor; players.push_back(
+                        cPlayer::instance()->groupMember(group, member));
                     setTeamType(cPlayer::instance()->teamType()); playersMem = players; break;
                 default:
                     break;
                 }
             }
-            sd.groups.at(group).members.at(member).image.draw();
-            DrawStringToHandle(sd.groups.at(group).members.at(member).image.box().left(),
-                sd.groups.at(group).members.at(member).image.box().top(),
-                sd.groups.at(group).name.c_str(), color, Sfont);
+            cPlayer::instance()->groupMemberImage(group, member).draw();
+            DrawStringToHandle(cPlayer::instance()->groupMemberImageBox(group, member).left(),
+                cPlayer::instance()->groupMemberImageBox(group, member).top(),
+                cPlayer::instance()->groups().at(group).name.c_str(), color, Sfont);
             DrawStringToHandle(
-                sd.groups.at(group).members.at(member).image.box().left() +
-                2 + 5 * max(0, 10 - (int)sd.groups.at(group).members.at(member).name.size()),
-                sd.groups.at(group).members.at(member).image.box().bottom() - SfontSize - 10,
-                sd.groups.at(group).members.at(member).name.c_str(), color, Sfont);
+                cPlayer::instance()->groupMemberImageBox(group, member).left() +
+                2 + 5 * max(0, 10 - (int)cPlayer::instance()->groupMemberName(group, member).size()),
+                cPlayer::instance()->groupMemberImageBox(group, member).bottom() - SfontSize - 10,
+                cPlayer::instance()->groupMemberName(group, member).c_str(), color, Sfont);
         }
     }
 
@@ -184,7 +187,7 @@ void sPlayerSelect::draw() {
     }
     DrawStringToHandle(cControl::instance()->icon(cControl::YES).box().left() + 5,
         cControl::instance()->icon(cControl::YES).box().centerY() - MfontSize / 2, "OK!!", color, Mfont);
-	cKeyboard::instance()->keyImage(cControl::instance()->keyCode(cControl::YES)).draw();
+    cKeyboard::instance()->keyImage(cControl::instance()->keyCode(cControl::YES)).draw();
     int x = screen.left(), y1 = upperFrame.bottom(), y2 = y1 + 400;
     for (int i = 0; i < 4; i++, x += 100) DrawLine(x, y1, x, y2, black);
     y2 = lowerFrame.top();
@@ -202,7 +205,7 @@ void sPlayerSelect::draw() {
 }
 
 void sPlayerSelect::update() {
-    cScene::update();
+    cBaseScene::update();
     if (players.size() < playersMem.size()) {
         cControl::instance()->icon(cControl::FORWARD).draw();
         if (cControl::instance()->isRequested(cControl::FORWARD)) {
@@ -216,7 +219,7 @@ void sPlayerSelect::update() {
             players.push_back(playersMem.at(players.size()));
         }
         if (!players.size()) {
-            players.push_back(sd.groups[0].members[0]);
+            players.push_back(cPlayer::instance()->groups()[0].members[0]);
             setTeamType(cPlayer::sTeamType::SOLO);
             return;
         }
@@ -243,16 +246,16 @@ void sPlayerSelect::update() {
 
 void sPlayerSelect::setTeamType(int teamType) {
     cPlayer::instance()->setTeamType((players.size() < 2) ? cPlayer::sTeamType::SOLO : teamType);
-    sd.teams.clear();
+    cPlayer::instance()->teams().clear();
     if (cPlayer::instance()->teamType() == cPlayer::sTeamType::SOLO) {
         for (int team = 0; team < players.size(); team++) {
-            sd.teams.push_back(sGroup());
+            cPlayer::instance()->teams().push_back(cPlayer::sGroup());
             players.at(team).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * (team % cPlayer::DUO_MEMBER_NUM),
                 upperFrame.bottom() + 100 * (team / cPlayer::DUO_MEMBER_NUM));
             players.at(team).status.rank = team;
-            sd.teams.at(team).members.push_back(players.at(team));
-			sd.teams.at(team).name = players.at(team).name;
+            cPlayer::instance()->teamMembers(team).push_back(players.at(team));
+            cPlayer::instance()->teams().at(team).name = players.at(team).name;
         }
         for (int player = 0; player < cPlayer::MAX_SOLO_PLAYER_NUM; player++) {
             playerBox[player].setColor(teamColor[player]);
@@ -262,17 +265,18 @@ void sPlayerSelect::setTeamType(int teamType) {
         return;
     }
     for (int player = 0, team = 0; player < players.size(); team++) {
-        sd.teams.push_back(sGroup());
+        cPlayer::instance()->teams().push_back(cPlayer::sGroup());
         for (int member = 0;
             member < cPlayer::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
             players.at(player).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
             players.at(player).status.rank = team + (players.size() / 2) * member;
-            sd.teams.at(team).members.push_back(players.at(player));
+            cPlayer::instance()->teamMembers(team).push_back(players.at(player));
         }
-        sd.teams.at(team).name = sd.teams.at(team).members.at(0).name;
-        if (sd.teams.at(team).members.size() == cPlayer::DUO_MEMBER_NUM) {
-            sd.teams.at(team).name += " & " + sd.teams.at(team).members.at(1).name;
+        cPlayer::instance()->teams().at(team).name = cPlayer::instance()->teamMember(team, 0).name;
+        if (cPlayer::instance()->nTeamMember(team) == cPlayer::DUO_MEMBER_NUM) {
+            cPlayer::instance()->teams().at(team).name += 
+                " & " + cPlayer::instance()->teamMember(team, 1).name;
         }
     }
     for (int player = 0; player < cPlayer::MAX_SOLO_PLAYER_NUM; player++) {

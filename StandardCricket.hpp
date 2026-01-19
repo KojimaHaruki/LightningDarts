@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.hpp"
 
-class cStandardCricket : public cScene {
+class cStandardCricket : public cBaseScene {
 public:
 	cStandardCricket(ShareData shareData);
 	~cStandardCricket() {}

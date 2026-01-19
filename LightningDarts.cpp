@@ -20,28 +20,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     SRand(GetNowCount()); // initialize random number by the lapse time in Windows
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
-    cScene *scene = new Home();
+    cBaseScene *scene = new Home();
     while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
         scene->init();
-        if (scene->nextScene() == cScene::HOME) { break; }
+        if (scene->nextScene() == cBaseScene::HOME) { break; }
     }
     while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
         scene->draw();
         scene->update();
-        if (scene->nextScene() != cScene::NO_CHANGE) {
+        if (scene->nextScene() != cBaseScene::NO_CHANGE) {
             scene->fin();
         }
         switch (scene->nextScene()) {
-        case cScene::NO_CHANGE: break;
-        case cScene::CONFIG: scene = new Config(scene->currentScene(), scene->shareData()); break;
-        case cScene::HOME:          scene = new Home(scene->shareData());                   break;
-        case cScene::GAME_SELECT:   scene = new GameSelect(scene->shareData());             break;
-        case cScene::PLAYER_SELECT: scene = new sPlayerSelect(scene->shareData());           break;
-        case cScene::GAME_START:    scene = new cGameStart(scene->shareData());             break;
-        case cScene::ZERO_ONE:      scene = new ZeroOne(scene->shareData());                break;
-        case cScene::STANDARD_CRICKET: scene = new cStandardCricket(scene->shareData());     break;
-        case cScene::COUNT_UP:      scene = new CountUp(scene->shareData());                break;
-        case cScene::QUIT:          delete scene; return 0;
+        case cBaseScene::NO_CHANGE: break;
+        case cBaseScene::CONFIG: scene = new Config(scene->currentScene(), scene->shareData()); break;
+        case cBaseScene::HOME:          scene = new Home(scene->shareData());                   break;
+        case cBaseScene::GAME_SELECT:   scene = new GameSelect(scene->shareData());             break;
+        case cBaseScene::PLAYER_SELECT: scene = new sPlayerSelect(scene->shareData());           break;
+        case cBaseScene::GAME_START:    scene = new cGameStart(scene->shareData());             break;
+        case cBaseScene::ZERO_ONE:      scene = new ZeroOne(scene->shareData());                break;
+        case cBaseScene::STANDARD_CRICKET: scene = new cStandardCricket(scene->shareData());     break;
+        case cBaseScene::COUNT_UP:      scene = new CountUp(scene->shareData());                break;
+        case cBaseScene::QUIT:          delete scene; return 0;
         default: return -1;
         }
     }

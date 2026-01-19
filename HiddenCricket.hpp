@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.hpp"
 
-class HiddenCricket : public cScene {
+class HiddenCricket : public cBaseScene {
 public:
 	HiddenCricket(ShareData shareData);
 	~HiddenCricket() {}

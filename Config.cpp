@@ -19,7 +19,7 @@ void Config::draw(int ctrl) {
 }
 
 void Config::reset() {
-    cScene::reset();
+    cBaseScene::reset();
     cControl::instance()->initKey();
     initScreenSize();
     cSound::instance()->initSoundVol();
@@ -81,7 +81,7 @@ void Config::set() {
 }
 
 void Config::draw() {
-    cScene::draw();
+    cBaseScene::draw();
 
     // draw icon
     if (cTimer::instance()->isPaused()) cControl::instance()->icon(cControl::PAUSE).draw();
@@ -155,7 +155,7 @@ void Config::draw() {
 }
 
 void Config::update() {
-    cScene::update();
+    cBaseScene::update();
     if (cMouse::instance()->clickBoxState(355, 175, 380, 200) == sKey::RELEASEDtoPRESSED) {
         cSound::instance()->playSE(1);
         cSound::instance()->setBgmPlayMode(

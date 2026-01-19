@@ -1,7 +1,8 @@
 #pragma once
 #include "Scene.hpp"
+#include "Player.hpp"
 
-class sPlayerSelect : public cScene {
+class sPlayerSelect : public cBaseScene {
 public:
     sPlayerSelect(ShareData shareData);
     ~sPlayerSelect() {}
@@ -11,7 +12,7 @@ public:
     void setTeamType(int teamType);
 private:
     cBox playerBox[cPlayer::MAX_SOLO_PLAYER_NUM], teamTypeBox[cPlayer::sTeamType::NUM], shuffle;
-	std::vector<sChara> players, playersMem;
+	std::vector<cPlayer::sChara> players, playersMem;
     const std::string PLAYER_NAME[cPlayer::MAX_SOLO_PLAYER_NUM] = {
         "1P", "2P", "3P", "4P", "5P", "6P", "7P", "8P"
     };

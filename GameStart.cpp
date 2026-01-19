@@ -13,28 +13,29 @@ cGameStart::cGameStart(ShareData shareData) {
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
 	double theta = M_PI, phi = M_PI / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
-	for (int team = 0; team < sd.teams.size(); team++, theta += 2.0 * M_PI / (double)sd.teams.size()) {
-		if (sd.teams.at(team).members.size() == 1) {
-			sd.teams.at(team).members[0].image.box().setCenter(
+	for (int team = 0; team < cPlayer::instance()->nTeam(); 
+		team++, theta += 2.0 * M_PI / (double)cPlayer::instance()->nTeam()) {
+		if (cPlayer::instance()->nTeamMember(team) == 1) {
+			cPlayer::instance()->teams().at(team).members[0].image.box().setCenter(
 				screen.center().x() + 150.0 * cos(theta), screen.center().y() - 150.0 * sin(theta));
 			continue;
 		}
-		sd.teams.at(team).members[0].image.box().setCenter(
+		cPlayer::instance()->teams().at(team).members[0].image.box().setCenter(
 			screen.center().x() + 150.0 * cos(theta + phi),
 			screen.center().y() - 150.0 * sin(theta + phi));
-		sd.teams.at(team).members[1].image.box().setCenter(
+		cPlayer::instance()->teams().at(team).members[1].image.box().setCenter(
 			screen.center().x() + 150.0 * cos(theta - phi),
 			screen.center().y() - 150.0 * sin(theta - phi));
 	}
 }
 
 void cGameStart::reset() {
-	cScene::reset();
+	cBaseScene::reset();
 	startTime = time(NULL) + timeFromEntryToStart;
 }
 
 void cGameStart::draw() {
-	cScene::draw();
+	cBaseScene::draw();
 
 	// draw icon
 	cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
@@ -47,9 +48,9 @@ void cGameStart::draw() {
 		(cGame::instance()->modeName() + " < Game Start").c_str(), white, Mfont);
 
 	// draw battle team
-	for (int team = 0; team < sd.teams.size(); team++) {
-		for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
-			sChara player = sd.teams.at(team).members.at(member);
+	for (int team = 0; team < cPlayer::instance()->nTeam(); team++) {
+		for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
+			cPlayer::sChara player = cPlayer::instance()->teamMember(team, member);
 			player.image.draw();
 			DrawStringToHandle(player.image.box().left(), player.image.box().top(),
 				PLAYER_NAME[player.status.rank].c_str(), white, Mfont);
@@ -61,7 +62,7 @@ void cGameStart::draw() {
 }
 
 void cGameStart::update() {
-	cScene::update();
+	cBaseScene::update();
 	nowTime = time(NULL);
 	if (cControl::instance()->isRequested(cControl::BACK)) mNextScene = PLAYER_SELECT;
 	else if (cControl::instance()->isRequested(cControl::SKIP) || nowTime >= startTime) {

@@ -1,6 +1,8 @@
 #pragma once
 #include "Scene.hpp"
-class cGameStart : public cScene {
+#include "Player.hpp"
+
+class cGameStart : public cBaseScene {
 public:
     cGameStart(ShareData shareData);
     ~cGameStart() {}

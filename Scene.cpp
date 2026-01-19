@@ -14,14 +14,16 @@
 #include "Game.hpp"
 #include "Screen.hpp"
 #include "Control.hpp"
+#include "Player.hpp"
 namespace fs = std::filesystem;
 
-cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)) {
+cBaseScene::cBaseScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
+nTeam(cPlayer::instance()->nTeam()){
     loadColor(); loadFont(); loadScreen();
     timeError = localtime_s(&nowLocalTime, &nowTime);
 }
 
-void cScene::loadColor() {
+void cBaseScene::loadColor() {
     white = cColor::instance()->white(); black = cColor::instance()->black();
     gray = cColor::instance()->gray(); red = cColor::instance()->red();
     green = cColor::instance()->green(); blue = cColor::instance()->blue();
@@ -35,19 +37,19 @@ void cScene::loadColor() {
     }
 }
 
-void cScene::loadFont() {
+void cBaseScene::loadFont() {
     Sfont = cFont::instance()->Sfont(); SfontSize = cFont::instance()->SfontSize();
     Mfont = cFont::instance()->MFont(); MfontSize = cFont::instance()->MfontSize();
     XLfont = cFont::instance()->XLfont(); XLfontSize = cFont::instance()->XLfontSize();
 }
 
-void cScene::loadScreen() {
+void cBaseScene::loadScreen() {
     screen = cScreen::instance()->box();
     upperFrame = cScreen::instance()->upperFrame();
     lowerFrame = cScreen::instance()->lowerFrame();
 }
 
-void cScene::initScreenSize() {
+void cBaseScene::initScreenSize() {
     cScreen::instance()->init();
     cDarts::instance()->loadScreen();
     loadScreen();
@@ -62,13 +64,13 @@ void cScene::initScreenSize() {
     sd.thunder.box().setUpperLeft(-50, -200);
 }
 
-void cScene::init() {
+void cBaseScene::init() {
     initScreenSize();
     if (mNowScene == NO_CHANGE) {
         int cpp = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG92), "PNG");
         int dxlib = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG93), "PNG");
         cColor::instance()->load();
-		cDarts::instance()->loadColor();
+        cDarts::instance()->loadColor();
         loadColor();
         // draw start screen
         ClearDrawScreen();
@@ -86,17 +88,16 @@ void cScene::init() {
     StopSound();
     cSound::instance()->playBGM(0);
     cGame::instance()->init();
-    sd.teams.clear();
-    sd.teams.reserve(MAX_GROUP_NUM);
+    cPlayer::instance()->initTeam();
     mNextScene = HOME;
 }
 
-void cScene::changeWindow() {
+void cBaseScene::changeWindow() {
     if (GetWindowModeFlag() == TRUE) setWindow(FALSE);
     else setWindow(TRUE);
 }
 
-void cScene::setWindow(int window) {
+void cBaseScene::setWindow(int window) {
     ChangeWindowMode(window);
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
@@ -104,72 +105,29 @@ void cScene::setWindow(int window) {
     cDarts::instance()->loadFont();
     loadFont();
 
-    if (sd.groups.size() > 0) {
-		// reload images
+    if (cPlayer::instance()->nGroup() > 0) {
+        // reload images
         cKeyboard::instance()->reloadKeyImage();
         cControl::instance()->reloadIcon();
         sd.darts.reload();
         sd.selected.reload();
         sd.thunder.reload();
-        for (int group = 0; group < sd.groups.size(); group++) {
-            for (int member = 0; member < sd.groups.at(group).members.size(); member++) {
-                sd.groups.at(group).members.at(member).image.reload();
-            }
-        }
     }
     else {
-		// load images
+        // load images
         cKeyboard::instance()->loadKeyImage();
         cControl::instance()->loadIcon();
         sd.darts.load(IDB_JPG1, "JPG");
         sd.selected.load(IDB_PNG90, "PNG");
         sd.thunder.load(IDB_PNG91, "PNG");
-        std::error_code err;
-        sd.groups.clear();
-        sd.groups.push_back(sGroup("Guest"));
-        for (fs::directory_iterator iter(playerFolderPath + "/"), end;
-            iter != end && !err && sd.groups.size() < MAX_GROUP_NUM; iter.increment(err)) {
-            const fs::directory_entry entry = *iter;
-            // if found path is valid folder,
-            if (!entry.path().has_extension() && entry.path().filename().string() != "Guest") {
-                sd.groups.push_back(sGroup(entry.path().filename().string())); // get group name
-            }
-        }
-        for (int group = 0, chara = 0; group < sd.groups.size(); group++) {
-            for (fs::directory_iterator iter(playerFolderPath + "/" + sd.groups[group].name + "/"), end;
-                iter != end && !err && chara < MAX_CHARA_NUM; iter.increment(err), chara++) {
-                const fs::directory_entry entry = *iter;
-                std::string extension = entry.path().extension().string();
-                if (extension == ".jpg" || extension == ".png") { // if found file is image,
-                    std::string name = entry.path().filename().string(),
-                        path = entry.path().string();
-                    name.erase(name.length() - extension.length(), extension.length());
-                    sd.groups.at(group).members.push_back(sChara());
-                    sd.groups.at(group).members.back().name = name;
-                    sd.groups.at(group).members.back().image.load(path);
-                    sd.groups.at(group).members.back().group = sd.groups.at(group).name;
-                }
-            }
-        }
-        sd.groups.shrink_to_fit();
-        if (err) {
-            std::cout << err.value() << std::endl;
-            std::cout << err.message() << std::endl;
-        }
     }
-    if (sd.teams.size() > 0) {
-        for (int team = 0; team < sd.teams.size(); team++) {
-            for (int member = 0; member < sd.teams.at(team).members.size(); member++) {
-                sd.teams.at(team).members.at(member).image.reload();
-            }
-        }
-    }
+    cPlayer::instance()->loadImage();
     cDarts::instance()->loadImage();
 }
 
-void cScene::draw() {
+void cBaseScene::draw() {
     sd.darts.draw(); sd.thunder.draw();
-    cControl::instance()->icon(cControl::HOME).draw(); 
+    cControl::instance()->icon(cControl::HOME).draw();
     cControl::instance()->icon(cControl::BACK).draw();
     cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
     cControl::instance()->icon(cControl::CONFIG).draw();
@@ -178,7 +136,7 @@ void cScene::draw() {
     cControl::instance()->icon(cControl::INITIALIZE).draw();
     cControl::instance()->icon(cControl::RESET).draw();
     cControl::instance()->icon(cControl::CHANGE_BGM).draw();
-    DrawStringToHandle(cControl::instance()->icon(cControl::CHANGE_BGM).box().right(), 
+    DrawStringToHandle(cControl::instance()->icon(cControl::CHANGE_BGM).box().right(),
         cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
         cSound::instance()->playingBGMName().c_str(), white, Sfont);
     DrawStringToHandle(screen.right() - 340, lowerFrame.center().y() - SfontSize / 2,
@@ -194,7 +152,7 @@ void cScene::draw() {
     }
 }
 
-void cScene::update() {
+void cBaseScene::update() {
     cMouse::instance()->update();
     cKeyboard::instance()->update();
     cSound::instance()->update();
@@ -222,7 +180,7 @@ void cScene::update() {
     }
 }
 
-cScene::~cScene() {
+cBaseScene::~cBaseScene() {
     FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file
     if (!error) { fwrite(&sd, sizeof(sd), 1, osdf); fclose(osdf); }
     PlaySound(NULL, 0, 0); InitSoundMem(); DxLib_End();

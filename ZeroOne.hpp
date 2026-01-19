@@ -2,7 +2,7 @@
 #include "Scene.hpp"
 #include "Game.hpp"
 
-class ZeroOne : public cScene {
+class ZeroOne : public cBaseScene {
 public:
 	ZeroOne(ShareData shareData);
 	~ZeroOne() {}

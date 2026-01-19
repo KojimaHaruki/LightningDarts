@@ -2,7 +2,7 @@
 #include "Scene.hpp"
 #include "Game.hpp"
 
-class GameSelect : public cScene {
+class GameSelect : public cBaseScene {
 public:
     GameSelect(ShareData shareData);
     ~GameSelect() {}
