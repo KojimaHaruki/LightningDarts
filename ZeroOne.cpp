@@ -26,7 +26,7 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 		for (int team = 0, x = screen.right() - 400, y = upperFrame.bottom() + space;
 			team < nTeam; team++, x += 100, y = upperFrame.bottom() + space) {
 			teamBox[team].setSize(
-				100, 100 + cTeam::instance()->type() * 100 + nScore * (MfontSize + space));
+				100, 100 + cPlayer::instance()->teamType() * 100 + nScore * (MfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
 				sd.teams.at(team).members.at(member).image.box().setUpperLeft(x, y);
@@ -132,7 +132,7 @@ void ZeroOne::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box().bottom();
+		int y = sd.teams.at(0).members.at(cPlayer::instance()->teamType()).image.box().bottom();
 		if (now.round < nRound) {
 			recordNo = 0;
 		}

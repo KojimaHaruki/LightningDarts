@@ -12,7 +12,7 @@ cGameStart::cGameStart(ShareData shareData) {
 	mNowScene = GAME_START;
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
-	double theta = M_PI, phi = M_PI / (double)cTeam::MAX_SOLO_PLAYER_NUM;
+	double theta = M_PI, phi = M_PI / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
 	for (int team = 0; team < sd.teams.size(); team++, theta += 2.0 * M_PI / (double)sd.teams.size()) {
 		if (sd.teams.at(team).members.size() == 1) {
 			sd.teams.at(team).members[0].image.box().setCenter(

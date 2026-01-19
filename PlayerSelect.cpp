@@ -21,35 +21,35 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
         }
     }
     for (int team = 0, player = 0;
-        team < cTeam::MAX_DUO_TEAM_NUM && player < cTeam::MAX_SOLO_PLAYER_NUM; team++) {
+        team < cPlayer::MAX_DUO_TEAM_NUM && player < cPlayer::MAX_SOLO_PLAYER_NUM; team++) {
         for (int member = 0;
-            member < cTeam::DUO_MEMBER_NUM && player < cTeam::MAX_SOLO_PLAYER_NUM; member++, player++) {
+            member < cPlayer::DUO_MEMBER_NUM && player < cPlayer::MAX_SOLO_PLAYER_NUM; member++, player++) {
             playerBox[player].setSize(100, 100);
             playerBox[player].setUpperLeft(
                 screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
         }
     }
     players.clear();
-    for (int team = 0, player = 0; team < sd.teams.size() && player < cTeam::MAX_SOLO_PLAYER_NUM; team++) {
+    for (int team = 0, player = 0; team < sd.teams.size() && player < cPlayer::MAX_SOLO_PLAYER_NUM; team++) {
         for (int member = 0;
-            member < sd.teams.at(team).members.size() && player < cTeam::MAX_SOLO_PLAYER_NUM;
+            member < sd.teams.at(team).members.size() && player < cPlayer::MAX_SOLO_PLAYER_NUM;
             member++, player++) {
             players.push_back(sd.teams.at(team).members.at(member));
             players.at(player).image.box() = playerBox[player];
         }
     }
     playersMem = players;
-    for (int teamType = 0; teamType < cTeam::sType::NUM; teamType++) {
+    for (int teamType = 0; teamType < cPlayer::sTeamType::NUM; teamType++) {
         teamTypeBox[teamType].setSize(100, lowerFrame.top() - upperFrame.bottom() - 400);
         teamTypeBox[teamType].setLowerLeft(100 * teamType + 400, lowerFrame.top());
-        if (teamType == cTeam::instance()->type()) {
+        if (teamType == cPlayer::instance()->teamType()) {
             teamTypeBox[teamType].setColor(white); continue;
         }
         teamTypeBox[teamType].setColor(gray);
     }
-    setTeamType(cTeam::instance()->type());
-    shuffle = teamTypeBox[cTeam::sType::DUO];
-    shuffle.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
+    setTeamType(cPlayer::instance()->teamType());
+    shuffle = teamTypeBox[cPlayer::sTeamType::DUO];
+    shuffle.setUpperLeft(teamTypeBox[cPlayer::sTeamType::DUO].upperRight());
     shuffle.setColor(cyan);
     cControl::instance()->iconBox(cControl::YES).setSize(
         100, lowerFrame.top() - upperFrame.bottom() - 400);
@@ -66,7 +66,7 @@ void sPlayerSelect::reset() {
     players.clear();
     playersMem = players;
     sd.teams.clear();
-    cTeam::instance()->init();
+    cPlayer::instance()->init();
 }
 
 void sPlayerSelect::draw() {
@@ -81,7 +81,7 @@ void sPlayerSelect::draw() {
     for (int group = 0, chara = 0; group < sd.groups.size() && chara < MAX_CHARA_NUM; group++) {
         for (int member = 0; member < sd.groups.at(group).members.size() && chara < MAX_CHARA_NUM;
             member++, chara++, color = white) {
-            if (players.size() < cTeam::MAX_SOLO_PLAYER_NUM) {
+            if (players.size() < cPlayer::MAX_SOLO_PLAYER_NUM) {
                 switch (cMouse::instance()->clickBoxState(sd.groups.at(group).members.at(member).image.box())) {
                 case sKey::RELEASED:
                     color = touchColor; break;
@@ -89,7 +89,7 @@ void sPlayerSelect::draw() {
                     color = pressColor; break;
                 case sKey::PRESSEDtoRELEASED:
                     color = executeColor; players.push_back(sd.groups.at(group).members.at(member));
-                    setTeamType(cTeam::instance()->type()); playersMem = players; break;
+                    setTeamType(cPlayer::instance()->teamType()); playersMem = players; break;
                 default:
                     break;
                 }
@@ -108,8 +108,8 @@ void sPlayerSelect::draw() {
 
     // players
     DrawStringToHandle(screen.left(), lowerFrame.top() - MfontSize - 15, "Player", white, Mfont);
-    for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
-        div_t result = std::div(player, cTeam::instance()->type() + 1);
+    for (int player = 0; player < cPlayer::MAX_SOLO_PLAYER_NUM; player++) {
+        div_t result = std::div(player, cPlayer::instance()->teamType() + 1);
         int team = result.quot, member = result.rem;
         playerBox[player].draw();
         if (player < players.size()) {
@@ -130,10 +130,10 @@ void sPlayerSelect::draw() {
     }
 
     // team types
-    for (int teamType = 0; teamType < cTeam::sType::NUM; teamType++) {
+    for (int teamType = 0; teamType < cPlayer::sTeamType::NUM; teamType++) {
         teamTypeBox[teamType].draw();
         color = white;
-        if (teamType != cTeam::instance()->type() && players.size() > teamType) {
+        if (teamType != cPlayer::instance()->teamType() && players.size() > teamType) {
             switch (cMouse::instance()->clickBoxState(teamTypeBox[teamType])) {
             case sKey::RELEASED:
                 color = touchColor; break;
@@ -145,9 +145,9 @@ void sPlayerSelect::draw() {
             }
         }
         DrawStringToHandle(
-            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)cTeam::instance()->typeName(teamType).size()),
+            teamTypeBox[teamType].left() + 5 + 4 * max(0, 8 - (int)cPlayer::instance()->teamTypeName(teamType).size()),
             teamTypeBox[teamType].center().y() - MfontSize / 2,
-            cTeam::instance()->typeName(teamType).c_str(), color, Mfont);
+            cPlayer::instance()->teamTypeName(teamType).c_str(), color, Mfont);
     }
 
     // shuffle button
@@ -163,7 +163,7 @@ void sPlayerSelect::draw() {
             color = executeColor;
             std::mt19937_64 get_random_mt(std::random_device{}());
             std::shuffle(players.begin(), players.end(), get_random_mt);
-            setTeamType(cTeam::instance()->type());
+            setTeamType(cPlayer::instance()->teamType());
         }
         break;
     default: break;
@@ -217,16 +217,16 @@ void sPlayerSelect::update() {
         }
         if (!players.size()) {
             players.push_back(sd.groups[0].members[0]);
-            setTeamType(cTeam::sType::SOLO);
+            setTeamType(cPlayer::sTeamType::SOLO);
             return;
         }
-        setTeamType(cTeam::instance()->type());
+        setTeamType(cPlayer::instance()->teamType());
     }
     else if (players.size() > 0 && cControl::instance()->isRequested(cControl::YES)) mNextScene = GAME_START;
     else if (cControl::instance()->isRequested(cControl::BACK)) {
         if (players.size() > 0) {
             players.pop_back();
-            setTeamType(cTeam::instance()->type());
+            setTeamType(cPlayer::instance()->teamType());
             return;
         }
         mNextScene = GAME_SELECT;
@@ -242,42 +242,42 @@ void sPlayerSelect::update() {
 }
 
 void sPlayerSelect::setTeamType(int teamType) {
-    cTeam::instance()->setType((players.size() < 2) ? cTeam::sType::SOLO : teamType);
+    cPlayer::instance()->setTeamType((players.size() < 2) ? cPlayer::sTeamType::SOLO : teamType);
     sd.teams.clear();
-    if (cTeam::instance()->type() == cTeam::sType::SOLO) {
+    if (cPlayer::instance()->teamType() == cPlayer::sTeamType::SOLO) {
         for (int team = 0; team < players.size(); team++) {
             sd.teams.push_back(sGroup());
             players.at(team).image.box().setUpperLeft(
-                screen.right() - 200 + 100 * (team % cTeam::DUO_MEMBER_NUM),
-                upperFrame.bottom() + 100 * (team / cTeam::DUO_MEMBER_NUM));
+                screen.right() - 200 + 100 * (team % cPlayer::DUO_MEMBER_NUM),
+                upperFrame.bottom() + 100 * (team / cPlayer::DUO_MEMBER_NUM));
             players.at(team).status.rank = team;
             sd.teams.at(team).members.push_back(players.at(team));
 			sd.teams.at(team).name = players.at(team).name;
         }
-        for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
+        for (int player = 0; player < cPlayer::MAX_SOLO_PLAYER_NUM; player++) {
             playerBox[player].setColor(teamColor[player]);
         }
-        teamTypeBox[cTeam::sType::SOLO].setColor(white);
-        teamTypeBox[cTeam::sType::DUO].setColor(gray);
+        teamTypeBox[cPlayer::sTeamType::SOLO].setColor(white);
+        teamTypeBox[cPlayer::sTeamType::DUO].setColor(gray);
         return;
     }
     for (int player = 0, team = 0; player < players.size(); team++) {
         sd.teams.push_back(sGroup());
         for (int member = 0;
-            member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
+            member < cPlayer::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
             players.at(player).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
             players.at(player).status.rank = team + (players.size() / 2) * member;
             sd.teams.at(team).members.push_back(players.at(player));
         }
         sd.teams.at(team).name = sd.teams.at(team).members.at(0).name;
-        if (sd.teams.at(team).members.size() == cTeam::DUO_MEMBER_NUM) {
+        if (sd.teams.at(team).members.size() == cPlayer::DUO_MEMBER_NUM) {
             sd.teams.at(team).name += " & " + sd.teams.at(team).members.at(1).name;
         }
     }
-    for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
-        playerBox[player].setColor(teamColor[player / cTeam::DUO_MEMBER_NUM]);
+    for (int player = 0; player < cPlayer::MAX_SOLO_PLAYER_NUM; player++) {
+        playerBox[player].setColor(teamColor[player / cPlayer::DUO_MEMBER_NUM]);
     }
-    teamTypeBox[cTeam::sType::SOLO].setColor(gray);
-    teamTypeBox[cTeam::sType::DUO].setColor(white);
+    teamTypeBox[cPlayer::sTeamType::SOLO].setColor(gray);
+    teamTypeBox[cPlayer::sTeamType::DUO].setColor(white);
 }

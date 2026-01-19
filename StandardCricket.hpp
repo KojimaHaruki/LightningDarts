@@ -39,12 +39,12 @@ private:
 		int member = 0;
 		int arrow = 3;
 		int round = 0;
-		int teamPosPower[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
-		int teamScore[cTeam::MAX_SOLO_PLAYER_NUM] = {};
-		bool isTeamPosFill[cTeam::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
+		int teamPosPower[cPlayer::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
+		int teamScore[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
+		bool isTeamPosFill[cPlayer::MAX_SOLO_PLAYER_NUM][POS_NUM] = {};
 		bool isPosFill[POS_NUM] = {};
-		int rank[cTeam::MAX_SOLO_PLAYER_NUM] = {};
-		bool isTeamFin[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		int rank[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
+		bool isTeamFin[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
 		bool isGameFin = false;
 	}; Memory now, mem[MAX_ATTEMPT];
 	struct sPosBox {
@@ -58,7 +58,7 @@ private:
 	static constexpr int MARK_PART_ERROR[MARK_PART_NUM] = { -1, 1, 0 };
 	static constexpr int MARK_PART_LINETHICK[MARK_PART_NUM] = { 3, 3, 2 };
 	std::vector<sPosBox> teamMarks;
-	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
+	const std::string rankName[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};
 	std::vector<std::string> ranker;

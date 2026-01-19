@@ -165,7 +165,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CountUp.cpp" />
     <ClCompile Include="Image.cpp" />
-    <ClCompile Include="Team.hpp" />
+    <ClCompile Include="Player.hpp" />
     <ClCompile Include="StandardCricket.cpp" />
     <ClCompile Include="Darts.cpp" />
     <ClCompile Include="HiddenCricket.cpp" />

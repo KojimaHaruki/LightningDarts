@@ -64,7 +64,7 @@ HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), s
 		for (int team = 0, x = screen.right() - 400, y = upperFrame.bottom() + space;
 			team < nTeam; team++, x += 100, y = upperFrame.bottom() + space) {
 			teamBox[team].setSize(
-				100, 100 + cTeam::instance()->type() * 100 + POINT_NUM * (SfontSize + space));
+				100, 100 + cPlayer::instance()->teamType() * 100 + POINT_NUM * (SfontSize + space));
 			teamBox[team].setUpperLeft(x, y);
 			for (int member = 0; member < sd.teams.at(team).members.size(); member++, y += 100) {
 				sd.teams.at(team).members[member].image.box().setUpperLeft(x, y);
@@ -197,7 +197,7 @@ void HiddenCricket::draw() {
 			DrawLine(teamBox[team].left(), teamBox[team].top(),
 				teamBox[team].left(), teamBox[team].bottom(), black);
 		}
-		int y = sd.teams.at(0).members.at(cTeam::instance()->type()).image.box().bottom();
+		int y = sd.teams.at(0).members.at(cPlayer::instance()->teamType()).image.box().bottom();
 		for (int pos = 0; pos < selectPos; pos++) {
 			DrawStringToHandle(screen.center().x() + 12,
 				y + pos * SfontSize + (2 * pos + 1) * space / 2,

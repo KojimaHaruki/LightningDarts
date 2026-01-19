@@ -20,15 +20,15 @@ private:
 		int member = 0;
 		int arrow = 3;
 		int round = 0;
-		int teamRoundScore[cTeam::MAX_SOLO_PLAYER_NUM][ROUND_NUM] = {};
-		int teamScore[cTeam::MAX_SOLO_PLAYER_NUM] = {};
-		int rank[cTeam::MAX_SOLO_PLAYER_NUM] = {};
+		int teamRoundScore[cPlayer::MAX_SOLO_PLAYER_NUM][ROUND_NUM] = {};
+		int teamScore[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
+		int rank[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
 		bool isGameFin = false;
 	}; RecordData now, record[MAX_ATTEMPT];
-	cBox teamBox[cTeam::MAX_SOLO_PLAYER_NUM];
+	cBox teamBox[cPlayer::MAX_SOLO_PLAYER_NUM];
 	int space = 0;
 	static constexpr int CRICKET_NUMBER_SCORE[CRICKET_NUMBER_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
-	const std::string rankName[cTeam::MAX_SOLO_PLAYER_NUM] = {
+	const std::string rankName[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};
 };

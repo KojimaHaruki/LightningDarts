@@ -29,7 +29,7 @@ void cScene::loadColor() {
     yellow = cColor::instance()->yellow(); tableColor = cColor::instance()->tableColor();
     touchColor = cColor::instance()->touchColor(); pressColor = cColor::instance()->pressColor();
     executeColor = cColor::instance()->executeColor();
-    for (int i = 0; i < cTeam::MAX_SOLO_PLAYER_NUM; i++) {
+    for (int i = 0; i < cPlayer::MAX_SOLO_PLAYER_NUM; i++) {
         teamColor[i] = cColor::instance()->teamColor(i);
         rankColor[i] = cColor::instance()->rankColor(i);
     }
