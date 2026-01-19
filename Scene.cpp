@@ -15,8 +15,7 @@
 #include "Screen.hpp"
 namespace fs = std::filesystem;
 
-cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
-mGameMode(cGame::instance()->mode()), nTeam(sd.teams.size()) {
+cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)) {
     loadColor();
     loadFont();
     loadScreen();
@@ -112,11 +111,11 @@ void cScene::initScreenSize() {
     sd.ctrl.bgm.icon.box().setSize(DEFAULT_ICON_SIZE);
     sd.ctrl.bgm.icon.box().setLowerLeft(sd.ctrl.reset.icon.box().lowerRight());
     // set image
-    sd.pic.selected.image.box().setSize(100, 86);
-    sd.pic.darts.image.box().setSize(900, 600);
-    sd.pic.darts.image.box().setUpperLeft(0, 0);
-    sd.pic.thunder.image.box().setSize(900, 945);
-    sd.pic.thunder.image.box().setUpperLeft(-50, -200);
+    sd.selected.box().setSize(100, 86);
+    sd.darts.box().setSize(900, 600);
+    sd.darts.box().setUpperLeft(0, 0);
+    sd.thunder.box().setSize(900, 945);
+    sd.thunder.box().setUpperLeft(-50, -200);
 }
 
 void cScene::init() {
@@ -236,9 +235,9 @@ void cScene::changeWindow(int WindowModeFlag) {
     sd.ctrl.forward.icon.load(IDB_PNG87, "PNG");
     sd.ctrl.down.icon.load(IDB_PNG88, "PNG");
     sd.ctrl.up.icon.load(IDB_PNG89, "PNG");
-    sd.pic.darts.image.load(IDB_JPG1, "JPG");
-    sd.pic.selected.image.load(IDB_PNG90, "PNG");
-    sd.pic.thunder.image.load(IDB_PNG91, "PNG");
+    sd.darts.load(IDB_JPG1, "JPG");
+    sd.selected.load(IDB_PNG90, "PNG");
+    sd.thunder.load(IDB_PNG91, "PNG");
     cDarts::instance()->loadImage();
     sd.window = GetWindowModeFlag();
 }
@@ -247,7 +246,7 @@ void cScene::reset() {
 }
 
 void cScene::draw() {
-    sd.pic.darts.image.draw(); sd.pic.thunder.image.draw();
+    sd.darts.draw(); sd.thunder.draw();
     sd.ctrl.home.icon.draw(); sd.ctrl.back.icon.draw();
     sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.draw(); 
     sd.ctrl.config.icon.draw(); sd.ctrl.window[sd.window].icon.draw();

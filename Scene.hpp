@@ -36,14 +36,6 @@ protected:
             init, skip, quit, config, bgm, window[2], mute[2], pause[2], back, forward, start, yes, no;
     };
 
-    // Picture
-    struct sPicture {
-        cImage image;
-    };
-    struct PictureKind {
-        sPicture selected, darts, thunder;
-    };
-
 	// Color
     unsigned int white = 0U, black = 0U, gray = 0U,
 		red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
@@ -52,9 +44,6 @@ protected:
 
     // Font
 	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
-
-    // Game
-	int mGameMode = 0;
 
     // Character
     const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
@@ -79,7 +68,7 @@ protected:
     struct ShareData {
         int window = FALSE;
         sCtrlKind ctrl;
-        PictureKind pic;
+        cImage selected, darts, thunder;
         std::vector<sGroup> groups, teams;
         int SkillEffectMode = TRUE;
     }; ShareData sd;

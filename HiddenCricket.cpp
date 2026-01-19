@@ -22,7 +22,7 @@ HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), s
 	std::vector<int> randomPoint;
 	for (int point = 1; point <= 20; point++) randomPoint.push_back(point);
 	std::shuffle(randomPoint.begin(), randomPoint.end(), std::mt19937{ std::random_device{}() });
-	switch (mGameMode) {
+	switch (cGame::instance()->mode()) {
 	case cGame::sMode::HIDDEN_CRICKET:
 		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
 			now.posScore[pos] = -point - 1;
@@ -102,7 +102,7 @@ void HiddenCricket::reset() {
 	std::vector<int> randomPoint;
 	for (int point = 1; point <= 20; point++) randomPoint.push_back(point);
 	std::shuffle(randomPoint.begin(), randomPoint.end(), std::mt19937{ std::random_device{}() });
-	switch (mGameMode) {
+	switch (cGame::instance()->mode()) {
 	case cGame::sMode::HIDDEN_CRICKET:
 		for (int pos = 0, point = randomPoint.at(0); pos < POS_NUM - 1; pos++, point = randomPoint.at(pos)) {
 			now.posScore[pos] = -point - 1;
@@ -488,7 +488,7 @@ void HiddenCricket::update() {
 			now = record[attempt];
 			return;
 		}
-		if (mGameMode == cGame::sMode::SELECT_A_CRICKET && selectPos > 0) {
+		if (cGame::instance()->mode() == cGame::sMode::SELECT_A_CRICKET && selectPos > 0) {
 			now.arrow = 1;
 			selectPos--;
 			if (now.posScore[selectPos] == 25) {

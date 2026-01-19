@@ -14,7 +14,7 @@ ZeroOne::ZeroOne(ShareData shareData) : attempt(0), maxAttempt(0) {
 	now = {};
 	now.arrow = 3;
 	for (int playerNo = 0; playerNo < nTeam; playerNo++) {
-		now.teamRemain[playerNo] = INIT_POINT[mGameMode];
+		now.teamRemain[playerNo] = INIT_POINT[cGame::instance()->mode()];
 		now.rank[playerNo] = playerNo;
 	}
 	for (int point = 0; point < cDarts::sPoint::NUM; point++)
@@ -72,7 +72,7 @@ void ZeroOne::reset() {
 	now = {};
 	now.arrow = 3;
 	for (int playerNo = 0; playerNo < nTeam; playerNo++) {
-		now.teamRemain[playerNo] = INIT_POINT[mGameMode];
+		now.teamRemain[playerNo] = INIT_POINT[cGame::instance()->mode()];
 		now.rank[playerNo] = playerNo;
 	}
 }

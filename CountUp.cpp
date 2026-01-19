@@ -12,7 +12,7 @@ CountUp::CountUp(ShareData shareData) : attempt(0), maxAttempt(0) {
 	maxAttempt = 0;
 	now = {};
 	now.arrow = 3;
-	switch (mGameMode) {
+	switch (cGame::instance()->mode()) {
 	case cGame::sMode::CRICKET_COUNT_UP:
 		for (int point = 0; point < cDarts::sPoint::NUM; point++) {
 			cDarts::instance()->setPointValidation(point, false);
@@ -73,7 +73,7 @@ void CountUp::reset() {
 	maxAttempt = 0;
 	now = {};
 	now.arrow = 3;
-	switch (mGameMode) {
+	switch (cGame::instance()->mode()) {
 	case cGame::sMode::CRICKET_COUNT_UP:
 		for (int point = 0; point < cDarts::sPoint::NUM; point++) {
 			cDarts::instance()->setPointValidation(point, false);
@@ -217,7 +217,7 @@ void CountUp::update() {
 		if (ctrlRQ(sd.ctrl.forward)) {
 			attempt++;
 			now = record[attempt];
-			if (mGameMode == cGame::sMode::CRICKET_COUNT_UP) {
+			if (cGame::instance()->mode() == cGame::sMode::CRICKET_COUNT_UP) {
 				if (now.round < CRICKET_NUMBER_NUM) {
 					for (int point = 0; point < CRICKET_NUMBER_NUM; point++) {
 						cDarts::instance()->setPointValidation(CRICKET_NUMBER_SCORE[point], false);
@@ -278,7 +278,7 @@ void CountUp::update() {
 					now.team = 0;
 					now.member++;
 					now.round++;
-					if (mGameMode == cGame::sMode::CRICKET_COUNT_UP) {
+					if (cGame::instance()->mode() == cGame::sMode::CRICKET_COUNT_UP) {
 						if (now.round < CRICKET_NUMBER_NUM) {
 							for (int point = 0; point < CRICKET_NUMBER_NUM; point++) {
 								cDarts::instance()->setPointValidation(CRICKET_NUMBER_SCORE[point], false);
@@ -305,7 +305,7 @@ void CountUp::update() {
 		if (attempt > 0) {
 			attempt--;
 			now = record[attempt];
-			if (mGameMode == cGame::sMode::CRICKET_COUNT_UP) {
+			if (cGame::instance()->mode() == cGame::sMode::CRICKET_COUNT_UP) {
 				if (now.team == nTeam - 1 && now.arrow == 1 && now.round < CRICKET_NUMBER_NUM) {
 					for (int pointNo = 0; pointNo < CRICKET_NUMBER_NUM; pointNo++) {
 						cDarts::instance()->setPointValidation(CRICKET_NUMBER_SCORE[pointNo], false);
