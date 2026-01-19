@@ -1,8 +1,9 @@
 #pragma once
+#include "Singleton.hpp"
 #include <string>
 #include <complex>
-#include "Singleton.hpp"
 #include "DxLib.h"
+#include "Box.hpp"
 
 class cDarts : public Singleton<cDarts> {
     cDarts() {}
@@ -25,6 +26,9 @@ public:
     };
 
     // Functions
+    void loadScreen();
+    void loadColor();
+    void loadFont();
     void loadImage();
     void draw();
     bool updateByKeyboard();
@@ -45,6 +49,17 @@ public:
     bool isTouched() { return mIsTouched; }
     bool isThrowed() { return mIsThrowed; }
 private:
+    // Screen
+    cBox screen, upperFrame, lowerFrame;
+
+    // Color
+    unsigned int white = 0U, black = 0U, gray = 0U,
+        red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
+        touchColor = 0U, pressColor = 0U, executeColor = 0U;
+
+    // Font
+    int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
+
     struct sRadialPos {
         static constexpr int INNER_BULL = 0;
         static constexpr int OUTER_BULL = 1;

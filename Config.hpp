@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.hpp"
+#include "Control.hpp"
+
 class Config : public cScene {
 public:
     Config(int priorScene, ShareData sd);
@@ -8,7 +10,7 @@ public:
     void set();
     void update();
     void draw();
-    void draw(sCtrl ctrl);
+    void draw(int ctrl);
 private:
-    sCtrlKind ctrl;
+    cImage mIcon[cControl::NUM];
 };

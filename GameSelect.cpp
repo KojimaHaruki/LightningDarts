@@ -3,17 +3,18 @@
 #include <string>
 #include "Color.hpp"
 #include "Sound.hpp"
+#include "Control.hpp"
 
 GameSelect::GameSelect(ShareData shareData) {
     sd = shareData;
     mNowScene = GAME_SELECT;
-    for (int category = 0, mode = 0; category < cGame::sCategory::NUM && mode < cGame::sMode::NUM; 
+    for (int category = 0, mode = 0; category < cGame::sCategory::NUM && mode < cGame::sMode::NUM;
         category++) {
         gameCategoryBox[category].setSize(230, XLfontSize + 40);
         gameCategoryBox[category].setUpperLeft(
             screen.left() + screen.width() * category / 3, upperFrame.bottom());
-        for (int categoryMode = 0; 
-            categoryMode < cGame::CATEGORY_MODE_NUM[category] && mode < cGame::sMode::NUM; 
+        for (int categoryMode = 0;
+            categoryMode < cGame::CATEGORY_MODE_NUM[category] && mode < cGame::sMode::NUM;
             categoryMode++, mode++) {
             gameModeBox[mode].setSize(250, MfontSize + 12);
             gameModeBox[mode].setUpperLeft(gameCategoryBox[category].left() + 15,
@@ -29,11 +30,11 @@ void GameSelect::reset() {
 
 void GameSelect::draw() {
     cScene::draw();
-    
+
     // icons
-    sd.ctrl.forward.icon.draw();
-    sd.ctrl.skip.icon.draw();
-    
+    cControl::instance()->icon(cControl::FORWARD).draw();
+    cControl::instance()->icon(cControl::SKIP).draw();
+
     // games
     for (int category = 0; category < cGame::sCategory::NUM; category++)
         DrawStringToHandle(gameCategoryBox[category].left() + 5,
@@ -55,13 +56,16 @@ void GameSelect::draw() {
     }
 
     // scene title
-    DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5,
+    DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
         upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
 
 void GameSelect::update() {
     cScene::update();
-    if (ctrlRQ(sd.ctrl.forward) || ctrlRQ(sd.ctrl.skip)) mNextScene = PLAYER_SELECT;
-    else if (ctrlRQ(sd.ctrl.back) || ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-    else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
+    if (cControl::instance()->isRequested(cControl::FORWARD) ||
+        cControl::instance()->isRequested(cControl::SKIP))
+        mNextScene = PLAYER_SELECT;
+    else if (cControl::instance()->isRequested(cControl::BACK) ||
+        cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
+    else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
 }

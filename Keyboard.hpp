@@ -9,6 +9,7 @@ class cKeyboard : public Singleton<cKeyboard> {
 	friend Singleton< cKeyboard >;
 public:
 	void loadKeyImage();
+	void reloadKeyImage();
 	cImage keyImage(int keyCode);
 	cBox& keyBox(int keyCode);
 	bool update();

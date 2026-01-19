@@ -25,17 +25,6 @@ protected:
     // Skill
     std::string SkillName[5] = { "Single!", "Double!!", "Triple!!!", "BULL!!", "!!IN BULL!!" };
 
-    // Control
-    struct sCtrl {
-        int keyCode = 0;
-        cImage icon;
-        std::string name;
-    };
-    struct sCtrlKind {
-        sCtrl left, right, down, up, skill, home, gameSelect, playerSelect, reset,
-            init, skip, quit, config, bgm, window[2], mute[2], pause[2], back, forward, start, yes, no;
-    };
-
 	// Color
     unsigned int white = 0U, black = 0U, gray = 0U,
 		red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,
@@ -46,7 +35,7 @@ protected:
 	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
 
     // Character
-    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
+    const std::string playerFolderPath = "./Image/Player";
     struct sCharaStatus {
         double winRate = 0;
         int rank = 0;
@@ -67,7 +56,6 @@ protected:
 
     struct ShareData {
         int window = FALSE;
-        sCtrlKind ctrl;
         cImage selected, darts, thunder;
         std::vector<sGroup> groups, teams;
         int SkillEffectMode = TRUE;
@@ -78,15 +66,8 @@ protected:
     void loadColor();
     void loadFont();
     void loadScreen();
-    void initCtrlKey();
     void initScreenSize();
     void changeWindow(int WindowModeFlag);
-    bool isClicked(cBox box);
-    bool isBoxClicked(int x1, int y1, int x2, int y2);
-    bool isClicked(cImage imag);
-    bool isKeyTyped(int keyCode);
-    bool isTyped(sCtrl ctrl);
-    bool ctrlRQ(sCtrl ctrl);
 
 public:
     cScene();
@@ -94,19 +75,19 @@ public:
     inline int currentScene() { return mNowScene; }
     inline int nextScene() { return mNextScene; }
     virtual void init();
-    virtual void reset();
+    virtual void reset() {}
     virtual void draw();
     virtual void update();
-    virtual void fin();
+    virtual void fin() {}
     static constexpr int NO_CHANGE     = -1;
-    static constexpr int CONFIG        =  0;
-    static constexpr int HOME          =  1;
-    static constexpr int GAME_SELECT   =  2;
-    static constexpr int PLAYER_SELECT =  3;
-    static constexpr int GAME_START    =  4;
-    static constexpr int ZERO_ONE      =  5;
-    static constexpr int STANDARD_CRICKET =  6;
-    static constexpr int COUNT_UP      =  7;
-    static constexpr int QUIT          =  8;
+    static constexpr int QUIT = 0;
+    static constexpr int CONFIG        =  1;
+    static constexpr int HOME          =  2;
+    static constexpr int GAME_SELECT   =  3;
+    static constexpr int PLAYER_SELECT =  4;
+    static constexpr int GAME_START    =  5;
+    static constexpr int ZERO_ONE      =  6;
+    static constexpr int STANDARD_CRICKET =  7;
+    static constexpr int COUNT_UP      =  8;
     ShareData shareData() { return sd; }
 };

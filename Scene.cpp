@@ -13,15 +13,12 @@
 #include "Font.hpp"
 #include "Game.hpp"
 #include "Screen.hpp"
+#include "Control.hpp"
 namespace fs = std::filesystem;
 
 cScene::cScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)) {
-    loadColor();
-    loadFont();
-    loadScreen();
+    loadColor(); loadFont(); loadScreen();
     timeError = localtime_s(&nowLocalTime, &nowTime);
-    // load team color
-    for (int i = 0; i < cTeam::MAX_SOLO_PLAYER_NUM; i++) teamColor[i] = cColor::instance()->teamColor(i);
 }
 
 void cScene::loadColor() {
@@ -50,66 +47,13 @@ void cScene::loadScreen() {
     lowerFrame = cScreen::instance()->lowerFrame();
 }
 
-void cScene::initCtrlKey() {
-    sd.ctrl.home.keyCode = KEY_INPUT_H;      sd.ctrl.back.keyCode = KEY_INPUT_BACK;
-    sd.ctrl.forward.keyCode = KEY_INPUT_RETURN; sd.ctrl.quit.keyCode = KEY_INPUT_ESCAPE;
-    sd.ctrl.config.keyCode = KEY_INPUT_C;      sd.ctrl.skill.keyCode = KEY_INPUT_E;
-    sd.ctrl.skip.keyCode = KEY_INPUT_S;      sd.ctrl.init.keyCode = KEY_INPUT_I;
-    sd.ctrl.gameSelect.keyCode = KEY_INPUT_G; sd.ctrl.playerSelect.keyCode = KEY_INPUT_P;
-    sd.ctrl.reset.keyCode = KEY_INPUT_R; sd.ctrl.bgm.keyCode = KEY_INPUT_B;
-    sd.ctrl.left.keyCode = KEY_INPUT_LEFT;   sd.ctrl.right.keyCode = KEY_INPUT_RIGHT;
-    sd.ctrl.up.keyCode = KEY_INPUT_UP;     sd.ctrl.down.keyCode = KEY_INPUT_DOWN;
-    sd.ctrl.start.keyCode = KEY_INPUT_SPACE;  sd.ctrl.yes.keyCode = KEY_INPUT_Y;
-    sd.ctrl.no.keyCode = KEY_INPUT_N;
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].keyCode = KEY_INPUT_M;
-        sd.ctrl.window[i].keyCode = KEY_INPUT_W;
-        sd.ctrl.pause[i].keyCode = KEY_INPUT_PAUSE;
-    }
-}
-
 void cScene::initScreenSize() {
     cScreen::instance()->init();
+    cDarts::instance()->loadScreen();
     loadScreen();
     changeWindow(sd.window);
     // set icon
-    cCoordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.home.icon.box().setSize(30, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.home.icon.box().setUpperLeft(screen.upperLeft());
-    sd.ctrl.back.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.back.icon.box().setUpperLeft(sd.ctrl.home.icon.box().upperRight());
-    sd.ctrl.forward.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.forward.icon.box().setUpperLeft(sd.ctrl.back.icon.box().upperRight());
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.mute[i].icon.box().setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.mute[i].icon.box().setUpperLeft(sd.ctrl.forward.icon.box().upperRight());
-    }
-    sd.ctrl.quit.icon.box().setSize(DEFAULT_ICON_SIZE); sd.ctrl.quit.icon.box().setUpperRight(
-        screen.upperRight());
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.window[i].icon.box().setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.window[i].icon.box().setUpperRight(sd.ctrl.quit.icon.box().upperLeft());
-    }
-    sd.ctrl.config.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.config.icon.box().setUpperRight(sd.ctrl.window[0].icon.box().upperLeft());
-    sd.ctrl.gameSelect.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.gameSelect.icon.box().setUpperRight(sd.ctrl.config.icon.box().upperLeft());
-    sd.ctrl.playerSelect.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.playerSelect.icon.box().setUpperRight(sd.ctrl.gameSelect.icon.box().upperLeft());
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.pause[i].icon.box().setSize(DEFAULT_ICON_SIZE);
-        sd.ctrl.pause[i].icon.box().setUpperRight(sd.ctrl.playerSelect.icon.box().upperLeft());
-    }
-    sd.ctrl.skill.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.skill.icon.box().setUpperRight(sd.ctrl.pause[0].icon.box().upperLeft());
-    sd.ctrl.skip.icon.box().setSize(76, DEFAULT_ICON_HEIGHT);
-    sd.ctrl.skip.icon.box().setLowerRight(lowerFrame.upperRight());
-    sd.ctrl.init.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.init.icon.box().setLowerLeft(screen.lowerLeft());
-    sd.ctrl.reset.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.reset.icon.box().setLowerLeft(sd.ctrl.init.icon.box().lowerRight());
-    sd.ctrl.bgm.icon.box().setSize(DEFAULT_ICON_SIZE);
-    sd.ctrl.bgm.icon.box().setLowerLeft(sd.ctrl.reset.icon.box().lowerRight());
+    cControl::instance()->initIconBox();
     // set image
     sd.selected.box().setSize(100, 86);
     sd.darts.box().setSize(900, 600);
@@ -119,13 +63,12 @@ void cScene::initScreenSize() {
 }
 
 void cScene::init() {
-    initCtrlKey();
     initScreenSize();
-    // load color
     if (mNowScene == NO_CHANGE) {
         int cpp = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG92), "PNG");
         int dxlib = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG93), "PNG");
         cColor::instance()->load();
+		cDarts::instance()->loadColor();
         loadColor();
         // draw start screen
         ClearDrawScreen();
@@ -135,17 +78,10 @@ void cScene::init() {
         DrawStringToHandle(screen.right() - 180, screen.bottom() - MfontSize - 10,
             "now loading...", white, Mfont);
         ScreenFlip();
-        sd.ctrl.home.name = "Home"; sd.ctrl.back.name = "Back"; sd.ctrl.forward.name = "Forward";
-        sd.ctrl.mute[0].name = "Unmute"; sd.ctrl.mute[1].name = "Mute"; sd.ctrl.quit.name = "Quit";
-        sd.ctrl.window[0].name = "Another window"; sd.ctrl.window[1].name = "Maximize window";
-        sd.ctrl.pause[0].name = "Pause"; sd.ctrl.pause[1].name = "Resume"; sd.ctrl.config.name = "Config";
-        sd.ctrl.playerSelect.name = "Player select"; sd.ctrl.gameSelect.name = "Game select";
-        sd.ctrl.skill.name = "Skill"; sd.ctrl.skip.name = "Skip"; sd.ctrl.init.name = "Initialize";
-        sd.ctrl.reset.name = "Reset"; sd.ctrl.bgm.name = "Change BGM";
-        // load BGM
         cSound::instance()->load();
         cDarts::instance()->setCenter(screen.left() + 0.25 * screen.width() + 5, screen.center().y());
     }
+    cControl::instance()->initKey();
     cSound::instance()->initSoundVol();
     StopSound();
     cSound::instance()->playBGM(0);
@@ -159,13 +95,17 @@ void cScene::changeWindow(int WindowModeFlag) {
     ChangeWindowMode(WindowModeFlag);
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
-    // load font
     cFont::instance()->load();
+    cDarts::instance()->loadFont();
     loadFont();
-    cKeyboard::instance()->loadKeyImage();
 
-    // load players
     if (sd.groups.size() > 0) {
+		// reload images
+        cKeyboard::instance()->reloadKeyImage();
+        cControl::instance()->reloadIcon();
+        sd.darts.reload();
+        sd.selected.reload();
+        sd.thunder.reload();
         for (int group = 0; group < sd.groups.size(); group++) {
             for (int member = 0; member < sd.groups.at(group).members.size(); member++) {
                 sd.groups.at(group).members.at(member).image.reload();
@@ -173,6 +113,12 @@ void cScene::changeWindow(int WindowModeFlag) {
         }
     }
     else {
+		// load images
+        cKeyboard::instance()->loadKeyImage();
+        cControl::instance()->loadIcon();
+        sd.darts.load(IDB_JPG1, "JPG");
+        sd.selected.load(IDB_PNG90, "PNG");
+        sd.thunder.load(IDB_PNG91, "PNG");
         std::error_code err;
         sd.groups.clear();
         sd.groups.push_back(sGroup("Guest"));
@@ -213,46 +159,23 @@ void cScene::changeWindow(int WindowModeFlag) {
             }
         }
     }
-
-    sd.ctrl.left.icon.load(IDB_PNG68, "PNG");
-    sd.ctrl.right.icon.load(IDB_PNG69, "PNG");
-    sd.ctrl.skill.icon.load(IDB_PNG70, "PNG");
-    sd.ctrl.home.icon.load(IDB_PNG71, "PNG");
-    sd.ctrl.init.icon.load(IDB_PNG72, "PNG");
-    sd.ctrl.gameSelect.icon.load(IDB_PNG73, "PNG");
-    sd.ctrl.playerSelect.icon.load(IDB_PNG74, "PNG");
-    sd.ctrl.reset.icon.load(IDB_PNG75, "PNG");
-    sd.ctrl.skip.icon.load(IDB_PNG76, "PNG");
-    sd.ctrl.quit.icon.load(IDB_PNG77, "PNG");
-    sd.ctrl.config.icon.load(IDB_PNG78, "PNG");
-    sd.ctrl.bgm.icon.load(IDB_PNG79, "PNG");
-    for (int i = 0; i < 2; i++) {
-        sd.ctrl.window[i].icon.load(IDB_PNG80 + i, "PNG");
-        sd.ctrl.mute[i].icon.load(IDB_PNG82 + i, "PNG");
-        sd.ctrl.pause[i].icon.load(IDB_PNG84 + i, "PNG");
-    }
-    sd.ctrl.back.icon.load(IDB_PNG86, "PNG");
-    sd.ctrl.forward.icon.load(IDB_PNG87, "PNG");
-    sd.ctrl.down.icon.load(IDB_PNG88, "PNG");
-    sd.ctrl.up.icon.load(IDB_PNG89, "PNG");
-    sd.darts.load(IDB_JPG1, "JPG");
-    sd.selected.load(IDB_PNG90, "PNG");
-    sd.thunder.load(IDB_PNG91, "PNG");
     cDarts::instance()->loadImage();
     sd.window = GetWindowModeFlag();
 }
 
-void cScene::reset() {
-}
-
 void cScene::draw() {
     sd.darts.draw(); sd.thunder.draw();
-    sd.ctrl.home.icon.draw(); sd.ctrl.back.icon.draw();
-    sd.ctrl.mute[cSound::instance()->isBGMPlayed()].icon.draw(); 
-    sd.ctrl.config.icon.draw(); sd.ctrl.window[sd.window].icon.draw();
-    sd.ctrl.quit.icon.draw(); sd.ctrl.init.icon.draw(); sd.ctrl.reset.icon.draw(); sd.ctrl.bgm.icon.draw();
-    DrawStringToHandle(
-        sd.ctrl.bgm.icon.box().right(), cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
+    cControl::instance()->icon(cControl::HOME).draw(); 
+    cControl::instance()->icon(cControl::BACK).draw();
+    cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
+    cControl::instance()->icon(cControl::CONFIG).draw();
+    cControl::instance()->icon(cControl::ANOTHER_WINDOW + sd.window).draw();
+    cControl::instance()->icon(cControl::QUIT).draw();
+    cControl::instance()->icon(cControl::INITIALIZE).draw();
+    cControl::instance()->icon(cControl::RESET).draw();
+    cControl::instance()->icon(cControl::CHANGE_BGM).draw();
+    DrawStringToHandle(cControl::instance()->icon(cControl::CHANGE_BGM).box().right(), 
+        cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
         cSound::instance()->playingBGMName().c_str(), white, Sfont);
     DrawStringToHandle(screen.right() - 340, lowerFrame.center().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
@@ -266,26 +189,26 @@ void cScene::draw() {
             white, Sfont, "%02d:%02d", nowLocalTime.tm_hour, nowLocalTime.tm_min);
     }
 }
-void cScene::fin() {
-}
+
 void cScene::update() {
     cMouse::instance()->update();
     cKeyboard::instance()->update();
     cSound::instance()->update();
     nowTime = time(NULL);
     timeError = localtime_s(&nowLocalTime, &nowTime);
-    if (ctrlRQ(sd.ctrl.init)) init();
-    else if (ctrlRQ(sd.ctrl.reset)) reset();
-    else if (ctrlRQ(sd.ctrl.quit)) mNextScene = QUIT;
-    else if (ctrlRQ(sd.ctrl.mute[cSound::instance()->isBGMPlayed()])) {
+    if (cControl::instance()->isRequested(cControl::INITIALIZE)) init();
+    else if (cControl::instance()->isRequested(cControl::RESET)) reset();
+    else if (cControl::instance()->isRequested(cControl::QUIT)) mNextScene = QUIT;
+    else if (cControl::instance()->isRequested(cControl::MUTE + cSound::instance()->isBGMPlayed())) {
         if (cSound::instance()->isBGMPlayed()) {
             cSound::instance()->mute();
             return;
         }
         cSound::instance()->unmute();
     }
-    else if (ctrlRQ(sd.ctrl.window[sd.window])) changeWindow((sd.window + 1) % 2);
-    else if (ctrlRQ(sd.ctrl.bgm)) {
+    else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + sd.window)) 
+        changeWindow((sd.window + 1) % 2);
+    else if (cControl::instance()->isRequested(cControl::CHANGE_BGM)) {
         if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == sKey::PRESSED) {
             cSound::instance()->playLastBGM();
         }
@@ -293,30 +216,6 @@ void cScene::update() {
             cSound::instance()->playNextBGM();
         }
     }
-}
-
-bool cScene::isClicked(cBox box) {
-    return cMouse::instance()->clickBoxState(box) == sKey::PRESSEDtoRELEASED;
-}
-
-bool cScene::isBoxClicked(int x1, int y1, int x2, int y2) {
-    return cMouse::instance()->clickBoxState(x1, y1, x2, y2) == sKey::PRESSEDtoRELEASED;
-}
-
-bool cScene::isClicked(cImage image) {
-    return isClicked(image.box());
-}
-
-bool cScene::isKeyTyped(int keyCode) {
-    return cKeyboard::instance()->pressKeyState(keyCode) == sKey::RELEASEDtoPRESSED;
-}
-
-bool cScene::isTyped(sCtrl ctrl) {
-    return isKeyTyped(ctrl.keyCode);
-}
-
-bool cScene::ctrlRQ(sCtrl ctrl) {
-    return isClicked(ctrl.icon) || isTyped(ctrl);
 }
 
 cScene::~cScene() {

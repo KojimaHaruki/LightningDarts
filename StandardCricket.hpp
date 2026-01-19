@@ -14,6 +14,9 @@ public:
 	bool back();
 	bool forward();
 	bool skip();
+	void updatePointBox();
+	void updateTeamBox();
+	void updateScoreBox();
 	bool record();
 	void checkPosFill(int pos);
 	bool addScore(int pos);

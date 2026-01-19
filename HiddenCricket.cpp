@@ -4,6 +4,7 @@
 #include "Darts.hpp"
 #include "Game.hpp"
 #include "Timer.hpp"
+#include "Control.hpp"
 
 HiddenCricket::HiddenCricket(ShareData shareData) : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 	sd = shareData;
@@ -140,19 +141,7 @@ void HiddenCricket::draw() {
 	cScene::draw();
 
 	// draw icon
-	if (cTimer::instance()->isPaused()) sd.ctrl.pause[TRUE].icon.draw();
-	else sd.ctrl.pause[FALSE].icon.draw();
-	if (attempt < maxAttempt) sd.ctrl.forward.icon.draw();
-	sd.ctrl.gameSelect.icon.draw(); sd.ctrl.playerSelect.icon.draw();
-	sd.ctrl.skill.icon.draw(); sd.ctrl.skip.icon.draw();
-
-	// draw time
-	cTimer::instance()->drawLapseTime(
-		screen.left(), upperFrame.bottom() + 10, white, Sfont, cTimer::Mode::HMSmS);
-
-	// draw game name
-	DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5, upperFrame.center().y() - MfontSize / 2,
-		cGame::instance()->modeName().c_str(), white, Mfont);
+	if (attempt < maxAttempt) cControl::instance()->icon(cControl::FORWARD).draw();
 
 	// draw darts board
 	cDarts::instance()->draw();
@@ -311,13 +300,12 @@ void HiddenCricket::update() {
 	cScene::update();
 	cDarts::instance()->update();
 	cTimer::instance()->update();
-	bool isPaused = cTimer::instance()->isPaused();
 	int point = cDarts::instance()->point(), power = cDarts::instance()->power(),
 		totalPoint = cDarts::instance()->totalPoint();
 	if (selectPos < POS_NUM) { // select-a-clicket
 		if (now.posScore[selectPos] > 0) {
-			sd.ctrl.forward.icon.draw();
-			if (ctrlRQ(sd.ctrl.forward)) {
+			cControl::instance()->icon(cControl::FORWARD).draw();
+			if (cControl::instance()->isRequested(cControl::FORWARD)) {
 				if (now.posScore[selectPos] == 25) {
 					cDarts::instance()->setPointValidation(0, true);
 				}
@@ -358,8 +346,8 @@ void HiddenCricket::update() {
 		}
 	}
 	else if (attempt < maxAttempt) {
-		sd.ctrl.forward.icon.draw();
-		if (ctrlRQ(sd.ctrl.forward)) {
+		cControl::instance()->icon(cControl::FORWARD).draw();
+		if (cControl::instance()->isRequested(cControl::FORWARD)) {
 			attempt++;
 			now = record[attempt];
 			return;
@@ -455,7 +443,7 @@ void HiddenCricket::update() {
 		record[attempt] = now;
 	}
 	if (!now.isGameFin) {
-		if (ctrlRQ(sd.ctrl.skip)) {
+		if (cControl::instance()->isRequested(cControl::SKIP)) {
 			if (attempt < MAX_ATTEMPT - 1) {
 				attempt++;
 				maxAttempt = attempt;
@@ -482,7 +470,7 @@ void HiddenCricket::update() {
 			return;
 		}
 	}
-	if (ctrlRQ(sd.ctrl.back)) {
+	if (cControl::instance()->isRequested(cControl::BACK)) {
 		if (attempt > 0) {
 			attempt--;
 			now = record[attempt];
@@ -500,19 +488,16 @@ void HiddenCricket::update() {
 		}
 		mNextScene = GAME_START;
 	}
-	else if (ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;
-	else if (ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;
-	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-	else if (ctrlRQ(sd.ctrl.config)) {
+	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
+	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
+	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
+	else if (cControl::instance()->isRequested(cControl::CONFIG)) {
 		mNextScene = CONFIG;
 		cTimer::instance()->pause();
 	}
-	else if (!isPaused && ctrlRQ(sd.ctrl.pause[FALSE])) cTimer::instance()->pause();
-	else if (isPaused && ctrlRQ(sd.ctrl.pause[TRUE])) cTimer::instance()->resume();
 }
 
 void HiddenCricket::fin() {
-	sd.ctrl.skip.icon.box().setLowerRight(screen.right(), lowerFrame.top());
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			sd.teams.at(player).members.at(0).image.box().setSize(100, 100);

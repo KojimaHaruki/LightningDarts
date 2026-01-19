@@ -184,49 +184,49 @@ IDB_PNG66               PNG                     "Image\\Key\\Ins.png"
 
 IDB_PNG67               PNG                     "Image\\Key\\Del.png"
 
-IDB_PNG68               PNG                     "Icon\\Left.png"
+IDB_PNG68               PNG                     "Icon\\Exit.png"
 
-IDB_PNG69               PNG                     "Icon\\Right.png"
+IDB_PNG69               PNG                     "Icon\\Cog.png"
 
-IDB_PNG70               PNG                     "Icon\\Skill.png"
+IDB_PNG70               PNG                     "Icon\\Home.png"
 
-IDB_PNG71               PNG                     "Icon\\Home.png"
+IDB_PNG71               PNG                     "Icon\\game.png"
 
-IDB_PNG72               PNG                     "Icon\\Initialize.png"
+IDB_PNG72               PNG                     "Icon\\player.png"
 
-IDB_PNG73               PNG                     "Icon\\game.png"
+IDB_PNG73               PNG                     "Icon\\Left.png"
 
-IDB_PNG74               PNG                     "Icon\\player.png"
+IDB_PNG74               PNG                     "Icon\\Right.png"
 
-IDB_PNG75               PNG                     "Icon\\Restart.png"
+IDB_PNG75               PNG                     "Icon\\Down.png"
 
-IDB_PNG76               PNG                     "Icon\\Skip.png"
+IDB_PNG76               PNG                     "Icon\\Up.png"
 
-IDB_PNG77               PNG                     "Icon\\Exit.png"
+IDB_PNG77               PNG                     "Icon\\Skill.png"
 
-IDB_PNG78               PNG                     "Icon\\Cog.png"
+IDB_PNG78               PNG                     "Icon\\Initialize.png"
 
-IDB_PNG79               PNG                     "Icon\\Music.png"
+IDB_PNG79               PNG                     "Icon\\Restart.png"
 
-IDB_PNG80               PNG                     "Icon\\AnotherWindow.png"
+IDB_PNG80               PNG                     "Icon\\Skip.png"
 
-IDB_PNG81               PNG                     "Icon\\MaximizeWindow.png"
+IDB_PNG81               PNG                     "Icon\\Music.png"
 
-IDB_PNG82               PNG                     "Icon\\Mute.png"
+IDB_PNG82               PNG                     "Icon\\AnotherWindow.png"
 
-IDB_PNG83               PNG                     "Icon\\Speaker.png"
+IDB_PNG83               PNG                     "Icon\\MaximizeWindow.png"
 
-IDB_PNG84               PNG                     "Icon\\Stop.png"
+IDB_PNG84               PNG                     "Icon\\Mute.png"
 
-IDB_PNG85               PNG                     "Icon\\Start.png"
+IDB_PNG85               PNG                     "Icon\\Speaker.png"
 
-IDB_PNG86               PNG                     "Icon\\Back.png"
+IDB_PNG86               PNG                     "Icon\\Stop.png"
 
-IDB_PNG87               PNG                     "Icon\\Forward.png"
+IDB_PNG87               PNG                     "Icon\\Start.png"
 
-IDB_PNG88               PNG                     "Icon\\Down.png"
+IDB_PNG88               PNG                     "Icon\\Back.png"
 
-IDB_PNG89               PNG                     "Icon\\Up.png"
+IDB_PNG89               PNG                     "Icon\\Forward.png"
 
 IDB_PNG90               PNG                     "Icon\\Selected.png"
 

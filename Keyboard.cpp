@@ -1,9 +1,16 @@
 #include <DxLib.h>
 #include "Keyboard.hpp"
+#include "Control.hpp"
 
 void cKeyboard::loadKeyImage() {
-    for (int i = 0; i < VALID_KEY_NUM; i++)
+    for (int i = 0; i < VALID_KEY_NUM; i++) {
         mKeyImage[KeyNo[i]].load(KeyNo[i], "PNG");
+        mKeyImage[KeyNo[i]].box().setSize(cControl::DEFAULT_ICON_WIDTH, cControl::DEFAULT_ICON_HEIGHT);
+    }
+}
+
+void cKeyboard::reloadKeyImage() {
+    for (int i = 0; i < VALID_KEY_NUM; i++) mKeyImage[KeyNo[i]].reload();
 }
 
 cImage cKeyboard::keyImage(int keyCode) { 

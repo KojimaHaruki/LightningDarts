@@ -2,12 +2,36 @@
 #include "Darts.hpp"
 #include <numbers>
 #include "resource.h"
-#include "Mouse.hpp"
-#include "Keyboard.hpp"
+#include "Screen.hpp"
 #include "Color.hpp"
 #include "Font.hpp"
+#include "Mouse.hpp"
+#include "Keyboard.hpp"
 #include "Game.hpp"
-#include "Screen.hpp"
+#include "Control.hpp"
+#include "Timer.hpp"
+
+void cDarts::loadScreen() {
+    screen = cScreen::instance()->box();
+    upperFrame = cScreen::instance()->upperFrame();
+    lowerFrame = cScreen::instance()->lowerFrame();
+}
+
+void cDarts::loadColor() {
+    white = cColor::instance()->white(); black = cColor::instance()->black();
+    gray = cColor::instance()->gray(); red = cColor::instance()->red();
+    green = cColor::instance()->green(); blue = cColor::instance()->blue();
+    magenta = cColor::instance()->magenta(); cyan = cColor::instance()->cyan();
+    yellow = cColor::instance()->yellow(); tableColor = cColor::instance()->tableColor();
+    touchColor = cColor::instance()->touchColor(); pressColor = cColor::instance()->pressColor();
+    executeColor = cColor::instance()->executeColor();
+}
+
+void cDarts::loadFont() {
+    Sfont = cFont::instance()->Sfont(); SfontSize = cFont::instance()->SfontSize();
+    Mfont = cFont::instance()->MFont(); MfontSize = cFont::instance()->MfontSize();
+    XLfont = cFont::instance()->XLfont(); XLfontSize = cFont::instance()->XLfontSize();
+}
 
 void cDarts::loadImage() {
     for (int pos = 0; pos < 4; pos++) {
@@ -20,24 +44,36 @@ void cDarts::loadImage() {
 }
 
 void cDarts::draw() {
-    unsigned int white = cColor::instance()->white(), black = cColor::instance()->black(),
-        gray = cColor::instance()->gray(), red = cColor::instance()->red(),
-        touchColor = cColor::instance()->touchColor(), pressColor = cColor::instance()->pressColor();
-    int MFont = cFont::instance()->MFont(), MFontSize = cFont::instance()->MfontSize();
+    // draw icon
+    if (cTimer::instance()->isPaused()) cControl::instance()->icon(cControl::PAUSE).draw();
+    else cControl::instance()->icon(cControl::RESUME).draw();
+    cControl::instance()->icon(cControl::GAME_SELECT).draw();
+    cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
+    cControl::instance()->icon(cControl::SKILL).draw();
+    cControl::instance()->icon(cControl::SKIP).draw();
+
+    // draw time
+    cTimer::instance()->drawLapseTime(cScreen::instance()->box().left(),
+        upperFrame.bottom() + 10, white, Sfont, cTimer::Mode::HMSmS);
+
+    // draw game name
+    DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
+        upperFrame.center().y() - MfontSize / 2,
+        cGame::instance()->modeName().c_str(), white, Mfont);
     
     // draw base board
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::OUTSIDE], 100, black);
     DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::DOUBLE], 100, gray);
 
-    DrawStringToHandle(0, cScreen::instance()->lowerFrame().top() - MFontSize - 5, 
-        pointName().c_str(), white, MFont);
+    DrawStringToHandle(0, cScreen::instance()->lowerFrame().top() - MfontSize - 5, 
+        pointName().c_str(), white, Mfont);
     // draw point part
-	float phi = -M_PI, r = sRadialPos::RADIUS[sRadialPos::OUTSIDE] - MFontSize + 2.0f,
+	float phi = -M_PI, r = sRadialPos::RADIUS[sRadialPos::OUTSIDE] - MfontSize + 2.0f,
         x = -11.0f, y = -10.0f;
     for (int i = 0; i < 20; i++, phi += 0.1 * M_PI) {
         if (mIsValidPoint[cDarts::BOARD_POINT[i]]) {
             DrawStringToHandle(real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
-                POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), white, MFont);
+                POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), white, Mfont);
             for (int posNo = sRadialPos::DOUBLE, state = 0; posNo > sRadialPos::OUTER_BULL; posNo--) {
                 if (mPoint == cDarts::BOARD_POINT[i] && mRadialPos == posNo) {
                     if (mIsTouched) {
@@ -57,7 +93,7 @@ void cDarts::draw() {
         }
         DrawStringToHandle(
             real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
-            POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), gray, MFont);
+            POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), gray, Mfont);
     }
 
 	// draw outer bull
@@ -183,6 +219,16 @@ void cDarts::updateByMouse() {
 }
 
 void cDarts::update() {
+    if (cTimer::instance()->isPaused()) {
+        if (cControl::instance()->isRequested(cControl::RESUME)) { 
+            cTimer::instance()->resume(); return;
+        }
+    }
+    else {
+        if (cControl::instance()->isRequested(cControl::PAUSE)) { 
+            cTimer::instance()->pause(); return;
+        }
+    }
     // initialize darts
     mRadialPos = sRadialPos::OUTSIDE; mPoint = 0; mPower = 0; mTotalPoint = 0;
     mIsTouched = false; mIsThrowed = false;

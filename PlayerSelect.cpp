@@ -6,6 +6,7 @@
 #include "Color.hpp"
 #include "Game.hpp"
 #include "Sound.hpp"
+#include "Control.hpp"
 #include "Keyboard.hpp"
 
 sPlayerSelect::sPlayerSelect(ShareData shareData) {
@@ -50,11 +51,14 @@ sPlayerSelect::sPlayerSelect(ShareData shareData) {
     shuffle = teamTypeBox[cTeam::sType::DUO];
     shuffle.setUpperLeft(teamTypeBox[cTeam::sType::DUO].upperRight());
     shuffle.setColor(cyan);
-    sd.ctrl.yes.icon.box().setSize(100, lowerFrame.top() - upperFrame.bottom() - 400);
-    sd.ctrl.yes.icon.box().setLowerLeft(screen.right() - 200, lowerFrame.top());
-    sd.ctrl.yes.icon.box().setColor(magenta);
-    cKeyboard::instance()->keyBox(sd.ctrl.yes.keyCode).setUpperLeft(
-        screen.right() - 140, sd.ctrl.yes.icon.box().center().y() - DEFAULT_ICON_HEIGHT / 2);
+    cControl::instance()->iconBox(cControl::YES).setSize(
+        100, lowerFrame.top() - upperFrame.bottom() - 400);
+    cControl::instance()->iconBox(cControl::YES).setLowerLeft(screen.right() - 200, lowerFrame.top());
+    cControl::instance()->iconBox(cControl::YES).setColor(magenta);
+    cKeyboard::instance()->keyBox(cControl::instance()->keyCode(cControl::YES)).setRight(
+        cControl::instance()->icon(cControl::YES).box().right() - 10);
+    cKeyboard::instance()->keyBox(cControl::instance()->keyCode(cControl::YES)).setCenterY(
+        cControl::instance()->icon(cControl::YES).box().centerY());
 }
 
 void sPlayerSelect::reset() {
@@ -69,8 +73,8 @@ void sPlayerSelect::draw() {
     cScene::draw();
 
     // icons
-    sd.ctrl.gameSelect.icon.draw();
-    sd.ctrl.skip.icon.draw();
+    cControl::instance()->icon(cControl::GAME_SELECT).draw();
+    cControl::instance()->icon(cControl::SKIP).draw();
 
     // characters
     unsigned int color = white;
@@ -111,7 +115,7 @@ void sPlayerSelect::draw() {
         if (player < players.size()) {
             players.at(player).image.draw();
             DrawStringToHandle(playerBox[player].left(), playerBox[player].top(),
-                PLAYER_NAME[player].c_str(), white, Mfont);
+                PLAYER_NAME[players.at(player).status.rank].c_str(), white, Mfont);
             DrawStringToHandle(
                 playerBox[player].left() + 2 + 5 * max(0, 10 - (int)players.at(player).name.size()),
                 playerBox[player].bottom() - SfontSize - 10,
@@ -167,9 +171,9 @@ void sPlayerSelect::draw() {
     DrawStringToHandle(shuffle.left() + 9, shuffle.centerY() - MfontSize / 2, "Shuffle", color, Mfont);
 
     // OK button
-    sd.ctrl.yes.icon.box().draw();
+    cControl::instance()->icon(cControl::YES).box().draw();
     color = white;
-    switch (cMouse::instance()->clickBoxState(sd.ctrl.yes.icon.box())) {
+    switch (cMouse::instance()->clickBoxState(cControl::instance()->icon(cControl::YES).box())) {
     case sKey::RELEASED:
         color = touchColor; break;
     case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
@@ -178,9 +182,9 @@ void sPlayerSelect::draw() {
         if (players.size() > 0) { color = executeColor; } break;
     default: break;
     }
-    DrawStringToHandle(sd.ctrl.yes.icon.box().left() + 5,
-        sd.ctrl.yes.icon.box().center().y() - MfontSize / 2, "OK!!", color, Mfont);
-    cKeyboard::instance()->keyImage(sd.ctrl.yes.keyCode).draw();
+    DrawStringToHandle(cControl::instance()->icon(cControl::YES).box().left() + 5,
+        cControl::instance()->icon(cControl::YES).box().centerY() - MfontSize / 2, "OK!!", color, Mfont);
+	cKeyboard::instance()->keyImage(cControl::instance()->keyCode(cControl::YES)).draw();
     int x = screen.left(), y1 = upperFrame.bottom(), y2 = y1 + 400;
     for (int i = 0; i < 4; i++, x += 100) DrawLine(x, y1, x, y2, black);
     y2 = lowerFrame.top();
@@ -192,7 +196,7 @@ void sPlayerSelect::draw() {
         DrawLine(x1, y, x2, y, black);
 
     // scene title
-    DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5,
+    DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
         upperFrame.center().y() - MfontSize / 2,
         (cGame::instance()->modeName() + " < Player Select").c_str(), white, Mfont);
 }
@@ -201,13 +205,13 @@ void sPlayerSelect::update() {
     cScene::update();
     int nPlayer = players.size();
     if (nPlayer < playersMem.size()) {
-        sd.ctrl.forward.icon.draw();
-        if (ctrlRQ(sd.ctrl.forward)) {
+        cControl::instance()->icon(cControl::FORWARD).draw();
+        if (cControl::instance()->isRequested(cControl::FORWARD)) {
             players.push_back(playersMem.at(nPlayer));
             return;
         }
     }
-    if (ctrlRQ(sd.ctrl.skip)) {
+    if (cControl::instance()->isRequested(cControl::SKIP)) {
         mNextScene = GAME_START;
         while (players.size() < playersMem.size()) {
             players.push_back(playersMem.at(players.size()));
@@ -219,8 +223,8 @@ void sPlayerSelect::update() {
         }
         setTeamType(cTeam::instance()->type());
     }
-    else if (nPlayer > 0 && ctrlRQ(sd.ctrl.yes)) mNextScene = GAME_START;
-    else if (ctrlRQ(sd.ctrl.back)) {
+    else if (nPlayer > 0 && cControl::instance()->isRequested(cControl::YES)) mNextScene = GAME_START;
+    else if (cControl::instance()->isRequested(cControl::BACK)) {
         if (nPlayer > 0) {
             players.pop_back();
             setTeamType(cTeam::instance()->type());
@@ -228,22 +232,23 @@ void sPlayerSelect::update() {
         }
         mNextScene = GAME_SELECT;
     }
-    else if (ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;
-    else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-    else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
+    else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
+    else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
+    else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
 }
 
 void sPlayerSelect::setTeamType(int teamType) {
     cTeam::instance()->setType((players.size() < 2) ? cTeam::sType::SOLO : teamType);
     sd.teams.clear();
     if (cTeam::instance()->type() == cTeam::sType::SOLO) {
-        for (int player = 0; player < players.size(); player++) {
+        for (int team = 0; team < players.size(); team++) {
             sd.teams.push_back(sGroup());
-            players.at(player).image.box().setUpperLeft(
-                screen.right() - 200 + 100 * (player % cTeam::DUO_MEMBER_NUM),
-                upperFrame.bottom() + 100 * (player / cTeam::DUO_MEMBER_NUM));
-            sd.teams.at(player).members.push_back(players.at(player));
-            sd.teams.at(player).name = players.at(player).name;
+            players.at(team).image.box().setUpperLeft(
+                screen.right() - 200 + 100 * (team % cTeam::DUO_MEMBER_NUM),
+                upperFrame.bottom() + 100 * (team / cTeam::DUO_MEMBER_NUM));
+            players.at(team).status.rank = team;
+            sd.teams.at(team).members.push_back(players.at(team));
+			sd.teams.at(team).name = players.at(team).name;
         }
         for (int player = 0; player < cTeam::MAX_SOLO_PLAYER_NUM; player++) {
             playerBox[player].setColor(teamColor[player]);
@@ -254,9 +259,11 @@ void sPlayerSelect::setTeamType(int teamType) {
     }
     for (int player = 0, team = 0; player < players.size(); team++) {
         sd.teams.push_back(sGroup());
-        for (int member = 0; member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
+        for (int member = 0;
+            member < cTeam::DUO_MEMBER_NUM && player < players.size(); member++, player++) {
             players.at(player).image.box().setUpperLeft(
                 screen.right() - 200 + 100 * member, upperFrame.bottom() + 100 * team);
+            players.at(player).status.rank = team + (players.size() / 2) * member;
             sd.teams.at(team).members.push_back(players.at(player));
         }
         sd.teams.at(team).name = sd.teams.at(team).members.at(0).name;

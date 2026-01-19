@@ -5,6 +5,7 @@
 #include "Game.hpp"
 #include "Sound.hpp"
 #include "Timer.hpp"
+#include "Control.hpp"
 
 cGameStart::cGameStart(ShareData shareData) {
 	sd = shareData;
@@ -36,14 +37,14 @@ void cGameStart::draw() {
 	cScene::draw();
 
 	// draw icon
-	sd.ctrl.playerSelect.icon.draw();
-	sd.ctrl.gameSelect.icon.draw();
-	sd.ctrl.skip.icon.draw();
+	cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
+	cControl::instance()->icon(cControl::GAME_SELECT).draw();
+	cControl::instance()->icon(cControl::SKIP).draw();
 
 	// draw scene name
-	DrawStringToHandle(sd.ctrl.mute[0].icon.box().right() + 5, upperFrame.center().y() - MfontSize / 2,
-		(cGame::instance()->modeName() + " / " + cTeam::instance()->typeName() + " < Game Start").c_str(),
-		white, Mfont);
+	DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
+		upperFrame.center().y() - MfontSize / 2,
+		(cGame::instance()->modeName() + " < Game Start").c_str(), white, Mfont);
 
 	// draw battle team
 	for (int team = 0; team < sd.teams.size(); team++) {
@@ -62,8 +63,8 @@ void cGameStart::draw() {
 void cGameStart::update() {
 	cScene::update();
 	nowTime = time(NULL);
-	if (ctrlRQ(sd.ctrl.back)) mNextScene = PLAYER_SELECT;
-	else if (ctrlRQ(sd.ctrl.skip) || nowTime >= startTime) {
+	if (cControl::instance()->isRequested(cControl::BACK)) mNextScene = PLAYER_SELECT;
+	else if (cControl::instance()->isRequested(cControl::SKIP) || nowTime >= startTime) {
 		switch (cGame::instance()->category()) {
 		case cGame::sCategory::ZERO_ONE:
 			mNextScene = ZERO_ONE; break;
@@ -76,8 +77,8 @@ void cGameStart::update() {
 		}
 		cTimer::instance()->restart();
 	}
-	else if (ctrlRQ(sd.ctrl.playerSelect)) mNextScene = PLAYER_SELECT;
-	else if (ctrlRQ(sd.ctrl.gameSelect)) mNextScene = GAME_SELECT;
-	else if (ctrlRQ(sd.ctrl.home)) mNextScene = HOME;
-	else if (ctrlRQ(sd.ctrl.config)) mNextScene = CONFIG;
+	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
+	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
+	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
+	else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
 }
