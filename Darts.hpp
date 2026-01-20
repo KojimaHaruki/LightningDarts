@@ -25,6 +25,24 @@ public:
         static constexpr int NUM = 4;
     };
 
+	// Setters
+    void setCenter(float x, float y) { std::complex<float>center(x, y); mCenter = center; }
+    void setCenter(std::complex<float> center) { mCenter = center; }
+    bool setPointValidation(int point, bool isValid);
+
+	// Getters
+    bool isValidPoint(int point);
+    int arrowImage() { return mArrowImage; }
+    int point() { return mPoint; }
+    std::string pointName(int point);
+    std::string pointName();
+    std::string pointName(int point, int power);
+    int power() { return mPower; }
+    int radialPos() { return mRadialPos; }
+    int totalPoint() { return mTotalPoint; }
+    bool isTouched() { return mIsTouched; }
+    bool isThrowed() { return mIsThrowed; }
+
     // Functions
     void loadScreen();
     void loadColor();
@@ -34,20 +52,7 @@ public:
     bool updateByKeyboard();
     void updateByMouse();
     void update();
-    void setCenter(float x, float y) { std::complex<float>center(x, y); mCenter = center; }
-    void setCenter(std::complex<float> center) { mCenter = center; }
-    bool setPointValidation(int point, bool isValid);
-    bool isValidPoint(int point);
-    int arrowImage() { return mArrowImage; }
-    int point() { return mPoint; }
-    std::string pointName();
-    std::string pointName(int point);
-    std::string pointName(int point, int power);
-    int power() { return mPower; }
-    int radialPos() { return mRadialPos; }
-    int totalPoint() { return mTotalPoint; }
-    bool isTouched() { return mIsTouched; }
-    bool isThrowed() { return mIsThrowed; }
+    void reset();
 private:
     // Screen
     cBox screen, upperFrame, lowerFrame;
@@ -72,6 +77,7 @@ private:
         static constexpr float RADIUS[NUM] = { 8.0f, 22.0f, 108.77f, 126.77f, 178.85f, 196.85f, 226.0f };
         static constexpr int POWER[NUM] = { 2, 1, 1, 3, 1, 2, 0 };
     };
+	static constexpr int BULL_POINT = 25;
     bool mIsValidPoint[sPoint::NUM] = {};
     std::complex<float> mCenter;
     int mBoardImage[4][4] = {}, mArrowImage = 0;

@@ -22,14 +22,14 @@ public:
 	bool addScore(int pos);
 	bool changeTeam();
 	void updateRank();
-	void checkTeamFin();
+	void checkTeamFin(int team);
 	void checkGameFin();
 	void fin();
 	
 private:
 	static constexpr int BULL      = 6;
 	static constexpr int POS_NUM   = 7;
-	static constexpr int POINT_NUM = 8;
+	static constexpr int POINT_NUM = POS_NUM + 1;
 	static constexpr int MAX_POWER = 3;
 	static constexpr int MAX_ATTEMPT = 500;
 	int attempt = 0, maxAttempt = 0;
@@ -61,5 +61,5 @@ private:
 	const std::string rankName[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};
-	std::vector<std::string> ranker;
+	std::vector<cPlayer::sGroup> ranker;
 };

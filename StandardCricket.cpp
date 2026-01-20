@@ -1,7 +1,7 @@
 #include "StandardCricket.hpp"
 #include "Darts.hpp"
-#include "Timer.hpp"
 #include "Control.hpp"
+#include "Timer.hpp"
 
 cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 	nTeam = cPlayer::instance()->nTeam();
@@ -11,16 +11,16 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 	now = {};
 	now.arrow = 3;
 	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
+	ranker = cPlayer::instance()->teams();
 	for (int point = cDarts::sPoint::MISS; point < cDarts::sPoint::MIN_CRICKET_POINT; point++)
 		cDarts::instance()->setPointValidation(point, false);
 	for (int point = cDarts::sPoint::MIN_CRICKET_POINT; point < cDarts::sPoint::NUM; point++)
 		cDarts::instance()->setPointValidation(point, true);
-	ranker.reserve(nTeam);
 	if (nTeam <= cPlayer::MAX_DUO_TEAM_NUM) {
-		space = 6;
+		space = 8;
 		teamBox.push_back(cBox());
 		teamBox.at(0).setSize(
-			100, (cPlayer::instance()->teamType() + 1) * 100 + POINT_NUM * (MfontSize + space));
+			100, (cPlayer::instance()->teamType() + 1) * 100 + POINT_NUM * (LfontSize + space));
 		teamBox.at(0).setUpperLeft(screen.right() - cPlayer::MAX_DUO_TEAM_NUM * 100, upperFrame.bottom());
 		teamBox.at(0).setColor(tableColor);
 		cPlayer::instance()->teamMemberImageBox(0, 0).setUpperLeft(teamBox.at(0).upperLeft());
@@ -42,7 +42,7 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 			teamBox.at(team).setColor(tableColor);
 		}
 		pointBox.push_back(cBox());
-		pointBox.at(0).setSize(teamBox.back().right() - teamBox.at(0).left(), MfontSize + space);
+		pointBox.at(0).setSize(teamBox.back().right() - teamBox.at(0).left(), LfontSize + space);
 		pointBox.at(0).setUpperLeft(
 			teamBox.at(0).left(),
 			teamBox.at(0).top() + (cPlayer::instance()->teamType() + 1) * 100);
@@ -53,7 +53,7 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 		}
 		for (int team = 0; team < nTeam; team++) {
 			teamMarks.push_back(sPosBox());
-			teamMarks.at(team).posBox[0].setSize(MfontSize, MfontSize);
+			teamMarks.at(team).posBox[0].setSize(LfontSize, LfontSize);
 			teamMarks.at(team).posBox[0].setCenter(teamBox.at(team).centerX(), pointBox.at(0).centerY());
 			for (int pos = 1; pos < POS_NUM; pos++) {
 				teamMarks.at(team).posBox[pos] = teamMarks.at(team).posBox[0];
@@ -114,12 +114,13 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 			}
 		}
 	}
+	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.centerX() - 10);
 	mem[attempt] = now;
 }
 
 void cStandardCricket::reset() {
 	cBaseScene::reset();
-	cTimer::instance()->restart();
+	cDarts::instance()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
@@ -168,7 +169,8 @@ void cStandardCricket::draw() {
 			DrawStringToHandle(teamBox.at(team).left(), teamBox.at(team).top(),
 				rankName[now.rank[team]].c_str(), rankColor[now.rank[team]], Mfont);
 			DrawFormatStringToHandle(
-				chara.image.box().center().x() - 20, pointBox.at(POS_NUM).top() + space / 2,
+				chara.image.box().center().x() - 20, 
+				pointBox.at(POS_NUM).top() + space / 2,
 				white, Mfont, "%4d", now.teamScore[team]);
 			DrawLine(teamBox.at(team).left(), teamBox.at(team).top(),
 				teamBox.at(team).left(), teamBox.at(team).bottom(), black);
@@ -180,7 +182,7 @@ void cStandardCricket::draw() {
 				color = gray;
 			}
 			DrawStringToHandle(screen.center().x() + 20, pointBox.at(pos).top() + space / 2,
-				std::to_string(POS_POINT[pos]).c_str(), color, Mfont);
+				std::to_string(POS_POINT[pos]).c_str(), color, Lfont);
 		}
 		color = white;
 		if (now.isPosFill[POS_NUM - 1]) {
@@ -221,8 +223,8 @@ void cStandardCricket::draw() {
 			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
 				chara.image.box().bottom() - SfontSize - 6,
 				chara.name.c_str(), white, Sfont);
-			DrawFormatStringToHandle(chara.image.box().center().x() - 20,
-				chara.image.box().bottom() + POS_NUM * SfontSize + 15 * space / 2,
+			DrawFormatStringToHandle(chara.image.box().center().x() - 20, 
+				pointBox[POS_NUM + (team / cPlayer::MAX_DUO_TEAM_NUM) * POINT_NUM].bottom() + space / 2,
 				white, Sfont, "%4d", now.teamScore[team]);
 			DrawLine(teamBox.at(team).left(), teamBox.at(team).top(),
 				teamBox.at(team).left(), teamBox.at(team).bottom(), black);
@@ -257,10 +259,10 @@ void cStandardCricket::draw() {
 				if (now.teamPosPower[team][pos] >= MAX_POWER) {
 					DrawCircleAA(teamMarks.at(team).posBox[pos].center().x() + MARK_PART_ERROR[part],
 						teamMarks.at(team).posBox[pos].center().y(),
-						(teamMarks.at(team).posBox[pos].height() - space) / 2.0,
+						(teamMarks.at(team).posBox[pos].height() - 4) / 2.0,
 						100, colors[part], FALSE, MARK_PART_LINETHICK[part]);
 				}
-				if (now.teamPosPower[team][pos] >= 2) {
+				if (now.teamPosPower[team][pos] >= 1) {
 					DrawLine(
 						teamMarks.at(team).posBox[pos].right() + MARK_PART_ERROR[part],
 						teamMarks.at(team).posBox[pos].top(),
@@ -286,7 +288,7 @@ void cStandardCricket::draw() {
 		DrawGraph(x, y, cDarts::instance()->arrowImage(), TRUE);
 	if (now.isGameFin) {
 		DrawStringToHandle(screen.center().x() + 120, teamBox.at(0).bottom() + space / 2,
-			(ranker.at(0) + " Win!").c_str(), white, Mfont);
+			(ranker.at(0).name + " Win!").c_str(), white, Mfont);
 		return;
 	}
 	DrawStringToHandle(screen.center().x() + 120, teamBox.at(0).bottom() + space / 2,
@@ -296,7 +298,6 @@ void cStandardCricket::draw() {
 void cStandardCricket::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
-	cTimer::instance()->update();
 
 	if (cDarts::instance()->isThrowed()) throwDart();
 	else if (cControl::instance()->isRequested(cControl::SKIP)) skip();
@@ -316,7 +317,7 @@ bool cStandardCricket::throwDart() {
 	int point = cDarts::instance()->point();
 	for (int pos = 0; pos < POS_NUM; pos++) {
 		if (point == POS_POINT[pos] && !now.isPosFill[pos]) {
-			addScore(pos); checkPosFill(pos); updateRank(); checkTeamFin(); checkGameFin();
+			addScore(pos); checkPosFill(pos); updateRank(); checkGameFin();
 			// If team has finished, set arrows to 0
 			if (now.isTeamFin[now.team]) { now.arrow = 0; }
 			break;
@@ -385,7 +386,6 @@ bool cStandardCricket::record() {
 void cStandardCricket::checkPosFill(int pos) {
 	for (int team = 0; team < nTeam; team++) {
 		if (!now.isTeamPosFill[team][pos]) {
-			now.isPosFill[pos] = false;
 			return;
 		}
 	}
@@ -435,6 +435,7 @@ bool cStandardCricket::changeTeam() {
 		if (!now.isTeamFin[now.team]) {
 			now.arrow = 3;
 			teamBox.at(now.team).setColor(white);
+			updateRank();
 			return true;
 		}
 	}
@@ -442,16 +443,17 @@ bool cStandardCricket::changeTeam() {
 }
 
 void cStandardCricket::updateRank() {
+	if (now.isGameFin) return;
 	if (nTeam <= 2) {
 		int opponent = (now.team + 1) % nTeam;
-		if (now.teamScore[now.team] == now.teamScore[opponent]) {
-			now.rank[now.team] = 0; now.rank[opponent] = 0;
-		}
-		else if (now.teamScore[now.team] > now.teamScore[opponent]) {
+		if (now.teamScore[now.team] >= now.teamScore[opponent]) {
 			now.rank[now.team] = 0; now.rank[opponent] = 1;
 		}
 		else {
 			now.rank[now.team] = 1; now.rank[opponent] = 0;
+		}
+		for (int team = 0; team < 2; team++) {
+			ranker.at(now.rank[team]) = cPlayer::instance()->teams().at(team);
 		}
 		return;
 	}
@@ -460,57 +462,47 @@ void cStandardCricket::updateRank() {
 			now.rank[team] = 0;
 			for (int opponent = (team + 1) % nTeam; opponent != team; opponent = (opponent + 1) % nTeam) {
 				// Increase rank if opponent has a lower bill or is finished
-				if (now.teamScore[team] > now.teamScore[opponent] || now.isTeamFin[opponent] ||
-					(now.teamScore[team] == now.teamScore[opponent] && team > opponent)) {
+				if (now.teamScore[team] > now.teamScore[opponent] ||
+					(now.teamScore[team] == now.teamScore[opponent] && (
+						(team - now.team + nTeam) % nTeam > (opponent - now.team + nTeam) % nTeam) ||
+						now.isTeamFin[opponent])) {
 					now.rank[team]++;
 				}
 			}
+			ranker.at(now.rank[team]) = cPlayer::instance()->teams().at(team);
 		}
 	}
 }
 
-void cStandardCricket::checkTeamFin() {
-	for (int team = 0; team < nTeam; team++) {
-		if (!now.isTeamFin[team]) {
-			for (int pos = 0; pos < POS_NUM; pos++) {
-				if (!now.isTeamPosFill[team][pos]) {
-					return;
-				}
-			}
-			for (int opponent = (team + 1) % nTeam; opponent != team; opponent = (opponent + 1) % nTeam) {
-				// If any opponent has a higher rank and is not finished, this team is not finished
-				if (now.rank[team] >= now.rank[opponent] && !now.isTeamFin[opponent]) {
-					return;
-				}
-			}
-			now.isTeamFin[team] = true;
-			teamBox.at(team).setColor(gray);
+void cStandardCricket::checkTeamFin(int team) {
+	if (now.isTeamFin[team]) return;
+	for (int pos = 0; pos < POS_NUM; pos++) {
+		if (!now.isTeamPosFill[team][pos]) { // If any position is not filled
+			return; // the team is not finished
 		}
 	}
+	for (int opponent = (team + 1) % nTeam; opponent != team; opponent = (opponent + 1) % nTeam) {
+		if (now.rank[team] > now.rank[opponent] && !now.isTeamFin[opponent]) {
+			return; // If any opponent has a higher rank and is not finished, the team is not finished
+		}
+	}
+	// If the team has filled all positions and has a higher rank than all unfinished opponents,
+	now.isTeamFin[team] = true; 
+	teamBox.at(team).setColor(gray); // If the team is finished, set team box to gray
 }
 
 void cStandardCricket::checkGameFin() {
-	for (int team = 0, notFinCount = 0; team < nTeam; team++) {
-		if (!now.isTeamFin[team]) {
-			notFinCount++;
-			if (notFinCount >= 2) {
-				now.isGameFin = false; return;
-			}
-		}
+	int notFinCount = 0;
+	for (int team = 0; team < nTeam; team++) {
+		checkTeamFin(team);
+		if (!now.isTeamFin[team]) { notFinCount++; } // If team is not finished, add notFinCount
 	}
-	now.isGameFin = true;
-	ranker.clear();
-	for (int rank = 0; rank < nTeam; rank++) {
-		for (int team = 0; team < nTeam; team++) {
-			if (now.rank[team] == rank) {
-				ranker.push_back(cPlayer::instance()->teams().at(team).name);
-			}
-		}
-	}
+	if (notFinCount > 1) return; // If more than one team is not finished, the game is not finished
+	now.isGameFin = true; // If only one team is not finished, the game is finished
 }
 
 void cStandardCricket::fin() {
-	cControl::instance()->icon(cControl::SKIP).box().setLowerRight(screen.right(), lowerFrame.top());
+	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.right());
 	if (nTeam > cPlayer::MAX_DUO_TEAM_NUM) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teams().at(player).members.at(0).image.box().setHeight(100);

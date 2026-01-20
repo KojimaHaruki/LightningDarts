@@ -11,6 +11,44 @@
 #include "Control.hpp"
 #include "Timer.hpp"
 
+bool cDarts::setPointValidation(int point, bool isValid) {
+    if (point == 25) {
+        mIsValidPoint[sPoint::OUTER_BULL] = isValid; mIsValidPoint[sPoint::INNER_BULL] = isValid;
+        return true;
+    }
+    if (point < 0 || point >= sPoint::NUM) return false;
+    mIsValidPoint[point] = isValid; return true;
+}
+
+bool cDarts::isValidPoint(int point) {
+    if (point == 25) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
+    if (point < 0 || point >= sPoint::NUM) return false;
+    return mIsValidPoint[point];
+}
+
+std::string cDarts::pointName(int point) {
+    if (point >= 0 && point < sPoint::NUM) return POINT_NAME[point];
+    if (point == BULL_POINT) return "Bull";
+    return "None";
+}
+
+std::string cDarts::pointName() {
+    return pointName(mPoint, mPower);
+}
+
+std::string cDarts::pointName(int point, int power) {
+    if (point > 0 && point < sPoint::NUM && power > 0 && power < sPower::NUM)
+        return POINT_NAME[point] + POWER_NAME[power];
+    if (!point || !power) return "Miss";
+    if (point == BULL_POINT) {
+        if (power == 1) {
+            return POINT_NAME[sPoint::OUTER_BULL];
+        }
+        return POINT_NAME[sPoint::INNER_BULL];
+    }
+	return "None";
+}
+
 void cDarts::loadScreen() {
     screen = cScreen::instance()->box();
     upperFrame = cScreen::instance()->upperFrame();
@@ -137,18 +175,17 @@ void cDarts::draw() {
 bool cDarts::updateByKeyboard() {
     // check inner bull
     if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::INNER_BULL]) == sKey::RELEASEDtoPRESSED) {
-		mRadialPos = sRadialPos::INNER_BULL; mPoint = 25; mPower = 2; mTotalPoint = 50; mIsThrowed = true;
-        return true;
+		mRadialPos = sRadialPos::INNER_BULL; mPoint = BULL_POINT; mPower = 2; mTotalPoint = 50; 
+        mIsThrowed = true; return true;
     }
 
     // check outer bull
     if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::OUTER_BULL]) == sKey::RELEASEDtoPRESSED) {
-        mRadialPos = sRadialPos::OUTER_BULL; mPoint = 25; mPower = 1; mIsThrowed = true;
+        mRadialPos = sRadialPos::OUTER_BULL; mPoint = BULL_POINT; mPower = 1; mIsThrowed = true;
         if (cGame::instance()->category() == cGame::sCategory::CRICKET) {
-            mTotalPoint = 25; return true;
+            mTotalPoint = BULL_POINT; return true;
         }
-        mTotalPoint = 50;
-        return true;
+        mTotalPoint = 2 * BULL_POINT; return true;
     }
 
     // check miss
@@ -199,13 +236,13 @@ void cDarts::updateByMouse() {
     float phi = -M_PI + 0.05 * M_PI;
     switch (mRadialPos) {
     case sRadialPos::INNER_BULL:
-        mPoint = 25; mTotalPoint = 50; return;
+        mPoint = BULL_POINT; mTotalPoint = 2 * BULL_POINT; return;
     case sRadialPos::OUTER_BULL:
-        mPoint = 25;
+        mPoint = BULL_POINT;
         if (cGame::instance()->category() == cGame::sCategory::CRICKET) {
-            mTotalPoint = 25; return;
+            mTotalPoint = BULL_POINT; return;
         }
-        mTotalPoint = 50; return;
+        mTotalPoint = 2 * BULL_POINT; return;
     default:
         for (int i = 0; i < 21; i++, phi += 0.1 * M_PI) {
             if (theta < phi) {
@@ -219,6 +256,7 @@ void cDarts::updateByMouse() {
 }
 
 void cDarts::update() {
+    cTimer::instance()->update();
     if (cTimer::instance()->isPaused()) {
         if (cControl::instance()->isRequested(cControl::RESUME)) { 
             cTimer::instance()->resume(); return;
@@ -236,35 +274,6 @@ void cDarts::update() {
 	updateByMouse();
 }
 
-bool cDarts::setPointValidation(int point, bool isValid) {
-    if (point == 25) {
-        mIsValidPoint[sPoint::OUTER_BULL] = isValid; mIsValidPoint[sPoint::INNER_BULL] = isValid;
-        return true;
-    }
-    if (point < 0 || point >= sPoint::NUM) return false;
-    mIsValidPoint[point] = isValid; return true;
-}
-
-bool cDarts::isValidPoint(int point) {
-    if (point == 25) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
-    if (point < 0 || point >= sPoint::NUM) return false;
-    return mIsValidPoint[point];
-}
-
-std::string cDarts::pointName() {
-    return pointName(mPoint, mPower);
-}
-
-std::string cDarts::pointName(int point) {
-    if (point == 25) return POINT_NAME[sPoint::OUTER_BULL];
-    if (point < 0 || point >= sPoint::NUM) return "None";
-    return POINT_NAME[point];
-}
-
-std::string cDarts::pointName(int point, int power) {
-    if (point == 25) return POINT_NAME[sPoint::OUTER_BULL + power - 1];
-    if (point < 0 || point >= sPoint::NUM) return "None";
-    if (power < 0 || power >= sPower::NUM) return "None";
-    if (!point || !power) return "Miss";
-    return POINT_NAME[point] + POWER_NAME[power];
+void cDarts::reset() {
+    cTimer::instance()->restart();
 }
