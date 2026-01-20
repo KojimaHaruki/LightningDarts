@@ -99,7 +99,7 @@ void cPlayerSelect::draw() {
             cPlayer::instance()->groupMemberImage(group, member).draw();
             DrawStringToHandle(cPlayer::instance()->groupMemberImageBox(group, member).left(),
                 cPlayer::instance()->groupMemberImageBox(group, member).top(),
-                cPlayer::instance()->groups().at(group).name.c_str(), color, Sfont);
+                cPlayer::instance()->groups().at(group).name.c_str(), color, Mfont);
             DrawStringToHandle(
                 cPlayer::instance()->groupMemberImageBox(group, member).left() +
                 2 + 5 * max(0, 10 - (int)cPlayer::instance()->groupMemberName(group, member).size()),

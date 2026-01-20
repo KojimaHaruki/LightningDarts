@@ -7,6 +7,7 @@ int cFont::createFont(Data font) {
 
 void cFont::load() {
     mXLFontHandle = createFont(mXLFont);
+    mLFontHandle = createFont(mLFont);
     mMFontHandle = createFont(mMFont);
     mSFontHandle = createFont(mSFont);
 }

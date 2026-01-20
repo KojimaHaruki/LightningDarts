@@ -182,7 +182,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PlayerSelect.cpp" />
-    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

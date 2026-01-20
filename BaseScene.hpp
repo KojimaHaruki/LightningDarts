@@ -22,7 +22,8 @@ protected:
         rankColor[cPlayer::MAX_SOLO_PLAYER_NUM] = {};
 
     // Font
-	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
+	int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, 
+        Lfont = 0, LfontSize = 0, XLfont = 0, XLfontSize = 0;
 
     // Team
     int nTeam = 0;

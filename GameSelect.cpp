@@ -50,8 +50,8 @@ void cGameSelect::draw() {
             cGame::instance()->setMode(game); mNextScene = PLAYER_SELECT; break;
         default: break;
         }
-        DrawStringToHandle(gameModeBox[game].left() + 20, gameModeBox[game].center().y() - MfontSize / 2,
-            cGame::instance()->modeName(game).c_str(), color, Mfont);
+        DrawStringToHandle(gameModeBox[game].left() + 20, gameModeBox[game].center().y() - LfontSize / 2,
+            cGame::instance()->modeName(game).c_str(), color, Lfont);
     }
 
     // scene title

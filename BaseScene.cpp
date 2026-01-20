@@ -34,6 +34,7 @@ void cBaseScene::loadColor() {
 void cBaseScene::loadFont() {
     Sfont = cFont::instance()->Sfont(); SfontSize = cFont::instance()->SfontSize();
     Mfont = cFont::instance()->MFont(); MfontSize = cFont::instance()->MfontSize();
+    Lfont = cFont::instance()->Lfont(); LfontSize = cFont::instance()->LfontSize();
     XLfont = cFont::instance()->XLfont(); XLfontSize = cFont::instance()->XLfontSize();
 }
 
