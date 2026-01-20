@@ -324,6 +324,7 @@ bool cStandardCricket::throwDart() {
 	}
 	if (now.arrow < 1) changeTeam();
 	record();
+	return true;
 }
 
 bool cStandardCricket::back() {
@@ -389,7 +390,7 @@ void cStandardCricket::checkPosFill(int pos) {
 		}
 	}
 	now.isPosFill[pos] = true;
-	cDarts::instance()->setPointValidation(POS_POINT[pos], true);
+	cDarts::instance()->setPointValidation(POS_POINT[pos], false);
 	pointBox.at(pos).setColor(gray);
 	if (pointBox.size() == 2 * POINT_NUM) pointBox.at(pos + POINT_NUM).setColor(gray);
 }
