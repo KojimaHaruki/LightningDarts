@@ -9,6 +9,7 @@ class cDarts : public Singleton<cDarts> {
     cDarts() {}
     friend class Singleton<cDarts>;
 public:
+	static constexpr int MAX_ARROW_NUM = 3;
     struct sPoint {
         static constexpr int MISS = 0;
         static constexpr int MIN_CRICKET_POINT = 15;
@@ -44,19 +45,16 @@ public:
     bool isThrowed() { return mIsThrowed; }
 
     // Functions
-    void loadScreen();
     void loadColor();
     void loadFont();
     void loadImage();
+	void init();
     void draw();
     bool updateByKeyboard();
     void updateByMouse();
     void update();
     void reset();
 private:
-    // Screen
-    cBox screen, upperFrame, lowerFrame;
-
     // Color
     unsigned int white = 0U, black = 0U, gray = 0U,
         red = 0U, green = 0U, blue = 0U, magenta = 0U, cyan = 0U, yellow = 0U, tableColor = 0U,

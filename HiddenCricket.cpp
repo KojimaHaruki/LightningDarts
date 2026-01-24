@@ -3,12 +3,11 @@
 #include <random>
 #include "Darts.hpp"
 #include "Game.hpp"
-#include "Timer.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
 HiddenCricket::HiddenCricket() : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 	nTeam = cPlayer::instance()->nTeam();
-	mNowScene = STANDARD_CRICKET;
 	markPart[0].color = white;
 	markPart[1].color = black;
 	markPart[0].lineWidth = 3;
@@ -93,7 +92,7 @@ HiddenCricket::HiddenCricket() : attempt(0), maxAttempt(0), selectPos(POS_NUM) {
 
 void HiddenCricket::reset() {
 	cBaseScene::reset();
-	cTimer::instance()->restart();
+	cDarts::instance()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
@@ -298,7 +297,6 @@ void HiddenCricket::draw() {
 void HiddenCricket::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
-	cTimer::instance()->update();
 	int point = cDarts::instance()->point(), power = cDarts::instance()->power(),
 		totalPoint = cDarts::instance()->totalPoint();
 	if (selectPos < POS_NUM) { // select-a-clicket
@@ -485,14 +483,7 @@ void HiddenCricket::update() {
 			cDarts::instance()->setPointValidation(now.posScore[selectPos], false);
 			return;
 		}
-		mNextScene = GAME_START;
-	}
-	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
-	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
-	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-	else if (cControl::instance()->isRequested(cControl::CONFIG)) {
-		mNextScene = CONFIG;
-		cTimer::instance()->pause();
+		cScene::instance()->setScene(cScene::GAME_START);
 	}
 }
 

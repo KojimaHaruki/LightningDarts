@@ -1,11 +1,10 @@
 #include "CountUp.hpp"
 #include "Darts.hpp"
 #include "Game.hpp"
-#include "Timer.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
 cCountUp::cCountUp() : attempt(0), maxAttempt(0) {
-	mNowScene = COUNT_UP;
 	nTeam = cPlayer::instance()->nTeam();
 	attempt = 0;
 	maxAttempt = 0;
@@ -67,7 +66,7 @@ cCountUp::cCountUp() : attempt(0), maxAttempt(0) {
 
 void cCountUp::reset() {
 	cBaseScene::reset();
-	cTimer::instance()->restart();
+	cDarts::instance()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
@@ -197,7 +196,6 @@ void cCountUp::draw() {
 void cCountUp::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
-	cTimer::instance()->update();
 	int point = cDarts::instance()->point(), totalPoint = cDarts::instance()->totalPoint();
 	if (attempt < maxAttempt) {
 		cControl::instance()->icon(cControl::FORWARD).draw();
@@ -300,17 +298,9 @@ void cCountUp::update() {
 					cDarts::instance()->setPointValidation(CRICKET_NUMBER_SCORE[now.round], true);
 				}
 			}
+			return;
 		}
-		else {
-			mNextScene = GAME_START;
-		}
-	}
-	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
-	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
-	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-	else if (cControl::instance()->isRequested(cControl::CONFIG)) {
-		mNextScene = CONFIG;
-		cTimer::instance()->pause();
+		cScene::instance()->setScene(cScene::GAME_START);
 	}
 }
 

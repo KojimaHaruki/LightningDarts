@@ -6,9 +6,9 @@
 #include "Sound.hpp"
 #include "Timer.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
 cGameStart::cGameStart() {
-	mNowScene = GAME_START;
 	nowTime = time(NULL);
 	startTime = nowTime + timeFromEntryToStart;
 	double theta = M_PI, phi = M_PI / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
@@ -63,22 +63,21 @@ void cGameStart::draw() {
 void cGameStart::update() {
 	cBaseScene::update();
 	nowTime = time(NULL);
-	if (cControl::instance()->isRequested(cControl::BACK)) mNextScene = PLAYER_SELECT;
+	if (cControl::instance()->isRequested(cControl::BACK))
+		cScene::instance()->setScene(cScene::PLAYER_SELECT);
 	else if (cControl::instance()->isRequested(cControl::SKIP) || nowTime >= startTime) {
 		switch (cGame::instance()->category()) {
 		case cGame::sCategory::ZERO_ONE:
-			mNextScene = ZERO_ONE; break;
+			cScene::instance()->setScene(cScene::ZERO_ONE); break;
 		case cGame::sCategory::CRICKET:
-			mNextScene = STANDARD_CRICKET; break;
+			cScene::instance()->setScene(cScene::STANDARD_CRICKET); break;
 		case cGame::sCategory::COUNT_UP:
-			mNextScene = COUNT_UP; break;
+			cScene::instance()->setScene(cScene::COUNT_UP); break;
 		default:
-			mNextScene = GAME_SELECT; return;
+			cScene::instance()->setScene(cScene::GAME_SELECT); return;
 		}
 		cTimer::instance()->restart();
 	}
-	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
-	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
-	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-	else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
+	else if (cControl::instance()->isRequested(cControl::CONFIG))
+		cScene::instance()->setScene(cScene::CONFIG);
 }

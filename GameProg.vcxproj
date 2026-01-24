@@ -166,8 +166,11 @@
     <ClCompile Include="CountUp.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Initialize.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player.hpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Scene.hpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="StandardCricket.cpp" />
     <ClCompile Include="Darts.cpp" />
@@ -195,6 +198,7 @@
     <ClInclude Include="CountUp.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="Image.hpp" />
+    <ClInclude Include="Initialize.hpp" />
     <ClInclude Include="Screen.hpp" />
     <ClInclude Include="StandardCricket.hpp" />
     <ClInclude Include="Darts.hpp" />

@@ -3,17 +3,22 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+bool cPlayer::setTeamType(int type) {
+    if (type < 0 || type >= sTeamType::NUM) return false;
+    mTeamType = type; return true;
+}
+
 std::string cPlayer::teamTypeName(int teamType) {
     return (teamType >= 0 && teamType < sTeamType::NUM) ? TEAM_TYPE_NAME[teamType] : "None";
 }
 
 void cPlayer::loadImage() {
     if (mGroup.size() > 0) reloadCharaImage();
-	else loadCharaImage();
-    if (mTeam.size() > 0) loadPlayerImage();
+	else loadGroupImage();
+    if (mTeam.size() > 0) loadTeamImage();
 }
 
-void cPlayer::loadCharaImage() {
+void cPlayer::loadGroupImage() {
     std::error_code err;
     cPlayer::instance()->groups().clear();
     cPlayer::instance()->groups().push_back(sGroup("Guest"));
@@ -48,7 +53,7 @@ void cPlayer::loadCharaImage() {
     }
 }
 
-void cPlayer::loadPlayerImage() {
+void cPlayer::loadTeamImage() {
     for (int team = 0; team < mTeam.size(); team++) {
         for (int member = 0; member < mTeam.at(team).members.size(); member++) {
             mTeam.at(team).members.at(member).image.reload();
@@ -62,4 +67,16 @@ void cPlayer::reloadCharaImage() {
             mGroup.at(group).members.at(member).image.reload();
         }
     }
+}
+
+void cPlayer::initGroup() { 
+    mGroup.clear(); mGroup.reserve(MAX_GROUP_NUM); 
+}
+
+void cPlayer::initTeam() { 
+    mTeam.clear(); mTeam.reserve(MAX_SOLO_PLAYER_NUM); mTeamType = sTeamType::SOLO; 
+}
+
+void cPlayer::init() { 
+    initGroup(); initTeam(); loadGroupImage();
 }

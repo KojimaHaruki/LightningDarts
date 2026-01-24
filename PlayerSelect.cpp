@@ -3,14 +3,12 @@
 #include <random>
 #include <algorithm>
 #include "Mouse.hpp"
-#include "Color.hpp"
 #include "Game.hpp"
-#include "Sound.hpp"
 #include "Control.hpp"
 #include "Keyboard.hpp"
+#include "Scene.hpp"
 
 cPlayerSelect::cPlayerSelect() {
-    mNowScene = PLAYER_SELECT;
     for (int group = 0, chara = 0;
         group < cPlayer::instance()->nGroup() && chara < cPlayer::MAX_CHARA_NUM; group++) {
         for (int member = 0;
@@ -213,7 +211,7 @@ void cPlayerSelect::update() {
         }
     }
     if (cControl::instance()->isRequested(cControl::SKIP)) {
-        mNextScene = GAME_START;
+        cScene::instance()->setScene(cScene::GAME_START);
         while (players.size() < playersMem.size()) {
             players.push_back(playersMem.at(players.size()));
         }
@@ -224,18 +222,18 @@ void cPlayerSelect::update() {
         }
         setTeamType(cPlayer::instance()->teamType());
     }
-    else if (players.size() > 0 && cControl::instance()->isRequested(cControl::YES)) mNextScene = GAME_START;
+    else if (players.size() > 0 && cControl::instance()->isRequested(cControl::YES))
+        cScene::instance()->setScene(cScene::GAME_START);
     else if (cControl::instance()->isRequested(cControl::BACK)) {
         if (players.size() > 0) {
             players.pop_back();
             setTeamType(cPlayer::instance()->teamType());
             return;
         }
-        mNextScene = GAME_SELECT;
+        cScene::instance()->setScene(cScene::GAME_SELECT);
     }
-    else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
-    else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-    else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
+    else if (cControl::instance()->isRequested(cControl::CONFIG))
+        cScene::instance()->setScene(cScene::CONFIG);
     else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + GetWindowModeFlag())) {
         for (int player = 0; player < players.size(); player++) {
             players.at(player).image.reload();

@@ -1,12 +1,9 @@
 #include "GameSelect.hpp"
 #include "Mouse.hpp"
-#include <string>
-#include "Color.hpp"
-#include "Sound.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
 cGameSelect::cGameSelect() {
-    mNowScene = GAME_SELECT;
     for (int category = 0, mode = 0; category < cGame::sCategory::NUM && mode < cGame::sMode::NUM;
         category++) {
         gameCategoryBox[category].setSize(230, XLfontSize + 40);
@@ -31,7 +28,8 @@ void cGameSelect::draw() {
     cBaseScene::draw();
 
     // icons
-    cControl::instance()->icon(cControl::FORWARD).draw();
+    if (cScene::instance()->lastScene() >= cScene::PLAYER_SELECT)
+        cControl::instance()->icon(cControl::FORWARD).draw();
     cControl::instance()->icon(cControl::SKIP).draw();
 
     // games
@@ -47,7 +45,7 @@ void cGameSelect::draw() {
         case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
             color = pressColor; break;
         case sKey::PRESSEDtoRELEASED:
-            cGame::instance()->setMode(game); mNextScene = PLAYER_SELECT; break;
+            cGame::instance()->setMode(game); cScene::instance()->setScene(cScene::PLAYER_SELECT); break;
         default: break;
         }
         DrawStringToHandle(gameModeBox[game].left() + 20, gameModeBox[game].center().y() - LfontSize / 2,
@@ -61,10 +59,12 @@ void cGameSelect::draw() {
 
 void cGameSelect::update() {
     cBaseScene::update();
-    if (cControl::instance()->isRequested(cControl::FORWARD) ||
+    if ((cScene::instance()->lastScene() >= cScene::PLAYER_SELECT && 
+        cControl::instance()->isRequested(cControl::FORWARD)) ||
         cControl::instance()->isRequested(cControl::SKIP))
-        mNextScene = PLAYER_SELECT;
-    else if (cControl::instance()->isRequested(cControl::BACK) ||
-        cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-    else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
+        cScene::instance()->setScene(cScene::PLAYER_SELECT);
+    else if (cControl::instance()->isRequested(cControl::BACK)) 
+        cScene::instance()->setScene(cScene::HOME);
+    else if (cControl::instance()->isRequested(cControl::CONFIG)) 
+        cScene::instance()->setScene(cScene::CONFIG);
 }

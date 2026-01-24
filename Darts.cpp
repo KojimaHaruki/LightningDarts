@@ -10,20 +10,21 @@
 #include "Game.hpp"
 #include "Control.hpp"
 #include "Timer.hpp"
+#include "Scene.hpp"
 
 bool cDarts::setPointValidation(int point, bool isValid) {
+    if (point < 0 || point >= sPoint::NUM) return false;
     if (point == 25) {
         mIsValidPoint[sPoint::OUTER_BULL] = isValid; mIsValidPoint[sPoint::INNER_BULL] = isValid;
         return true;
     }
-    if (point < 0 || point >= sPoint::NUM) return false;
     mIsValidPoint[point] = isValid; return true;
 }
 
 bool cDarts::isValidPoint(int point) {
-    if (point == 25) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
-    if (point < 0 || point >= sPoint::NUM) return false;
-    return mIsValidPoint[point];
+    if (point >= 0 && point < sPoint::NUM) return mIsValidPoint[point];
+    if (point == BULL_POINT) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
+    return false;
 }
 
 std::string cDarts::pointName(int point) {
@@ -47,12 +48,6 @@ std::string cDarts::pointName(int point, int power) {
         return POINT_NAME[sPoint::INNER_BULL];
     }
 	return "None";
-}
-
-void cDarts::loadScreen() {
-    screen = cScreen::instance()->box();
-    upperFrame = cScreen::instance()->upperFrame();
-    lowerFrame = cScreen::instance()->lowerFrame();
 }
 
 void cDarts::loadColor() {
@@ -81,6 +76,16 @@ void cDarts::loadImage() {
     mArrowImage = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG110), "PNG");
 }
 
+void cDarts::init() {
+    loadColor();
+    loadFont();
+    loadImage();
+    mCenter = std::complex<float>(
+        cScreen::instance()->box().left() + 0.25 * cScreen::instance()->box().width() + 5.0f, 
+        cScreen::instance()->box().centerY());
+	cTimer::instance()->reset();
+}
+
 void cDarts::draw() {
     // draw icon
     if (cTimer::instance()->isPaused()) cControl::instance()->icon(cControl::PAUSE).draw();
@@ -92,11 +97,11 @@ void cDarts::draw() {
 
     // draw time
     cTimer::instance()->drawLapseTime(cScreen::instance()->box().left(),
-        upperFrame.bottom() + 10, white, Sfont, cTimer::Mode::HMSmS);
+		cScreen::instance()->upperFrame().bottom() + 10, white, Sfont, cTimer::Mode::HMSmS);
 
     // draw game name
     DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
-        upperFrame.center().y() - MfontSize / 2,
+        cScreen::instance()->upperFrame().centerY() - MfontSize / 2,
         cGame::instance()->modeName().c_str(), white, Mfont);
     
     // draw base board
@@ -272,6 +277,15 @@ void cDarts::update() {
     mIsTouched = false; mIsThrowed = false;
 	if (updateByKeyboard()) return;
 	updateByMouse();
+    if (cControl::instance()->isRequested(cControl::PLAYER_SELECT))
+        cScene::instance()->setScene(cScene::PLAYER_SELECT);
+    else if (cControl::instance()->isRequested(cControl::GAME_SELECT))
+        cScene::instance()->setScene(cScene::GAME_SELECT);
+    else if (cControl::instance()->isRequested(cControl::HOME))
+        cScene::instance()->setScene(cScene::HOME);
+    else if (cControl::instance()->isRequested(cControl::CONFIG)) {
+        cTimer::instance()->pause(); cScene::instance()->setScene(cScene::CONFIG);
+    }
 }
 
 void cDarts::reset() {

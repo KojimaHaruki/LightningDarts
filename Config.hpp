@@ -4,7 +4,7 @@
 
 class cConfig : public cBaseScene {
 public:
-    cConfig(int priorScene);
+    cConfig();
     ~cConfig() {}
     void reset();
     void set();

@@ -4,9 +4,9 @@
 #include "Timer.hpp"
 #include "Keyboard.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
-cConfig::cConfig(int priorScene) {
-    mNowScene = priorScene;
+cConfig::cConfig() {
     set();
 }
 
@@ -86,8 +86,10 @@ void cConfig::draw() {
     if (cTimer::instance()->isPaused()) cControl::instance()->icon(cControl::PAUSE).draw();
     else cControl::instance()->icon(cControl::RESUME).draw();
     cControl::instance()->icon(cControl::SKILL).draw();
-    if (mNowScene >= PLAYER_SELECT) cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
-    if (mNowScene >= GAME_SELECT) cControl::instance()->icon(cControl::GAME_SELECT).draw();
+    if (cScene::instance()->lastScene() >= cScene::PLAYER_SELECT)
+        cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
+    if (cScene::instance()->lastScene() >= cScene::GAME_SELECT) 
+        cControl::instance()->icon(cControl::GAME_SELECT).draw();
 
     // control setting
     draw(cControl::HOME);
@@ -165,19 +167,13 @@ void cConfig::update() {
         cSound::instance()->setBgmPlayMode(
             (cSound::instance()->bgmPlayMode() + 1) % cSound::sPlayMode::NUM);
     }
-    else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
     else if (cControl::instance()->isRequested(cControl::BACK)) {
-        mNextScene = mNowScene;
-        if (mNowScene >= ZERO_ONE) {
+        cScene::instance()->setScene(cScene::instance()->lastScene());
+        if (cScene::instance()->lastScene() >= cScene::ZERO_ONE) {
             cTimer::instance()->resume();
         }
     }
     else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW) ||
         cControl::instance()->isRequested(cControl::MAXIMIZE_WINDOW)) set();
     else if (cControl::instance()->isRequested(cControl::RESET)) reset();
-    else if (mNowScene >= PLAYER_SELECT && cControl::instance()->isRequested(cControl::PLAYER_SELECT)) 
-        mNextScene = PLAYER_SELECT;
-    else if (mNowScene >= GAME_SELECT && cControl::instance()->isRequested(cControl::GAME_SELECT)) 
-        mNextScene = GAME_SELECT;
-    else if (mNowScene >= HOME && cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
 }

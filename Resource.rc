@@ -277,27 +277,27 @@ IDB_JPG1                JPG                     "Image\\Darts.jpg"
 // WAVE
 //
 
-IDR_WAVE1               MP3                     "SE\\Clear line.mp3"
+IDR_WAVE1               MP3                     "Sound\\SE\\Clear line.mp3"
 
-IDR_WAVE2               MP3                     "SE\\Land.mp3"
+IDR_WAVE2               MP3                     "Sound\\SE\\Land.mp3"
 
-IDR_WAVE3               MP3                     "SE\\Speed up.mp3"
+IDR_WAVE3               MP3                     "Sound\\SE\\Speed up.mp3"
 
-IDR_WAVE4               MP3                     "SE\\TETRIS.mp3"
+IDR_WAVE4               MP3                     "Sound\\SE\\TETRIS.mp3"
 
-IDR_WAVE5               MP3                     "SE\\C.mp3"
+IDR_WAVE5               MP3                     "Sound\\SE\\C.mp3"
 
-IDR_WAVE6               MP3                     "SE\\D.mp3"
+IDR_WAVE6               MP3                     "Sound\\SE\\D.mp3"
 
-IDR_WAVE7               MP3                     "SE\\E.mp3"
+IDR_WAVE7               MP3                     "Sound\\SE\\E.mp3"
 
-IDR_WAVE8               MP3                     "SE\\F.mp3"
+IDR_WAVE8               MP3                     "Sound\\SE\\F.mp3"
 
-IDR_WAVE9               MP3                     "SE\\G.mp3"
+IDR_WAVE9               MP3                     "Sound\\SE\\G.mp3"
 
-IDR_WAVE10              MP3                     "SE\\A.mp3"
+IDR_WAVE10              MP3                     "Sound\\SE\\A.mp3"
 
-IDR_WAVE11              MP3                     "SE\\B.mp3"
+IDR_WAVE11              MP3                     "Sound\\SE\\B.mp3"
 
 
 /////////////////////////////////////////////////////////////////////////////

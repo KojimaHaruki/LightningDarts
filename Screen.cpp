@@ -4,7 +4,7 @@
 
 void cScreen::setSize(int w, int h, int frameH, int colorDepth, int FPS) {
     SetGraphMode(w, h, colorDepth, FPS); mColorDepth = colorDepth; mFPS = FPS;
-    mBox.setSize(w, h); mBox.setXY(0, 0);
+    mBox.setSize(w, h);
     mUpperFrame = mBox; mUpperFrame.setHeight(frameH);
     mLowerFrame = mUpperFrame; mLowerFrame.setBottom(h);
 }

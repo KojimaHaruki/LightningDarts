@@ -1,14 +1,9 @@
 #pragma once
 #include "Box.hpp"
-#include <string>
-#include "Image.hpp"
 #include "Player.hpp"
 
 class cBaseScene {
 protected:
-    // Scene
-    int mNowScene, mNextScene;
-
     // Screen
     cBox screen, upperFrame, lowerFrame;
 
@@ -39,21 +34,9 @@ protected:
 public:
     cBaseScene();
     virtual ~cBaseScene();
-    inline int currentScene() { return mNowScene; }
-    inline int nextScene() { return mNextScene; }
     virtual void init();
     virtual void reset() {}
     virtual void draw();
     virtual void update();
     virtual void fin() {}
-    static constexpr int NO_CHANGE     = -1;
-    static constexpr int QUIT = 0;
-    static constexpr int CONFIG        =  1;
-    static constexpr int HOME          =  2;
-    static constexpr int GAME_SELECT   =  3;
-    static constexpr int PLAYER_SELECT =  4;
-    static constexpr int GAME_START    =  5;
-    static constexpr int ZERO_ONE      =  6;
-    static constexpr int STANDARD_CRICKET =  7;
-    static constexpr int COUNT_UP      =  8;
 };

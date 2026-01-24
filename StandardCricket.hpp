@@ -14,12 +14,10 @@ public:
 	bool back();
 	bool forward();
 	bool skip();
-	void updatePointBox();
-	void updateTeamBox();
 	void updateScoreBox();
 	bool record();
-	void checkPosFill(int pos);
 	bool addScore(int pos);
+	void checkPosFill(int pos);
 	bool changeTeam();
 	void updateRank();
 	void checkTeamFin(int team);
@@ -34,6 +32,7 @@ private:
 	static constexpr int MAX_ATTEMPT = 500;
 	int attempt = 0, maxAttempt = 0;
 	static constexpr int POS_POINT[POS_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
+	const std::string POS_NAME[POS_NUM] = { "20", "19", "18", "17", "16", "15", "Bull" };
 	struct Memory {
 		int team = 0;
 		int member = 0;
@@ -51,14 +50,14 @@ private:
 		cBox posBox[POS_NUM];
 	};
 	int nTable = 0;
-	std::vector<cBox> teamBox, tableBoxes;
-	std::vector<cBox> pointBox;
-	int space;
+	std::vector<cBox> teamBoxes, tableBoxes;
+	std::vector<sPosBox> filledBoxes;
+	int space = 0, posBoxHeight = 0, promptBoxHeight = 0;
 	static constexpr int MARK_PART_NUM = 3;
 	static constexpr int MARK_PART_ERROR[MARK_PART_NUM] = { -1, 1, 0 };
 	static constexpr int MARK_PART_LINETHICK[MARK_PART_NUM] = { 3, 3, 2 };
-	std::vector<sPosBox> teamMarks;
-	const std::string rankName[cPlayer::MAX_SOLO_PLAYER_NUM] = {
+	std::vector<sPosBox> teamMarkBoxes;
+	const std::string RANK_NAME[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};
 	std::vector<cPlayer::sGroup> ranker;

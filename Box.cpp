@@ -48,6 +48,17 @@ bool cBox::isOnBoxEdge(cCoordinate2d<int> P) {
 }
 
 int cBox::draw() {
-    int fillFlag = mFill ? TRUE : FALSE;
-    return DrawBox(mX1, mY1, mX2, mY2, mColor, fillFlag, mLineWidth);
+    if (!mDraw) return -1;
+    if (mFill) return DrawBox(mX1, mY1, mX2, mY2, mColor, TRUE, mLineWidth);
+	return DrawBox(mX1, mY1, mX2, mY2, mColor, FALSE, mLineWidth);
+}
+
+int cBox::fill() {
+    if (!mDraw) return -1;
+    return DrawBox(mX1, mY1, mX2, mY2, mColor, TRUE, mLineWidth);
+}
+
+int cBox::unfill() {
+    if (!mDraw) return -1;
+    return DrawBox(mX1, mY1, mX2, mY2, mColor, FALSE, mLineWidth);
 }

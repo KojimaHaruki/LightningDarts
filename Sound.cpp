@@ -58,6 +58,13 @@ void cSound::initSoundVol() {
     setVol(sKind::TOTAL, MAX_VOL);
 }
 
+void cSound::init() {
+    load();
+    StopSound();
+    initSoundVol();
+    playBGM(0);
+}
+
 void cSound::mute() {
     StopSoundMem(mPlayingBGMHandle);
     mIsBGMPlayed = FALSE; // check mute mode

@@ -1,10 +1,9 @@
 #include "ZeroOne.hpp"
 #include "Darts.hpp"
-#include "Timer.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
 
 cZeroOne::cZeroOne() : attempt(0), maxAttempt(0) {
-	mNowScene = ZERO_ONE;
 	nTeam = cPlayer::instance()->nTeam();
 	arrowImage = cDarts::instance()->arrowImage();
 	attempt = 0;
@@ -65,7 +64,7 @@ cZeroOne::cZeroOne() : attempt(0), maxAttempt(0) {
 
 void cZeroOne::reset() {
 	cBaseScene::reset();
-	cTimer::instance()->restart();
+	cDarts::instance()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
@@ -222,8 +221,6 @@ void cZeroOne::draw() {
 void cZeroOne::update() {
 	cBaseScene::update();
 	cDarts::instance()->update();
-	cTimer::instance()->update();
-	bool isPaused = cTimer::instance()->isPaused();
 	if (attempt < maxAttempt) {
 		cControl::instance()->icon(cControl::FORWARD);
 		if (cControl::instance()->isRequested(cControl::FORWARD)) {
@@ -312,19 +309,9 @@ void cZeroOne::update() {
 	}
 	if (cControl::instance()->isRequested(cControl::BACK)) {
 		if (attempt > 0) {
-			attempt--;
-			now = record[attempt];
+			attempt--; now = record[attempt]; return;
 		}
-		else {
-			mNextScene = GAME_START;
-		}
-	}
-	else if (cControl::instance()->isRequested(cControl::PLAYER_SELECT)) mNextScene = PLAYER_SELECT;
-	else if (cControl::instance()->isRequested(cControl::GAME_SELECT)) mNextScene = GAME_SELECT;
-	else if (cControl::instance()->isRequested(cControl::HOME)) mNextScene = HOME;
-	else if (cControl::instance()->isRequested(cControl::CONFIG)) {
-		mNextScene = CONFIG;
-		cTimer::instance()->pause();
+		cScene::instance()->setScene(cScene::GAME_START);
 	}
 }
 

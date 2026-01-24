@@ -2,7 +2,6 @@
 #include "Singleton.hpp"
 #include "Box.hpp"
 #include "Image.hpp"
-#include "resource.h"
 
 class cControl : public Singleton<cControl> {
     cControl() {}

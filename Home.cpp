@@ -1,13 +1,11 @@
 #include "Home.hpp"
-#include "Color.hpp"
-#include "Font.hpp"
-#include "Sound.hpp"
+#include "DxLib.h"
 #include <ctime>
 #include "Control.hpp"
+#include "Scene.hpp"
 #include "Keyboard.hpp"
 
 cHome::cHome() {
-    mNowScene = NO_CHANGE;
     timeError = localtime_s(&nowLocalTime, &nowTime);
     cKeyboard::instance()->keyBox(cControl::instance()->keyCode(cControl::START)).setUpperLeft(
         screen.center().x() - 56, 11 * screen.center().y() / 8 - 12);
@@ -15,7 +13,8 @@ cHome::cHome() {
 
 void cHome::draw() {
     cBaseScene::draw();
-    cControl::instance()->icon(cControl::FORWARD).draw();
+    if (cScene::instance()->lastScene() > cScene::HOME)
+        cControl::instance()->icon(cControl::FORWARD).draw();
     DrawStringToHandle(screen.center().x() - 3 * XLfontSize,
         screen.center().y() - XLfontSize / 2, "Lightning Darts", yellow, XLfont);
 	cKeyboard::instance()->keyImage(cControl::instance()->keyCode(cControl::START)).draw();
@@ -34,7 +33,11 @@ void cHome::draw() {
 }
 void cHome::update() {
     cBaseScene::update();
-    if (cControl::instance()->isKeyTyped(cControl::START)) mNextScene = GAME_SELECT;
-    else if (cControl::instance()->isRequested(cControl::CONFIG)) mNextScene = CONFIG;
-    else if (cControl::instance()->isRequested(cControl::FORWARD)) mNextScene = GAME_SELECT;
+    if (cControl::instance()->isKeyTyped(cControl::START))
+        cScene::instance()->setScene(cScene::GAME_SELECT);
+    else if (cControl::instance()->isRequested(cControl::CONFIG))
+        cScene::instance()->setScene(cScene::CONFIG);
+	else if (cScene::instance()->lastScene() > cScene::HOME &&
+        cControl::instance()->isRequested(cControl::FORWARD))
+        cScene::instance()->setScene(cScene::GAME_SELECT);
 }

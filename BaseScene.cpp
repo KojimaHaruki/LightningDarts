@@ -10,9 +10,10 @@
 #include "Game.hpp"
 #include "Screen.hpp"
 #include "Control.hpp"
+#include "Scene.hpp"
+#include "resource.h"
 
-cBaseScene::cBaseScene() : mNowScene(HOME), mNextScene(NO_CHANGE), nowTime(time(NULL)),
-nTeam(cPlayer::instance()->nTeam()){
+cBaseScene::cBaseScene() : nowTime(time(NULL)), nTeam(cPlayer::instance()->nTeam()){
     loadColor(); loadFont(); loadScreen();
     timeError = localtime_s(&nowLocalTime, &nowTime);
 }
@@ -46,7 +47,6 @@ void cBaseScene::loadScreen() {
 
 void cBaseScene::initScreenSize() {
     cScreen::instance()->initSize();
-    cDarts::instance()->loadScreen();
     loadScreen();
     setWindow(FALSE);
     cControl::instance()->initIconBox();
@@ -54,30 +54,11 @@ void cBaseScene::initScreenSize() {
 
 void cBaseScene::init() {
     initScreenSize();
-    if (mNowScene == NO_CHANGE) {
-        int cpp = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG92), "PNG");
-        int dxlib = LoadGraphToResource(MAKEINTRESOURCE(IDB_PNG93), "PNG");
-        cColor::instance()->load();
-        cDarts::instance()->loadColor();
-        loadColor();
-        // draw start screen
-        ClearDrawScreen();
-        DrawStringToHandle(100, 50, "Powered by", white, XLfont);
-        DrawGraph(200, 100 + XLfontSize, cpp, TRUE);
-        DrawGraph(500, 100 + XLfontSize, dxlib, TRUE);
-        DrawStringToHandle(screen.right() - 180, screen.bottom() - MfontSize - 10,
-            "now loading...", white, Mfont);
-        ScreenFlip();
-        cSound::instance()->load();
-        cDarts::instance()->setCenter(screen.left() + 0.25 * screen.width() + 5, screen.center().y());
-    }
+    cSound::instance()->init();
     cControl::instance()->initKey();
-    cSound::instance()->initSoundVol();
-    StopSound();
-    cSound::instance()->playBGM(0);
     cGame::instance()->init();
     cPlayer::instance()->initTeam();
-    mNextScene = HOME;
+    cScene::instance()->setScene(cScene::HOME);
 }
 
 void cBaseScene::changeWindow() {
@@ -89,30 +70,28 @@ void cBaseScene::setWindow(int window) {
     ChangeWindowMode(window);
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(TRUE);
+
+    // load fonts
     cFont::instance()->load();
     cDarts::instance()->loadFont();
     loadFont();
 
-    if (mNowScene == NO_CHANGE) {
-        // load images
-        cKeyboard::instance()->loadKeyImage();
-        cControl::instance()->loadIcon();
-        cScreen::instance()->loadImage();
-    }
-    else {
-        // reload images
-        cKeyboard::instance()->reloadKeyImage();
-        cControl::instance()->reloadIcon();
-        cScreen::instance()->reloadImage();
-    }
+    // reload images
+    cKeyboard::instance()->reloadKeyImage();
+    cControl::instance()->reloadIcon();
+    cScreen::instance()->reloadImage();
     cPlayer::instance()->loadImage();
     cDarts::instance()->loadImage();
 }
 
 void cBaseScene::draw() {
 	cScreen::instance()->draw();
-    cControl::instance()->icon(cControl::HOME).draw();
     cControl::instance()->icon(cControl::BACK).draw();
+    for (int scene = cScene::HOME; scene < cScene::GAME_START; scene++) {
+        if (scene <= cScene::instance()->lastScene() && scene != cScene::instance()->currentScene()) {
+            cControl::instance()->icon(scene).draw();
+        }
+    }
     cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
     cControl::instance()->icon(cControl::CONFIG).draw();
     cControl::instance()->icon(cControl::ANOTHER_WINDOW + GetWindowModeFlag()).draw();
@@ -142,9 +121,16 @@ void cBaseScene::update() {
     cSound::instance()->update();
     nowTime = time(NULL);
     timeError = localtime_s(&nowLocalTime, &nowTime);
+    for (int scene = cScene::HOME; scene < cScene::GAME_START; scene++) {
+        if (cScene::instance()->lastScene() >= scene && cScene::instance()->currentScene() != scene &&
+            cControl::instance()->isRequested(scene)) {
+            cScene::instance()->setScene(scene); return;
+        }
+    }
     if (cControl::instance()->isRequested(cControl::INITIALIZE)) init();
     else if (cControl::instance()->isRequested(cControl::RESET)) reset();
-    else if (cControl::instance()->isRequested(cControl::QUIT)) mNextScene = QUIT;
+    else if (cControl::instance()->isRequested(cControl::QUIT)) 
+        cScene::instance()->setScene(cScene::QUIT);
     else if (cControl::instance()->isRequested(cControl::MUTE + cSound::instance()->isBGMPlayed())) {
         if (cSound::instance()->isBGMPlayed()) {
             cSound::instance()->mute();

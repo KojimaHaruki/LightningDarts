@@ -37,6 +37,9 @@ public:
     static constexpr int MAX_SOLO_PLAYER_NUM = 8;
     static constexpr int MAX_DUO_TEAM_NUM = 4;
 
+	// Setter
+    bool setTeamType(int type);
+
     // Getters
     std::vector<sGroup>& groups() { return mGroup; }
     std::vector<sChara>& groupMembers(int group) { return mGroup.at(group).members; }
@@ -64,20 +67,16 @@ public:
 
     // Functions
     void loadImage();
-    void loadCharaImage();
+    void loadGroupImage();
     void reloadCharaImage();
-    void loadPlayerImage();
-    void init() { initGroup(); initTeam(); }
-    void initGroup() { mGroup.clear(); mGroup.reserve(MAX_GROUP_NUM);}
-    void initTeam() { mTeam.clear(); mTeam.reserve(MAX_SOLO_PLAYER_NUM); mTeamType = sTeamType::SOLO; }
-    bool setTeamType(int type) {
-        if (type < 0 || type >= sTeamType::NUM) return false;
-        mTeamType = type; return true;
-    }
+    void loadTeamImage();
+    void initGroup();
+    void initTeam();
+    void init();
 
 private:
     // Character
-    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
+    const std::string playerFolderPath = "./Image/Player";
     std::vector<sGroup> mGroup, mTeam;
 
 	// Team type
