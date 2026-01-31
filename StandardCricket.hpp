@@ -4,7 +4,7 @@
 class cStandardCricket : public cBaseScene {
 public:
 	cStandardCricket();
-	~cStandardCricket() {}
+	~cStandardCricket();
 
 	// Functions
 	void reset();
@@ -22,7 +22,6 @@ public:
 	void updateRank();
 	void checkTeamFin(int team);
 	void checkGameFin();
-	void fin();
 	
 private:
 	static constexpr int BULL      = 6;
@@ -49,14 +48,18 @@ private:
 	struct sPosBox {
 		cBox posBox[POS_NUM];
 	};
-	int nTable = 0;
-	std::vector<cBox> teamBoxes, tableBoxes;
-	std::vector<sPosBox> filledBoxes;
 	int space = 0, posBoxHeight = 0, promptBoxHeight = 0;
+	std::vector<cBox> teamBoxes, tableBoxes;
+	int nTable = 0;
+	std::vector<sPosBox> filledBoxes;
+	
+	// team mark
 	static constexpr int MARK_PART_NUM = 3;
 	static constexpr int MARK_PART_ERROR[MARK_PART_NUM] = { -1, 1, 0 };
 	static constexpr int MARK_PART_LINETHICK[MARK_PART_NUM] = { 3, 3, 2 };
 	std::vector<sPosBox> teamMarkBoxes;
+
+	// rank
 	const std::string RANK_NAME[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};

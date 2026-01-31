@@ -38,5 +38,4 @@ public:
     virtual void reset() {}
     virtual void draw();
     virtual void update();
-    virtual void fin() {}
 };

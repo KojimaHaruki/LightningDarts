@@ -4,11 +4,10 @@
 class HiddenCricket : public cBaseScene {
 public:
 	HiddenCricket();
-	~HiddenCricket() {}
+	~HiddenCricket();
 	void reset();
 	void draw();
 	void update();
-	void fin();
 private:
 	static constexpr int BULL = 6;
 	static constexpr int POS_NUM = 7;

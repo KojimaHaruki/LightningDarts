@@ -112,13 +112,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\dxlib;C:\opencv-4.12.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dxlib;C:\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\dxlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dxlib;C:\opencv\build\x64\vc16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4120d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,22 +147,24 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\dxlib;C:\opencv-4.12.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dxlib;C:\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\dxlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dxlib;C:\opencv\build\x64\vc16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4120.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Control.cpp" />
+    <ClCompile Include="Cork.cpp" />
     <ClCompile Include="CountUp.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Image.cpp" />
@@ -190,11 +192,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.hpp" />
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="colorlib.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Control.hpp" />
     <ClInclude Include="Coordinate.hpp" />
+    <ClInclude Include="Cork.hpp" />
     <ClInclude Include="CountUp.hpp" />
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="Image.hpp" />
@@ -345,24 +349,13 @@
     <Image Include="KeyImage\Z.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CharaStatus.dat" />
-    <None Include="ConfigData.dat" />
-    <None Include="ShareData.dat" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="BGM\Detect.mp3" />
     <Media Include="SE\A.mp3" />
     <Media Include="SE\B.mp3" />
     <Media Include="SE\C.mp3" />
-    <Media Include="SE\Clear line.mp3" />
     <Media Include="SE\D.mp3" />
     <Media Include="SE\E.mp3" />
     <Media Include="SE\F.mp3" />
     <Media Include="SE\G.mp3" />
-    <Media Include="SE\Land.mp3" />
-    <Media Include="SE\Put.mp3" />
-    <Media Include="SE\Speed Up.mp3" />
-    <Media Include="SE\TETRIS.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

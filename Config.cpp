@@ -158,18 +158,18 @@ void cConfig::draw() {
 void cConfig::update() {
     cBaseScene::update();
     if (cMouse::instance()->clickBoxState(355, 175, 380, 200) == sKey::RELEASEDtoPRESSED) {
-        cSound::instance()->playSE(1);
+        cSound::instance()->playShotSE(cDarts::sRadialPos::OUTER_SINGLE);
         cSound::instance()->setBgmPlayMode(
             (cSound::instance()->bgmPlayMode() - 1 + cSound::sPlayMode::NUM) % cSound::sPlayMode::NUM);
     }
     else if (cMouse::instance()->clickBoxState(380, 175, 405, 200) == sKey::RELEASEDtoPRESSED) {
-        cSound::instance()->playSE(1);
+        cSound::instance()->playShotSE(cDarts::sRadialPos::OUTER_SINGLE);
         cSound::instance()->setBgmPlayMode(
             (cSound::instance()->bgmPlayMode() + 1) % cSound::sPlayMode::NUM);
     }
     else if (cControl::instance()->isRequested(cControl::BACK)) {
         cScene::instance()->setScene(cScene::instance()->lastScene());
-        if (cScene::instance()->lastScene() >= cScene::ZERO_ONE) {
+        if (cScene::instance()->lastScene() == cScene::GAME) {
             cTimer::instance()->resume();
         }
     }

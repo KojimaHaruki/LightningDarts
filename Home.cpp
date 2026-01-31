@@ -4,6 +4,7 @@
 #include "Control.hpp"
 #include "Scene.hpp"
 #include "Keyboard.hpp"
+#include "Camera.hpp"
 
 cHome::cHome() {
     timeError = localtime_s(&nowLocalTime, &nowTime);
@@ -13,7 +14,10 @@ cHome::cHome() {
 
 void cHome::draw() {
     cBaseScene::draw();
-    if (cScene::instance()->lastScene() > cScene::HOME)
+    cCamera::instance()->draw();
+    if (cControl::instance()->isRequested(cControl::RESET))
+        cCamera::instance()->reset();
+    else if (cScene::instance()->lastScene() > cScene::HOME)
         cControl::instance()->icon(cControl::FORWARD).draw();
     DrawStringToHandle(screen.center().x() - 3 * XLfontSize,
         screen.center().y() - XLfontSize / 2, "Lightning Darts", yellow, XLfont);
@@ -31,8 +35,10 @@ void cHome::draw() {
     DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().upperRight().x(),
         upperFrame.center().y() - MfontSize / 2, "Home", white, Mfont);
 }
+
 void cHome::update() {
     cBaseScene::update();
+    cCamera::instance()->update();
     if (cControl::instance()->isKeyTyped(cControl::START))
         cScene::instance()->setScene(cScene::GAME_SELECT);
     else if (cControl::instance()->isRequested(cControl::CONFIG))
@@ -40,4 +46,7 @@ void cHome::update() {
 	else if (cScene::instance()->lastScene() > cScene::HOME &&
         cControl::instance()->isRequested(cControl::FORWARD))
         cScene::instance()->setScene(cScene::GAME_SELECT);
+}
+
+cHome::~cHome() {
 }

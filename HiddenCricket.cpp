@@ -160,7 +160,7 @@ void HiddenCricket::draw() {
 			for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
 				chara = cPlayer::instance()->teamMember(team, member);
 				chara.image.draw();
-				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
 					chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(),
 					white, Sfont);
 			}
@@ -228,7 +228,7 @@ void HiddenCricket::draw() {
 				0.7, 0.0, chara.image.handle(), TRUE);
 			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
 				rankName[now.rank[team]].c_str(), white, Sfont);
-			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
 				chara.image.box().bottom() - SfontSize - 6,
 				chara.name.c_str(), white, Sfont);
 			for (int posNo = 0; posNo < POINT_NUM - 1; posNo++) {
@@ -487,7 +487,7 @@ void HiddenCricket::update() {
 	}
 }
 
-void HiddenCricket::fin() {
+HiddenCricket::~HiddenCricket() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teamMemberImageBox(player, 0).setSize(100, 100);

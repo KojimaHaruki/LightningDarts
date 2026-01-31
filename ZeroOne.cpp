@@ -99,7 +99,7 @@ void cZeroOne::draw() {
 			for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
 				chara = cPlayer::instance()->teamMember(team, member);
 				chara.image.draw();
-				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
 					chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(), white, Sfont);
 			}
 			DrawStringToHandle(teamBox[team].left(), teamBox[team].top(),
@@ -159,7 +159,7 @@ void cZeroOne::draw() {
 				0.7, 0.0, chara.image.handle(), TRUE);
 			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
 				rankName[now.rank[team]].c_str(), white, Sfont);
-			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
 				chara.image.box().bottom() - SfontSize - 6,
 				chara.name.c_str(), white, Sfont);
 			if (now.round < nRound) {
@@ -315,7 +315,7 @@ void cZeroOne::update() {
 	}
 }
 
-void cZeroOne::fin() {
+cZeroOne::~cZeroOne() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teamMember(player, 0).image.box().setHeight(100);

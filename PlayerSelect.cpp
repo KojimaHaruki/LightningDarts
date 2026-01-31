@@ -71,6 +71,7 @@ void cPlayerSelect::draw() {
     cBaseScene::draw();
 
     // icons
+    if (players.size() < playersMem.size()) cControl::instance()->icon(cControl::FORWARD).draw();
     cControl::instance()->icon(cControl::GAME_SELECT).draw();
     cControl::instance()->icon(cControl::SKIP).draw();
 
@@ -203,15 +204,11 @@ void cPlayerSelect::draw() {
 
 void cPlayerSelect::update() {
     cBaseScene::update();
-    if (players.size() < playersMem.size()) {
-        cControl::instance()->icon(cControl::FORWARD).draw();
-        if (cControl::instance()->isRequested(cControl::FORWARD)) {
-            players.push_back(playersMem.at(players.size()));
-            return;
-        }
+    if (players.size() < playersMem.size() && cControl::instance()->isRequested(cControl::FORWARD)) {
+        players.push_back(playersMem.at(players.size()));
     }
-    if (cControl::instance()->isRequested(cControl::SKIP)) {
-        cScene::instance()->setScene(cScene::GAME_START);
+    else if (cControl::instance()->isRequested(cControl::SKIP)) {
+        cScene::instance()->setScene(cScene::CORK);
         while (players.size() < playersMem.size()) {
             players.push_back(playersMem.at(players.size()));
         }
@@ -223,7 +220,7 @@ void cPlayerSelect::update() {
         setTeamType(cPlayer::instance()->teamType());
     }
     else if (players.size() > 0 && cControl::instance()->isRequested(cControl::YES))
-        cScene::instance()->setScene(cScene::GAME_START);
+        cScene::instance()->setScene(cScene::CORK);
     else if (cControl::instance()->isRequested(cControl::BACK)) {
         if (players.size() > 0) {
             players.pop_back();

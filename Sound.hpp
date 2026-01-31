@@ -3,6 +3,7 @@
 #include <vector>
 #include "Singleton.hpp"
 #include "DxLib.h"
+#include "Darts.hpp"
 
 class cSound : public Singleton<cSound> {
     cSound() {}
@@ -21,15 +22,17 @@ public:
     static constexpr int MAX_BGM_NUM = 100;
     static constexpr int MAX_ARTIST_NUM = 50;
     struct sPlayMode {
-        static constexpr int LOOP = 0;
-        static constexpr int ASCEND = 1;
-        static constexpr int DESCEND = 2;
-        static constexpr int RANDAM = 3;
-        static constexpr int NUM = 4;
+        static constexpr int LOOP = 0, ASCEND = 1, DESCEND = 2, RANDAM = 3, NUM = 4;
     };
     // SE
-    static constexpr int SE_NUM = 4;
-    static constexpr int COMBO_SE_NUM = 7;
+    struct sCartrigeKind {
+        static constexpr int bigSR = 0, SR = 1, SG = 2, single = 3, multiple = 4, NUM = 5;
+    };
+
+    struct sComboKind {
+        static constexpr int A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, NUM = 7;
+    };
+    
 	// Functions
     std::string name(int SoundNo);
     void load();
@@ -48,8 +51,8 @@ public:
 	bool playNextBGM();
     bool playLastBGM();
 	void update();
-	int playSE(int SENo) { return PlaySoundMem(mSE[SENo], DX_PLAYTYPE_BACK); }
-	int playComboSE(int ComboSENo) { return PlaySoundMem(mComboSE[ComboSENo], DX_PLAYTYPE_BACK); }
+    int playShotSE(int shot);
+    int playCartrigeSE(int cartrige);
 private:
     const std::string mName[sKind::NUM] = { "Total", "BGM", "SE" };
     int mIsBGMPlayed = TRUE;
@@ -60,7 +63,7 @@ private:
     const std::string mBGMPlayModeName[sPlayMode::NUM] = {
         "Loop", "Ascending order", "Descending order", "Random"
     };
-    const std::string BGMFolderPath = "./Sound/BGM";
+    const std::string BGMFolderPath = "C:/Users/miniy/Music/BGM";
     struct BGM {
         std::string path = {};
         std::string name = {};
@@ -69,6 +72,6 @@ private:
     int mPlayingBGMNo = 0;
     int mPlayingBGMHandle = 0;
 	std::string mPlayingBGMName = {};
-    int mSE[SE_NUM] = {};
-    int mComboSE[COMBO_SE_NUM] = {};
+    int mShotSE[cDarts::sRadialPos::NUM] = {}, mCartrigeSE[sCartrigeKind::NUM] = {};
+    //int mComboSE[sComboKind::NUM] = {};
 };

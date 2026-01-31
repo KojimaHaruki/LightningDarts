@@ -25,6 +25,20 @@ public:
         static constexpr int TRIPLE = 3;
         static constexpr int NUM = 4;
     };
+    struct sRadialPos {
+        static constexpr int INNER_BULL = 0;
+        static constexpr int OUTER_BULL = 1;
+        static constexpr int INNER_SINGLE = 2;
+        static constexpr int TRIPLE = 3;
+        static constexpr int OUTER_SINGLE = 4;
+        static constexpr int DOUBLE = 5;
+        static constexpr int OUTSIDE = 6;
+        static constexpr int NUM = 7;
+    };
+    static constexpr int RADIAL_POS_POWER[sRadialPos::NUM] = { 2, 1, 1, 3, 1, 2, 0 };
+    static constexpr float RADIAL_POS_RADIUS[sRadialPos::NUM] = { 
+        8.0f, 22.0f, 108.77f, 126.77f, 178.85f, 196.85f, 226.0f 
+    };
 
 	// Setters
     void setCenter(float x, float y) { std::complex<float>center(x, y); mCenter = center; }
@@ -32,8 +46,12 @@ public:
     bool setPointValidation(int point, bool isValid);
 
 	// Getters
+	std::complex<float> center() { return mCenter; }
     bool isValidPoint(int point);
     int arrowImage() { return mArrowImage; }
+    std::complex<float> arrowPos() { return mArrowPos; }
+    float radius() { return mRadius; }
+	float theta() { return mTheta; }
     int point() { return mPoint; }
     std::string pointName(int point);
     std::string pointName();
@@ -63,22 +81,11 @@ private:
     // Font
     int Sfont = 0, SfontSize = 0, Mfont = 0, MfontSize = 0, XLfont = 0, XLfontSize = 0;
 
-    struct sRadialPos {
-        static constexpr int INNER_BULL = 0;
-        static constexpr int OUTER_BULL = 1;
-        static constexpr int INNER_SINGLE = 2;
-        static constexpr int TRIPLE = 3;
-        static constexpr int OUTER_SINGLE = 4;
-        static constexpr int DOUBLE = 5;
-        static constexpr int OUTSIDE = 6;
-        static constexpr int NUM = 7;
-        static constexpr float RADIUS[NUM] = { 8.0f, 22.0f, 108.77f, 126.77f, 178.85f, 196.85f, 226.0f };
-        static constexpr int POWER[NUM] = { 2, 1, 1, 3, 1, 2, 0 };
-    };
 	static constexpr int BULL_POINT = 25;
     bool mIsValidPoint[sPoint::NUM] = {};
-    std::complex<float> mCenter;
+    std::complex<float> mCenter, mArrowPos;
     int mBoardImage[4][4] = {}, mArrowImage = 0;
+	float mRadius = 0.0f, mTheta = 0.0f;
     int mPoint = 0, mPower = 0, mRadialPos = 0, mTotalPoint = 0;
     bool mIsTouched = false, mIsThrowed = false;
     const std::string radialPosName[sRadialPos::NUM] = {
@@ -87,6 +94,7 @@ private:
     static constexpr int BOARD_POINT[21] = {
         11, 8, 16, 7, 19, 3, 17, 2, 15, 10, 6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11
     };
+    float pointThetaRange[21][2] = {};
     static constexpr int POINT_KEY[sPoint::NUM] = { KEY_INPUT_SPACE,
         KEY_INPUT_1, KEY_INPUT_2, KEY_INPUT_3, KEY_INPUT_4, KEY_INPUT_5,
         KEY_INPUT_6, KEY_INPUT_7, KEY_INPUT_8, KEY_INPUT_9, KEY_INPUT_0,

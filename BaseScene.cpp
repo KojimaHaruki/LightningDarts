@@ -87,8 +87,8 @@ void cBaseScene::setWindow(int window) {
 void cBaseScene::draw() {
 	cScreen::instance()->draw();
     cControl::instance()->icon(cControl::BACK).draw();
-    for (int scene = cScene::HOME; scene < cScene::GAME_START; scene++) {
-        if (scene <= cScene::instance()->lastScene() && scene != cScene::instance()->currentScene()) {
+    for (int scene = cScene::HOME; scene <= cScene::PLAYER_SELECT; scene++) {
+        if (scene <= cScene::instance()->maxScene()) {
             cControl::instance()->icon(scene).draw();
         }
     }
@@ -121,8 +121,8 @@ void cBaseScene::update() {
     cSound::instance()->update();
     nowTime = time(NULL);
     timeError = localtime_s(&nowLocalTime, &nowTime);
-    for (int scene = cScene::HOME; scene < cScene::GAME_START; scene++) {
-        if (cScene::instance()->lastScene() >= scene && cScene::instance()->currentScene() != scene &&
+    for (int scene = cScene::HOME; scene <= cScene::PLAYER_SELECT; scene++) {
+        if (scene <= cScene::instance()->maxScene() && scene != cScene::instance()->currentScene() &&
             cControl::instance()->isRequested(scene)) {
             cScene::instance()->setScene(scene); return;
         }
@@ -153,5 +153,8 @@ void cBaseScene::update() {
 cBaseScene::~cBaseScene() {
     //FILE* osdf; errno_t error = fopen_s(&osdf, ShareDataFileName, "wb+"); // open data file
     //if (!error) { fwrite(&sd, sizeof(sd), 1, osdf); fclose(osdf); }
-    PlaySound(NULL, 0, 0); InitSoundMem(); DxLib_End();
+    // PlaySound(NULL, 0, 0); InitSoundMem(); DxLib_End();
+    /*StopSound();
+    InitSoundMem();
+    DxLib_End();*/
 }

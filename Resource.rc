@@ -274,30 +274,32 @@ IDB_JPG1                JPG                     "Image\\Darts.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// WAVE
+// MP3
 //
 
-IDR_WAVE1               MP3                     "Sound\\SE\\Clear line.mp3"
+IDR_MP3_1               MP3                     "Sound\\SE\\shot\\bigSR.mp3"
 
-IDR_WAVE2               MP3                     "Sound\\SE\\Land.mp3"
+IDR_MP3_2               MP3                     "Sound\\SE\\shot\\SR.mp3"
 
-IDR_WAVE3               MP3                     "Sound\\SE\\Speed up.mp3"
+IDR_MP3_3               MP3                     "Sound\\SE\\shot\\SG\\single.mp3"
 
-IDR_WAVE4               MP3                     "Sound\\SE\\TETRIS.mp3"
+IDR_MP3_4               MP3                     "Sound\\SE\\shot\\SG\\triple.mp3"
 
-IDR_WAVE5               MP3                     "Sound\\SE\\C.mp3"
+IDR_MP3_5               MP3                     "Sound\\SE\\shot\\HG\\single.mp3"
 
-IDR_WAVE6               MP3                     "Sound\\SE\\D.mp3"
+IDR_MP3_6               MP3                     "Sound\\SE\\shot\\SG\\double.mp3"
 
-IDR_WAVE7               MP3                     "Sound\\SE\\E.mp3"
+IDR_MP3_7               MP3                     "Sound\\SE\\shot\\runout.mp3"
 
-IDR_WAVE8               MP3                     "Sound\\SE\\F.mp3"
+IDR_MP3_8               MP3                     "Sound\\SE\\cartrige\\bigSR.mp3"
 
-IDR_WAVE9               MP3                     "Sound\\SE\\G.mp3"
+IDR_MP3_9               MP3                     "Sound\\SE\\cartrige\\SR.mp3"
 
-IDR_WAVE10              MP3                     "Sound\\SE\\A.mp3"
+IDR_MP3_10              MP3                     "Sound\\SE\\cartrige\\SG.mp3"
 
-IDR_WAVE11              MP3                     "Sound\\SE\\B.mp3"
+IDR_MP3_11               MP3                    "Sound\\SE\\cartrige\\single.mp3"
+
+IDR_MP3_12              MP3                     "Sound\\SE\\cartrige\\multiple.mp3"
 
 
 /////////////////////////////////////////////////////////////////////////////

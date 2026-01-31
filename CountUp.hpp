@@ -4,11 +4,11 @@
 class cCountUp : public cBaseScene {
 public:
 	cCountUp();
-	~cCountUp() {}
+	~cCountUp();
 	void reset();
 	void draw();
 	void update();
-	void fin();
+
 private:
 	static constexpr int MAX_ATTEMPT = 500;
 	static constexpr int ROUND_NUM = 8;

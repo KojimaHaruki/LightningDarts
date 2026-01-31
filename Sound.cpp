@@ -45,11 +45,11 @@ void cSound::load() {
         std::cout << err.message() << std::endl;
     }
     // load sound effect
-    for (int i = 0; i < SE_NUM; i++) {
-        mSE[i] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_WAVE1 + i), "MP3");
+    for (int shot = 0; shot < cDarts::sRadialPos::NUM; shot++) {
+        mShotSE[shot] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_MP3_1 + shot), "MP3");
     }
-    for (int i = 0; i < COMBO_SE_NUM; i++) {
-        mComboSE[i] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_WAVE5 + i), "MP3");
+    for (int cartrige = 0; cartrige < sCartrigeKind::NUM; cartrige++) {
+        mCartrigeSE[cartrige] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_MP3_8 + cartrige), "MP3");
     }
 }
 
@@ -67,7 +67,7 @@ void cSound::init() {
 
 void cSound::mute() {
     StopSoundMem(mPlayingBGMHandle);
-    mIsBGMPlayed = FALSE; // check mute mode
+    mIsBGMPlayed = CheckSoundMem(mPlayingBGMHandle); // check mute mode
 }
 
 void cSound::unmute() {
@@ -77,7 +77,7 @@ void cSound::unmute() {
         PlaySoundMem(mPlayingBGMHandle, DX_PLAYTYPE_BACK | DX_PLAYTYPE_LOOP, 0);
     else
         PlaySoundMem(mPlayingBGMHandle, DX_PLAYTYPE_BACK, 0);
-    mIsBGMPlayed = TRUE; // check mute mode
+    mIsBGMPlayed = CheckSoundMem(mPlayingBGMHandle); // check mute mode
 }
 
 bool cSound::setVol(int SoundNo, int Vol) {
@@ -96,14 +96,13 @@ bool cSound::setVol(int SoundNo, int Vol) {
     if (SoundNo != sKind::BGM) { // if sound is SEs or total sounds,
         mSEVol = (int)(0.0064 * mVol[sKind::TOTAL] * mVol[sKind::SE]); // set SEs' volume
         // change SEs'volume
-        for (int i = 0; i < SE_NUM; i++) { ChangeVolumeSoundMem(mSEVol, mSE[i]); }
-        for (int i = 0; i < COMBO_SE_NUM; i++) { ChangeVolumeSoundMem(mSEVol, mComboSE[i]); }
+        for (int i = 0; i < cDarts::sRadialPos::NUM; i++) { ChangeVolumeSoundMem(mSEVol, mShotSE[i]); }
+        for (int i = 0; i < sCartrigeKind::NUM; i++) { ChangeVolumeSoundMem(mSEVol, mCartrigeSE[i]); }
     } return true;
 }
 
 bool cSound::playBGM(int BGMNo) {
-    if (BGMNo < 0 || BGMNo >= mBGMs.size()) // if BGM doesn't exist,
-        return false; // exit
+    if (BGMNo < 0 || BGMNo >= mBGMs.size()) return false; // if BGM doesn't exist, exit
     int nextBGMHandle = -1;
     if (mBGMPlayMode == sPlayMode::RANDAM) {
         nextBGMHandle = LoadSoundMem(mRandomBGMs[BGMNo].path.c_str());
@@ -135,6 +134,17 @@ bool cSound::playNextBGM() {
 bool cSound::playLastBGM() {
     int lastBGMNo = (mPlayingBGMNo - 1 + mBGMs.size()) % mBGMs.size();
     return playBGM(lastBGMNo);
+}
+
+int cSound::playShotSE(int shot) { 
+    if (shot >= 0 && shot < cDarts::sRadialPos::NUM) return PlaySoundMem(mShotSE[shot], DX_PLAYTYPE_BACK);
+    return -1;
+}
+
+int cSound::playCartrigeSE(int cartrige) { 
+    if (cartrige >= 0 && cartrige < cDarts::sRadialPos::NUM) 
+        return PlaySoundMem(mCartrigeSE[cartrige], DX_PLAYTYPE_BACK);
+    return -1;
 }
 
 void cSound::update() {

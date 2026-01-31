@@ -99,6 +99,12 @@
     <ClCompile Include="Initialize.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Cork.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.hpp">
@@ -180,6 +186,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Initialize.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Cork.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -557,20 +569,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ConfigData.dat">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="CharaStatus.dat">
-      <Filter>リソース ファイル</Filter>
-    </None>
-    <None Include="ShareData.dat">
-      <Filter>リソース ファイル</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="BGM\Detect.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
     <Media Include="SE\A.mp3">
       <Filter>リソース ファイル</Filter>
     </Media>
@@ -578,9 +576,6 @@
       <Filter>リソース ファイル</Filter>
     </Media>
     <Media Include="SE\C.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="SE\Clear line.mp3">
       <Filter>リソース ファイル</Filter>
     </Media>
     <Media Include="SE\D.mp3">
@@ -593,18 +588,6 @@
       <Filter>リソース ファイル</Filter>
     </Media>
     <Media Include="SE\G.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="SE\Land.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="SE\Put.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="SE\Speed Up.mp3">
-      <Filter>リソース ファイル</Filter>
-    </Media>
-    <Media Include="SE\TETRIS.mp3">
       <Filter>リソース ファイル</Filter>
     </Media>
   </ItemGroup>

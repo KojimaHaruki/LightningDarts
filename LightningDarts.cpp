@@ -2,7 +2,7 @@
 #include "DxLib.h"
 #include "Scene.hpp"
 #include "resource.h"
-#include <opencv2/opencv.hpp>
+#include "highlevelmonitorconfigurationapi.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     if (DxLib_Init()) return -1;
@@ -11,13 +11,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     SetWindowText("Lightning Darts");
     SetLogDrawOutFlag(FALSE);
     SRand(GetNowCount()); // initialize random number by the lapse time in Windows
-    SetDrawScreen(DX_SCREEN_BACK);
-    SetMouseDispFlag(TRUE);
     cScene::instance()->init();
-    while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen()) {
+    while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() &&
+        cScene::instance()->currentScene() != cScene::QUIT) {
 		cScene::instance()->draw();
 		cScene::instance()->update();
     }
-    return -1;
+    StopSound();
+    InitSoundMem();
+    DxLib_End();
+    return 0;
 }
 

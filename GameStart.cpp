@@ -1,4 +1,3 @@
-#define _USE_MATH_DEFINES
 #include "GameStart.hpp"
 #include <numbers>
 #include "Darts.hpp"
@@ -9,20 +8,20 @@
 #include "Scene.hpp"
 
 cGameStart::cGameStart() {
+	nTeam = cPlayer::instance()->nTeam();
 	nowTime = time(NULL);
-	startTime = nowTime + timeFromEntryToStart;
-	double theta = M_PI, phi = M_PI / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
-	for (int team = 0; team < cPlayer::instance()->nTeam(); 
-		team++, theta += 2.0 * M_PI / (double)cPlayer::instance()->nTeam()) {
+	startTime = nowTime + TIME_ENTRYtoSTART;
+	double theta = std::numbers::pi, phi = std::numbers::pi / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
+	for (int team = 0; team < nTeam; team++, theta += 2.0 * std::numbers::pi / (double)nTeam) {
 		if (cPlayer::instance()->nTeamMember(team) == 1) {
-			cPlayer::instance()->teams().at(team).members[0].image.box().setCenter(
+			cPlayer::instance()->teams().at(team).members.front().image.box().setCenter(
 				screen.center().x() + 150.0 * cos(theta), screen.center().y() - 150.0 * sin(theta));
 			continue;
 		}
-		cPlayer::instance()->teams().at(team).members[0].image.box().setCenter(
+		cPlayer::instance()->teams().at(team).members.front().image.box().setCenter(
 			screen.center().x() + 150.0 * cos(theta + phi),
 			screen.center().y() - 150.0 * sin(theta + phi));
-		cPlayer::instance()->teams().at(team).members[1].image.box().setCenter(
+		cPlayer::instance()->teams().at(team).members.back().image.box().setCenter(
 			screen.center().x() + 150.0 * cos(theta - phi),
 			screen.center().y() - 150.0 * sin(theta - phi));
 	}
@@ -30,7 +29,7 @@ cGameStart::cGameStart() {
 
 void cGameStart::reset() {
 	cBaseScene::reset();
-	startTime = time(NULL) + timeFromEntryToStart;
+	startTime = time(NULL) + TIME_ENTRYtoSTART;
 }
 
 void cGameStart::draw() {
@@ -47,36 +46,27 @@ void cGameStart::draw() {
 		(cGame::instance()->modeName() + " < Game Start").c_str(), white, Mfont);
 
 	// draw battle team
-	for (int team = 0; team < cPlayer::instance()->nTeam(); team++) {
+	cPlayer::sChara player = {};
+	for (int team = 0; team < nTeam; team++) {
 		for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
-			cPlayer::sChara player = cPlayer::instance()->teamMember(team, member);
+			player = cPlayer::instance()->teamMember(team, member);
 			player.image.draw();
 			DrawStringToHandle(player.image.box().left(), player.image.box().top(),
-				PLAYER_NAME[player.status.rank].c_str(), white, Mfont);
-			DrawStringToHandle(player.image.box().left() + 5 * max(0, 10 - player.name.size()),
+				RANK_NAME[team].c_str(), rankColor[team], Lfont);
+			DrawStringToHandle(player.image.box().left() + 5 * max(0, 10 - (int)player.name.size()),
 				player.image.box().bottom() - SfontSize - 10, player.name.c_str(), white, Sfont);
 		}
 	}
-	DrawStringToHandle(screen.center().x() - 10, screen.center().y() - MfontSize / 2, "VS", white, Mfont);
+	DrawStringToHandle(screen.center().x() - 10, screen.center().y() - MfontSize / 2, "VS", white, Lfont);
 }
 
 void cGameStart::update() {
 	cBaseScene::update();
 	nowTime = time(NULL);
 	if (cControl::instance()->isRequested(cControl::BACK))
-		cScene::instance()->setScene(cScene::PLAYER_SELECT);
+		cScene::instance()->setScene(cScene::CORK);
 	else if (cControl::instance()->isRequested(cControl::SKIP) || nowTime >= startTime) {
-		switch (cGame::instance()->category()) {
-		case cGame::sCategory::ZERO_ONE:
-			cScene::instance()->setScene(cScene::ZERO_ONE); break;
-		case cGame::sCategory::CRICKET:
-			cScene::instance()->setScene(cScene::STANDARD_CRICKET); break;
-		case cGame::sCategory::COUNT_UP:
-			cScene::instance()->setScene(cScene::COUNT_UP); break;
-		default:
-			cScene::instance()->setScene(cScene::GAME_SELECT); return;
-		}
-		cTimer::instance()->restart();
+		cScene::instance()->setScene(cScene::GAME); cTimer::instance()->restart();
 	}
 	else if (cControl::instance()->isRequested(cControl::CONFIG))
 		cScene::instance()->setScene(cScene::CONFIG);

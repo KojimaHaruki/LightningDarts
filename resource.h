@@ -114,17 +114,18 @@
 #define IDB_PNG110                       342
 #define IDB_JPG1                         343
 #define IDI_ICON1                        350
-#define IDR_WAVE1                       409
-#define IDR_WAVE2                       410
-#define IDR_WAVE3                       411
-#define IDR_WAVE4                       412
-#define IDR_WAVE5                       413
-#define IDR_WAVE6                       414
-#define IDR_WAVE7                       415
-#define IDR_WAVE8                       416
-#define IDR_WAVE9                       417
-#define IDR_WAVE10                       418
-#define IDR_WAVE11                       419
+#define IDR_MP3_1                       409
+#define IDR_MP3_2                       410
+#define IDR_MP3_3                       411
+#define IDR_MP3_4                       412
+#define IDR_MP3_5                       413
+#define IDR_MP3_6                       414
+#define IDR_MP3_7                       415
+#define IDR_MP3_8                       416
+#define IDR_MP3_9                       417
+#define IDR_MP3_10                      418
+#define IDR_MP3_11                      419
+#define IDR_MP3_12                      420
 
 // Next default values for new objects
 // 

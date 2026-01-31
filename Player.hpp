@@ -76,7 +76,7 @@ public:
 
 private:
     // Character
-    const std::string playerFolderPath = "./Image/Player";
+    const std::string playerFolderPath = "C:/Users/miniy/OneDrive/‰æ‘œ/Darts Player";
     std::vector<sGroup> mGroup, mTeam;
 
 	// Team type

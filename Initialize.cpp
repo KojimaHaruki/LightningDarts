@@ -9,6 +9,7 @@
 #include "Keyboard.hpp"
 #include "Game.hpp"
 #include "Scene.hpp"
+#include "Camera.hpp"
 
 cInitialize::cInitialize() {
 	cScreen::instance()->initSize();
@@ -52,6 +53,7 @@ void cInitialize::update() {
 	cDarts::instance()->init();
 	cGame::instance()->init();
 	cPlayer::instance()->init();
+	cCamera::instance()->init();
 
 	// go to home scene
 	cScene::instance()->setScene(cScene::HOME);

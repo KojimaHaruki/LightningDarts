@@ -1,4 +1,3 @@
-#define _USE_MATH_DEFINES
 #include "Darts.hpp"
 #include <numbers>
 #include "resource.h"
@@ -11,19 +10,20 @@
 #include "Control.hpp"
 #include "Timer.hpp"
 #include "Scene.hpp"
+#include "Sound.hpp"
 
 bool cDarts::setPointValidation(int point, bool isValid) {
-    if (point < 0 || point >= sPoint::NUM) return false;
     if (point == 25) {
         mIsValidPoint[sPoint::OUTER_BULL] = isValid; mIsValidPoint[sPoint::INNER_BULL] = isValid;
         return true;
     }
+    if (point < 0 || point >= sPoint::NUM) return false;
     mIsValidPoint[point] = isValid; return true;
 }
 
 bool cDarts::isValidPoint(int point) {
-    if (point >= 0 && point < sPoint::NUM) return mIsValidPoint[point];
     if (point == BULL_POINT) return mIsValidPoint[sPoint::OUTER_BULL] && mIsValidPoint[sPoint::INNER_BULL];
+    if (point >= 0 && point < sPoint::NUM) return mIsValidPoint[point];
     return false;
 }
 
@@ -84,6 +84,11 @@ void cDarts::init() {
         cScreen::instance()->box().left() + 0.25 * cScreen::instance()->box().width() + 5.0f, 
         cScreen::instance()->box().centerY());
 	cTimer::instance()->reset();
+    float lowerTheta = -1.05 * std::numbers::pi, upperTheta = -0.95 * std::numbers::pi;
+    for (int i = 0; i < 20; i++, lowerTheta = upperTheta, upperTheta += 0.1 * std::numbers::pi) {
+        pointThetaRange[BOARD_POINT[i]][0] = lowerTheta;
+        pointThetaRange[BOARD_POINT[i]][1] = upperTheta;
+    }
 }
 
 void cDarts::draw() {
@@ -105,17 +110,17 @@ void cDarts::draw() {
         cGame::instance()->modeName().c_str(), white, Mfont);
     
     // draw base board
-    DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::OUTSIDE], 100, black);
-    DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::DOUBLE], 100, gray);
+    DrawCircleAA(real(mCenter), imag(mCenter), RADIAL_POS_RADIUS[sRadialPos::OUTSIDE], 100, black);
+    DrawCircleAA(real(mCenter), imag(mCenter), RADIAL_POS_RADIUS[sRadialPos::DOUBLE], 100, gray);
 
     DrawStringToHandle(0, cScreen::instance()->lowerFrame().top() - MfontSize - 5, 
         pointName().c_str(), white, Mfont);
     // draw point part
-	float phi = -M_PI, r = sRadialPos::RADIUS[sRadialPos::OUTSIDE] - MfontSize + 2.0f,
-        x = -11.0f, y = -10.0f;
-    for (int i = 0; i < 20; i++, phi += 0.1 * M_PI) {
+	float phi = -std::numbers::pi, r = RADIAL_POS_RADIUS[sRadialPos::OUTSIDE] - MfontSize + 2.0f,
+        errorX = -11.0f, errorY = -10.0f;
+    for (int i = 0; i < 20; i++, phi += 0.1 * std::numbers::pi) {
         if (mIsValidPoint[cDarts::BOARD_POINT[i]]) {
-            DrawStringToHandle(real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
+            DrawStringToHandle(real(mCenter) + r * cos(phi) + errorX, imag(mCenter) - r * sin(phi) + errorY,
                 POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), white, Mfont);
             for (int posNo = sRadialPos::DOUBLE, state = 0; posNo > sRadialPos::OUTER_BULL; posNo--) {
                 if (mPoint == cDarts::BOARD_POINT[i] && mRadialPos == posNo) {
@@ -135,7 +140,7 @@ void cDarts::draw() {
             continue;
         }
         DrawStringToHandle(
-            real(mCenter) + r * cos(phi) + x, imag(mCenter) - r * sin(phi) + y,
+            real(mCenter) + r * cos(phi) + errorX, imag(mCenter) - r * sin(phi) + errorY,
             POINT_NAME[cDarts::BOARD_POINT[i]].c_str(), gray, Mfont);
     }
 
@@ -150,7 +155,7 @@ void cDarts::draw() {
 			color = touchColor;
         }
     }
-    DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::OUTER_BULL], 100, color);
+    DrawCircleAA(real(mCenter), imag(mCenter), RADIAL_POS_RADIUS[sRadialPos::OUTER_BULL], 100, color);
 
 	// draw inner bull
 	color = black;
@@ -163,16 +168,16 @@ void cDarts::draw() {
             color = touchColor;
         }
     }
-    DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[sRadialPos::INNER_BULL], 100, color);
+    DrawCircleAA(real(mCenter), imag(mCenter), RADIAL_POS_RADIUS[sRadialPos::INNER_BULL], 100, color);
 
 	// draw circumferencial frame
     for (int posNo = 0; posNo < sRadialPos::NUM; posNo++) 
-        DrawCircleAA(real(mCenter), imag(mCenter), sRadialPos::RADIUS[posNo], 100, black, FALSE, 2);
+        DrawCircleAA(real(mCenter), imag(mCenter), RADIAL_POS_RADIUS[posNo], 100, black, FALSE, 2);
     
     // draw radial frame
-    phi = 0.05 * M_PI;
-	float r1 = sRadialPos::RADIUS[sRadialPos::OUTER_BULL], r2 = sRadialPos::RADIUS[sRadialPos::DOUBLE];
-    for (int i = 0; i < 20; i++, phi += 0.1 * M_PI) 
+    phi = 0.05 * std::numbers::pi;
+	float r1 = RADIAL_POS_RADIUS[sRadialPos::OUTER_BULL], r2 = RADIAL_POS_RADIUS[sRadialPos::DOUBLE];
+    for (int i = 0; i < 20; i++, phi += 0.1 * std::numbers::pi)
         DrawLineAA(real(mCenter) + r1 * cos(phi), imag(mCenter) + r1 * sin(phi),
             real(mCenter) + r2 * cos(phi), imag(mCenter) + r2 * sin(phi), black, 2);
 }
@@ -180,12 +185,17 @@ void cDarts::draw() {
 bool cDarts::updateByKeyboard() {
     // check inner bull
     if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::INNER_BULL]) == sKey::RELEASEDtoPRESSED) {
-		mRadialPos = sRadialPos::INNER_BULL; mPoint = BULL_POINT; mPower = 2; mTotalPoint = 50; 
+		mRadius = ((float)rand() / RAND_MAX) * RADIAL_POS_RADIUS[sRadialPos::INNER_BULL]; 
+        mTheta = rand() % 360 * std::numbers::pi / 180.0f;
+        mRadialPos = sRadialPos::INNER_BULL; mPoint = BULL_POINT; mPower = 2; mTotalPoint = 50; 
         mIsThrowed = true; return true;
     }
 
     // check outer bull
     if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::OUTER_BULL]) == sKey::RELEASEDtoPRESSED) {
+        mRadius = RADIAL_POS_RADIUS[sRadialPos::INNER_BULL] + ((float)rand() / RAND_MAX) *
+            (RADIAL_POS_RADIUS[sRadialPos::OUTER_BULL] - RADIAL_POS_RADIUS[sRadialPos::INNER_BULL]);
+        mTheta = rand() % 360 * std::numbers::pi / 180.0f;
         mRadialPos = sRadialPos::OUTER_BULL; mPoint = BULL_POINT; mPower = 1; mIsThrowed = true;
         if (cGame::instance()->category() == cGame::sCategory::CRICKET) {
             mTotalPoint = BULL_POINT; return true;
@@ -195,22 +205,34 @@ bool cDarts::updateByKeyboard() {
 
     // check miss
     if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[sPoint::MISS]) == sKey::RELEASEDtoPRESSED) {
+        mRadius = RADIAL_POS_RADIUS[sRadialPos::DOUBLE] + ((float)rand() / RAND_MAX) *
+            (RADIAL_POS_RADIUS[sRadialPos::OUTSIDE] - RADIAL_POS_RADIUS[sRadialPos::DOUBLE]);
+        mTheta = rand() % 360 * std::numbers::pi / 180.0f;
         mIsThrowed = true; return true;
     }
     
     // check points 1 to 20
     for (int point = 1; point <= 20; point++) {
         if (cKeyboard::instance()->pressKeyState(cDarts::POINT_KEY[point]) == sKey::RELEASEDtoPRESSED) {
+            mTheta = rand() % 18 * std::numbers::pi / 180.0f + pointThetaRange[point][0];
             if (cKeyboard::instance()->pressKeyState(KEY_INPUT_D) == sKey::PRESSED) {
+                mRadius = RADIAL_POS_RADIUS[sRadialPos::OUTER_SINGLE] + ((float)rand() / RAND_MAX) *
+                    (RADIAL_POS_RADIUS[sRadialPos::DOUBLE] - RADIAL_POS_RADIUS[sRadialPos::OUTER_SINGLE]);
                 mRadialPos = sRadialPos::DOUBLE; mPower = 2;
             }
             else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_T) == sKey::PRESSED) {
+                mRadius = RADIAL_POS_RADIUS[sRadialPos::INNER_SINGLE] + ((float)rand() / RAND_MAX) *
+                    (RADIAL_POS_RADIUS[sRadialPos::TRIPLE] - RADIAL_POS_RADIUS[sRadialPos::INNER_SINGLE]);
                 mRadialPos = sRadialPos::TRIPLE; mPower = 3;
             }
             else if (cKeyboard::instance()->pressKeyState(KEY_INPUT_O) == sKey::PRESSED) {
+                mRadius = RADIAL_POS_RADIUS[sRadialPos::TRIPLE] + ((float)rand() / RAND_MAX) *
+                    (RADIAL_POS_RADIUS[sRadialPos::OUTER_SINGLE] - RADIAL_POS_RADIUS[sRadialPos::TRIPLE]);
                 mRadialPos = sRadialPos::OUTER_SINGLE; mPower = 1;
             }
             else {
+                mRadius = RADIAL_POS_RADIUS[sRadialPos::OUTER_BULL] + ((float)rand() / RAND_MAX) *
+                    (RADIAL_POS_RADIUS[sRadialPos::INNER_SINGLE] - RADIAL_POS_RADIUS[sRadialPos::OUTER_BULL]);
                 mRadialPos = sRadialPos::INNER_SINGLE; mPower = 1;
             }
             mPoint = point; mTotalPoint = mPower * mPoint; mIsThrowed = true; return true;
@@ -220,14 +242,15 @@ bool cDarts::updateByKeyboard() {
 }
 
 void cDarts::updateByMouse() {
-    std::complex<float> cursor(
+    mArrowPos._Val[0] = cMouse::instance()->x(); mArrowPos._Val[1] = cMouse::instance()->y();
+	std::complex<float> arrow(
         cMouse::instance()->x() - real(mCenter), imag(mCenter) - cMouse::instance()->y());
-    float r = abs(cursor), theta = arg(cursor);
+    mRadius = abs(arrow); mTheta = arg(arrow);
 
 	// check radial position
     for (int radialPosNo = sRadialPos::INNER_BULL; radialPosNo < sRadialPos::NUM; radialPosNo++) {
-        if (r < sRadialPos::RADIUS[radialPosNo]) {
-            mRadialPos = radialPosNo; mPower = sRadialPos::POWER[radialPosNo];
+        if (mRadius < RADIAL_POS_RADIUS[radialPosNo]) {
+            mRadialPos = radialPosNo; mPower = RADIAL_POS_POWER[radialPosNo];
             if (cMouse::instance()->clickState() == sKey::PRESSEDtoRELEASED) {
                 mIsThrowed = true;
                 break;
@@ -238,7 +261,7 @@ void cDarts::updateByMouse() {
     }
 
     // check point
-    float phi = -M_PI + 0.05 * M_PI;
+    float phi = -0.95 * std::numbers::pi;
     switch (mRadialPos) {
     case sRadialPos::INNER_BULL:
         mPoint = BULL_POINT; mTotalPoint = 2 * BULL_POINT; return;
@@ -249,9 +272,9 @@ void cDarts::updateByMouse() {
         }
         mTotalPoint = 2 * BULL_POINT; return;
     default:
-        for (int i = 0; i < 21; i++, phi += 0.1 * M_PI) {
-            if (theta < phi) {
-                mPoint = cDarts::BOARD_POINT[i];
+        for (int point = 0; point < 20; point++, phi += 0.1 * std::numbers::pi) {
+            if (mTheta < phi) {
+                mPoint = BOARD_POINT[point];
                 mTotalPoint = mPower * mPoint;
                 return;
             }
@@ -272,20 +295,23 @@ void cDarts::update() {
             cTimer::instance()->pause(); return;
         }
     }
+    if (cControl::instance()->isRequested(cControl::CONFIG)) {
+        cTimer::instance()->pause(); cScene::instance()->setScene(cScene::CONFIG); return;
+    }
     // initialize darts
+	mRadius = RADIAL_POS_RADIUS[sRadialPos::OUTSIDE]; mTheta = 0.0f;
     mRadialPos = sRadialPos::OUTSIDE; mPoint = 0; mPower = 0; mTotalPoint = 0;
     mIsTouched = false; mIsThrowed = false;
-	if (updateByKeyboard()) return;
-	updateByMouse();
-    if (cControl::instance()->isRequested(cControl::PLAYER_SELECT))
-        cScene::instance()->setScene(cScene::PLAYER_SELECT);
-    else if (cControl::instance()->isRequested(cControl::GAME_SELECT))
-        cScene::instance()->setScene(cScene::GAME_SELECT);
-    else if (cControl::instance()->isRequested(cControl::HOME))
-        cScene::instance()->setScene(cScene::HOME);
-    else if (cControl::instance()->isRequested(cControl::CONFIG)) {
-        cTimer::instance()->pause(); cScene::instance()->setScene(cScene::CONFIG);
+    if (updateByKeyboard()) {
+        std::complex<float> arrow(mRadius * cos(mTheta), -mRadius * sin(mTheta));
+        mArrowPos = mCenter + arrow;
     }
+    else updateByMouse();
+    if (mIsThrowed && isValidPoint(mPoint)) {
+        cSound::instance()->playShotSE(mRadialPos);
+        return;
+    }
+    cSound::instance()->playShotSE(cDarts::sRadialPos::OUTSIDE);
 }
 
 void cDarts::reset() {

@@ -152,7 +152,7 @@ void cCountUp::draw() {
 				0.7, 0.0, chara.image.handle(), TRUE);
 			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
 				rankName[now.rank[team]].c_str(), white, Sfont);
-			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - chara.name.size()),
+			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
 				chara.image.box().bottom() - SfontSize - 6,
 				chara.name.c_str(), white, Sfont);
 			for (int round = 0; round <= now.round; round++) {
@@ -304,7 +304,7 @@ void cCountUp::update() {
 	}
 }
 
-void cCountUp::fin() {
+cCountUp::~cCountUp() {
 	if (nTeam > 4) {
 		for (int player = 0; player < nTeam; player++) {
 			cPlayer::instance()->teamMember(player, 0).image.box().setHeight(100);

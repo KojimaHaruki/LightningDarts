@@ -5,11 +5,11 @@
 class cZeroOne : public cBaseScene {
 public:
 	cZeroOne();
-	~cZeroOne() {}
+	~cZeroOne();
 	void reset();
 	void draw();
 	void update();
-	void fin();
+
 private:
 	int arrowImage = 0;
 	static constexpr int INIT_POINT[cGame::sMode::ZERO_ONE_NUM] = { 301, 501, 701, 901, 1101, 1501 };
