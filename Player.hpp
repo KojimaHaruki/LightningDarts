@@ -51,16 +51,16 @@ public:
     std::string groupMemberName(int group, int member) {
         return mGroup.at(group).members.at(member).name;
     }
-	int nGroup() { return mGroup.size(); }
-    int nGroupMember(int group) { return mGroup.at(group).members.size(); }
+	size_t nGroup() { return mGroup.size(); }
+    size_t nGroupMember(int group) { return mGroup.at(group).members.size(); }
     std::vector<sGroup>& teams() { return mTeam; }
     std::vector<sChara>& teamMembers(int team) { return mTeam.at(team).members; }
     sChara& teamMember(int team, int member) { return mTeam.at(team).members.at(member); }
     cImage& teamMemberImage(int team, int member) { return mTeam.at(team).members.at(member).image; }
     cBox& teamMemberImageBox(int team, int member) { return mTeam.at(team).members.at(member).image.box(); }
     std::string& teamMemberName(int team, int member) { return mTeam.at(team).members.at(member).name; }
-    int nTeam() { return mTeam.size(); }
-    int nTeamMember(int team) { return mTeam.at(team).members.size(); }
+    size_t nTeam() { return mTeam.size(); }
+    size_t nTeamMember(int team) { return mTeam.at(team).members.size(); }
     int teamType() { return mTeamType; }
     std::string teamTypeName() { return TEAM_TYPE_NAME[mTeamType]; }
     std::string teamTypeName(int teamType);

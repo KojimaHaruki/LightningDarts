@@ -7,8 +7,8 @@ protected:
     Singleton(const Singleton& r) {}
     Singleton& operator=(const Singleton& r) {}
 public:
-    static _T* instance() {
-        static _T mInstance;
-        return &mInstance;
+    static _T* inst() { // instance
+        static _T instance;
+        return &instance;
     };
 };

@@ -13,52 +13,52 @@
 #include "Scene.hpp"
 #include "resource.h"
 
-cBaseScene::cBaseScene() : nowTime(time(NULL)), nTeam(cPlayer::instance()->nTeam()){
+cBaseScene::cBaseScene() : nowTime(time(NULL)), nTeam(cPlayer::inst()->nTeam()){
     loadColor(); loadFont(); loadScreen();
     timeError = localtime_s(&nowLocalTime, &nowTime);
 }
 
 void cBaseScene::loadColor() {
-    white = cColor::instance()->white(); black = cColor::instance()->black();
-    gray = cColor::instance()->gray(); red = cColor::instance()->red();
-    green = cColor::instance()->green(); blue = cColor::instance()->blue();
-    magenta = cColor::instance()->magenta(); cyan = cColor::instance()->cyan();
-    yellow = cColor::instance()->yellow(); tableColor = cColor::instance()->tableColor();
-    touchColor = cColor::instance()->touchColor(); pressColor = cColor::instance()->pressColor();
-    executeColor = cColor::instance()->executeColor();
+    white = cColor::inst()->white(); black = cColor::inst()->black();
+    gray = cColor::inst()->gray(); red = cColor::inst()->red();
+    green = cColor::inst()->green(); blue = cColor::inst()->blue();
+    magenta = cColor::inst()->magenta(); cyan = cColor::inst()->cyan();
+    yellow = cColor::inst()->yellow(); tableColor = cColor::inst()->tableColor();
+    touchColor = cColor::inst()->touchColor(); pressColor = cColor::inst()->pressColor();
+    executeColor = cColor::inst()->executeColor();
     for (int i = 0; i < cPlayer::MAX_SOLO_PLAYER_NUM; i++) {
-        teamColor[i] = cColor::instance()->teamColor(i);
-        rankColor[i] = cColor::instance()->rankColor(i);
+        teamColor[i] = cColor::inst()->teamColor(i);
+        rankColor[i] = cColor::inst()->rankColor(i);
     }
 }
 
 void cBaseScene::loadFont() {
-    Sfont = cFont::instance()->Sfont(); SfontSize = cFont::instance()->SfontSize();
-    Mfont = cFont::instance()->MFont(); MfontSize = cFont::instance()->MfontSize();
-    Lfont = cFont::instance()->Lfont(); LfontSize = cFont::instance()->LfontSize();
-    XLfont = cFont::instance()->XLfont(); XLfontSize = cFont::instance()->XLfontSize();
+    Sfont = cFont::inst()->Sfont(); SfontSize = cFont::inst()->SfontSize();
+    Mfont = cFont::inst()->MFont(); MfontSize = cFont::inst()->MfontSize();
+    Lfont = cFont::inst()->Lfont(); LfontSize = cFont::inst()->LfontSize();
+    XLfont = cFont::inst()->XLfont(); XLfontSize = cFont::inst()->XLfontSize();
 }
 
 void cBaseScene::loadScreen() {
-    screen = cScreen::instance()->box();
-    upperFrame = cScreen::instance()->upperFrame();
-    lowerFrame = cScreen::instance()->lowerFrame();
+    screen = cScreen::inst()->box();
+    upperFrame = cScreen::inst()->upperFrame();
+    lowerFrame = cScreen::inst()->lowerFrame();
 }
 
 void cBaseScene::initScreenSize() {
-    cScreen::instance()->initSize();
+    cScreen::inst()->initSize();
     loadScreen();
     setWindow(FALSE);
-    cControl::instance()->initIconBox();
+    cControl::inst()->initIconBox();
 }
 
 void cBaseScene::init() {
     initScreenSize();
-    cSound::instance()->init();
-    cControl::instance()->initKey();
-    cGame::instance()->init();
-    cPlayer::instance()->initTeam();
-    cScene::instance()->setScene(cScene::HOME);
+    cSound::inst()->init();
+    cControl::inst()->initKey();
+    cGame::inst()->init();
+    cPlayer::inst()->initTeam();
+    cScene::inst()->setScene(cScene::HOME);
 }
 
 void cBaseScene::changeWindow() {
@@ -72,80 +72,80 @@ void cBaseScene::setWindow(int window) {
     SetMouseDispFlag(TRUE);
 
     // load fonts
-    cFont::instance()->load();
-    cDarts::instance()->loadFont();
+    cFont::inst()->load();
+    cDarts::inst()->loadFont();
     loadFont();
 
     // reload images
-    cKeyboard::instance()->reloadKeyImage();
-    cControl::instance()->reloadIcon();
-    cScreen::instance()->reloadImage();
-    cPlayer::instance()->loadImage();
-    cDarts::instance()->loadImage();
+    cKeyboard::inst()->reloadKeyImage();
+    cControl::inst()->reloadIcon();
+    cScreen::inst()->reloadImage();
+    cPlayer::inst()->loadImage();
+    cDarts::inst()->loadImage();
 }
 
 void cBaseScene::draw() {
-	cScreen::instance()->draw();
-    cControl::instance()->icon(cControl::BACK).draw();
+	cScreen::inst()->draw();
+    cControl::inst()->icon(cControl::BACK).draw();
     for (int scene = cScene::HOME; scene <= cScene::PLAYER_SELECT; scene++) {
-        if (scene <= cScene::instance()->maxScene()) {
-            cControl::instance()->icon(scene).draw();
+        if (scene <= cScene::inst()->maxScene()) {
+            cControl::inst()->icon(scene).draw();
         }
     }
-    cControl::instance()->icon(cControl::MUTE + cSound::instance()->isBGMPlayed()).draw();
-    cControl::instance()->icon(cControl::CONFIG).draw();
-    cControl::instance()->icon(cControl::ANOTHER_WINDOW + GetWindowModeFlag()).draw();
-    cControl::instance()->icon(cControl::QUIT).draw();
-    cControl::instance()->icon(cControl::INITIALIZE).draw();
-    cControl::instance()->icon(cControl::RESET).draw();
-    cControl::instance()->icon(cControl::CHANGE_BGM).draw();
-    DrawStringToHandle(cControl::instance()->icon(cControl::CHANGE_BGM).box().right(),
-        cScreen::instance()->lowerFrame().center().y() - SfontSize / 2,
-        cSound::instance()->playingBGMName().c_str(), white, Sfont);
-    DrawStringToHandle(screen.right() - 340, lowerFrame.center().y() - SfontSize / 2,
+    cControl::inst()->icon(cControl::MUTE + cSound::inst()->isBGMPlayed()).draw();
+    cControl::inst()->icon(cControl::CONFIG).draw();
+    cControl::inst()->icon(cControl::ANOTHER_WINDOW + GetWindowModeFlag()).draw();
+    cControl::inst()->icon(cControl::QUIT).draw();
+    cControl::inst()->icon(cControl::INITIALIZE).draw();
+    cControl::inst()->icon(cControl::RESET).draw();
+    cControl::inst()->icon(cControl::CHANGE_BGM).draw();
+    DrawStringToHandle(cControl::inst()->icon(cControl::CHANGE_BGM).box().R(),
+        cScreen::inst()->lowerFrame().C().y() - SfontSize / 2,
+        cSound::inst()->playingBGMName().c_str(), white, Sfont);
+    DrawStringToHandle(screen.R() - 340, lowerFrame.C().y() - SfontSize / 2,
         "Lightning Darts C 2025 Haruki Kojima", yellow, Sfont);
-    DrawCircleAA(screen.right() - 210.5f, (float)lowerFrame.center().y(),
+    DrawCircleAA(screen.R() - 210.5f, (float)lowerFrame.C().y(),
         SfontSize / 2.0f, 1000, black, FALSE, 3.0f);
-    DrawCircleAA(screen.right() - 210.5f, (float)lowerFrame.center().y(),
+    DrawCircleAA(screen.R() - 210.5f, (float)lowerFrame.C().y(),
         SfontSize / 2.0f, 1000, yellow, FALSE, 1.0f);
     if (!timeError) {
         DrawFormatStringToHandle(
-            screen.right() - 42, lowerFrame.center().y() - SfontSize / 2,
+            screen.R() - 42, lowerFrame.C().y() - SfontSize / 2,
             white, Sfont, "%02d:%02d", nowLocalTime.tm_hour, nowLocalTime.tm_min);
     }
 }
 
 void cBaseScene::update() {
-    cMouse::instance()->update();
-    cKeyboard::instance()->update();
-    cSound::instance()->update();
+    cMouse::inst()->update();
+    cKeyboard::inst()->update();
+    cSound::inst()->update();
     nowTime = time(NULL);
     timeError = localtime_s(&nowLocalTime, &nowTime);
     for (int scene = cScene::HOME; scene <= cScene::PLAYER_SELECT; scene++) {
-        if (scene <= cScene::instance()->maxScene() && scene != cScene::instance()->currentScene() &&
-            cControl::instance()->isRequested(scene)) {
-            cScene::instance()->setScene(scene); return;
+        if (scene <= cScene::inst()->maxScene() && scene != cScene::inst()->currentScene() &&
+            cControl::inst()->isRequested(scene)) {
+            cScene::inst()->setScene(scene); return;
         }
     }
-    if (cControl::instance()->isRequested(cControl::INITIALIZE)) init();
-    else if (cControl::instance()->isRequested(cControl::RESET)) reset();
-    else if (cControl::instance()->isRequested(cControl::QUIT)) 
-        cScene::instance()->setScene(cScene::QUIT);
-    else if (cControl::instance()->isRequested(cControl::MUTE + cSound::instance()->isBGMPlayed())) {
-        if (cSound::instance()->isBGMPlayed()) {
-            cSound::instance()->mute();
+    if (cControl::inst()->isRequested(cControl::INITIALIZE)) init();
+    else if (cControl::inst()->isRequested(cControl::RESET)) reset();
+    else if (cControl::inst()->isRequested(cControl::QUIT)) 
+        cScene::inst()->setScene(cScene::QUIT);
+    else if (cControl::inst()->isRequested(cControl::MUTE + cSound::inst()->isBGMPlayed())) {
+        if (cSound::inst()->isBGMPlayed()) {
+            cSound::inst()->mute();
             return;
         }
-        cSound::instance()->unmute();
+        cSound::inst()->unmute();
     }
-    else if (cControl::instance()->isRequested(cControl::ANOTHER_WINDOW + GetWindowModeFlag()))
+    else if (cControl::inst()->isRequested(cControl::ANOTHER_WINDOW + GetWindowModeFlag()))
         changeWindow();
-    else if (cControl::instance()->isRequested(cControl::CHANGE_BGM)) {
-        if (cKeyboard::instance()->pressKeyState(KEY_INPUT_LSHIFT) == sKey::PRESSED) {
-            cSound::instance()->playLastBGM();
+    else if (cControl::inst()->isRequested(cControl::CHANGE_BGM)) {
+        if (cKeyboard::inst()->keyState(KEY_INPUT_LSHIFT) == sKeyState::PRESS) {
+            cSound::inst()->playLastBGM();
         }
         else {
-            cSound::instance()->playNextBGM();
+            cSound::inst()->playNextBGM();
         }
     }
 }

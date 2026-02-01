@@ -6,65 +6,65 @@
 cGameSelect::cGameSelect() {
     for (int category = 0, mode = 0; category < cGame::sCategory::NUM && mode < cGame::sMode::NUM;
         category++) {
-        gameCategoryBox[category].setSize(230, XLfontSize + 40);
-        gameCategoryBox[category].setUpperLeft(
-            screen.left() + screen.width() * category / 3, upperFrame.bottom());
+        gameCategoryBox[category].setS(230, XLfontSize + 40);
+        gameCategoryBox[category].setUL(
+            screen.L() + screen.W() * category / 3, upperFrame.B());
         for (int categoryMode = 0;
             categoryMode < cGame::CATEGORY_MODE_NUM[category] && mode < cGame::sMode::NUM;
             categoryMode++, mode++) {
-            gameModeBox[mode].setSize(250, MfontSize + 12);
-            gameModeBox[mode].setUpperLeft(gameCategoryBox[category].left() + 15,
-                gameCategoryBox[category].bottom() + screen.height() * categoryMode / 10);
+            gameModeBox[mode].setS(250, MfontSize + 12);
+            gameModeBox[mode].setUL(gameCategoryBox[category].L() + 15,
+                gameCategoryBox[category].B() + screen.H() * categoryMode / 10);
         }
     }
 }
 
 void cGameSelect::reset() {
     cBaseScene::reset();
-    cGame::instance()->init();
+    cGame::inst()->init();
 }
 
 void cGameSelect::draw() {
     cBaseScene::draw();
 
     // icons
-    if (cScene::instance()->lastScene() >= cScene::PLAYER_SELECT)
-        cControl::instance()->icon(cControl::FORWARD).draw();
-    cControl::instance()->icon(cControl::SKIP).draw();
+    if (cScene::inst()->lastScene() >= cScene::PLAYER_SELECT)
+        cControl::inst()->icon(cControl::FORWARD).draw();
+    cControl::inst()->icon(cControl::SKIP).draw();
 
     // games
     for (int category = 0; category < cGame::sCategory::NUM; category++)
-        DrawStringToHandle(gameCategoryBox[category].left() + 5,
-            gameCategoryBox[category].center().y() - XLfontSize / 2,
-            cGame::instance()->categoryName(category).c_str(), white, XLfont);
+        DrawStringToHandle(gameCategoryBox[category].L() + 5,
+            gameCategoryBox[category].C().y() - XLfontSize / 2,
+            cGame::inst()->categoryName(category).c_str(), white, XLfont);
     unsigned int color = white;
     for (int game = 0; game < cGame::sMode::NUM; game++, color = white) {
-        switch (cMouse::instance()->clickBoxState(gameModeBox[game])) {
-        case sKey::RELEASED:
+        switch (cMouse::inst()->LclickBoxState(gameModeBox[game])) {
+        case sKeyState::RELEASE:
             color = touchColor; break;
-        case sKey::RELEASEDtoPRESSED: case sKey::PRESSED:
+        case sKeyState::RELEASEtoPRESS: case sKeyState::PRESS:
             color = pressColor; break;
-        case sKey::PRESSEDtoRELEASED:
-            cGame::instance()->setMode(game); cScene::instance()->setScene(cScene::PLAYER_SELECT); break;
+        case sKeyState::PRESStoRELEASE:
+            cGame::inst()->setMode(game); cScene::inst()->setScene(cScene::PLAYER_SELECT); break;
         default: break;
         }
-        DrawStringToHandle(gameModeBox[game].left() + 20, gameModeBox[game].center().y() - LfontSize / 2,
-            cGame::instance()->modeName(game).c_str(), color, Lfont);
+        DrawStringToHandle(gameModeBox[game].L() + 20, gameModeBox[game].C().y() - LfontSize / 2,
+            cGame::inst()->modeName(game).c_str(), color, Lfont);
     }
 
     // scene title
-    DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
-        upperFrame.center().y() - MfontSize / 2, "Game Select", white, Mfont);
+    DrawStringToHandle(cControl::inst()->icon(cControl::MUTE).box().R() + 5,
+        upperFrame.C().y() - MfontSize / 2, "Game Select", white, Mfont);
 }
 
 void cGameSelect::update() {
     cBaseScene::update();
-    if ((cScene::instance()->lastScene() >= cScene::PLAYER_SELECT && 
-        cControl::instance()->isRequested(cControl::FORWARD)) ||
-        cControl::instance()->isRequested(cControl::SKIP))
-        cScene::instance()->setScene(cScene::PLAYER_SELECT);
-    else if (cControl::instance()->isRequested(cControl::BACK)) 
-        cScene::instance()->setScene(cScene::HOME);
-    else if (cControl::instance()->isRequested(cControl::CONFIG)) 
-        cScene::instance()->setScene(cScene::CONFIG);
+    if ((cScene::inst()->lastScene() >= cScene::PLAYER_SELECT && 
+        cControl::inst()->isRequested(cControl::FORWARD)) ||
+        cControl::inst()->isRequested(cControl::SKIP))
+        cScene::inst()->setScene(cScene::PLAYER_SELECT);
+    else if (cControl::inst()->isRequested(cControl::BACK)) 
+        cScene::inst()->setScene(cScene::HOME);
+    else if (cControl::inst()->isRequested(cControl::CONFIG)) 
+        cScene::inst()->setScene(cScene::CONFIG);
 }

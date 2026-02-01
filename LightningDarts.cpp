@@ -11,11 +11,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     SetWindowText("Lightning Darts");
     SetLogDrawOutFlag(FALSE);
     SRand(GetNowCount()); // initialize random number by the lapse time in Windows
-    cScene::instance()->init();
+    cScene::inst()->init();
     while (!ScreenFlip() && !ProcessMessage() && !ClearDrawScreen() &&
-        cScene::instance()->currentScene() != cScene::QUIT) {
-		cScene::instance()->draw();
-		cScene::instance()->update();
+        cScene::inst()->currentScene() != cScene::QUIT) {
+		cScene::inst()->draw();
+		cScene::inst()->update();
     }
     StopSound();
     InitSoundMem();

@@ -8,7 +8,6 @@ public:
     ~cImage();
 
     // setter
-    void setBox(cBox box) { mBox = box; }
     void setTrans(bool trans) { mTrans = trans; }
     
     // getter

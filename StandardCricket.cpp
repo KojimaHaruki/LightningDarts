@@ -4,17 +4,14 @@
 #include "Scene.hpp"
 
 cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
-	nTeam = cPlayer::instance()->nTeam();
-	attempt = 0;
-	maxAttempt = 0;
 	now = {};
 	now.arrow = 3;
 	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
-	ranker = cPlayer::instance()->teams();
+	ranker = cPlayer::inst()->teams();
 	for (int point = cDarts::sPoint::MISS; point < cDarts::sPoint::MIN_CRICKET_POINT; point++)
-		cDarts::instance()->setPointValidation(point, false);
+		cDarts::inst()->setPointValidation(point, false);
 	for (int point = cDarts::sPoint::MIN_CRICKET_POINT; point < cDarts::sPoint::NUM; point++)
-		cDarts::instance()->setPointValidation(point, true);
+		cDarts::inst()->setPointValidation(point, true);
 	if (nTeam <= cPlayer::MAX_DUO_TEAM_NUM) {
 		nTable = 1;
 		space = 8;
@@ -23,57 +20,54 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 
 		// set team boxes
 		teamBoxes.push_back(cBox());
-		teamBoxes.front().setSize(
-			100, (cPlayer::instance()->teamType() + 1) * 100 + POINT_NUM * posBoxHeight);
-		teamBoxes.front().setUpperLeft(
-			screen.right() - cPlayer::MAX_DUO_TEAM_NUM * 100, upperFrame.bottom());
+		teamBoxes.front().setS(100, (cPlayer::inst()->teamType() + 1) * 100 + POINT_NUM * posBoxHeight);
+		teamBoxes.front().setUL(screen.R() - cPlayer::MAX_DUO_TEAM_NUM * 100, upperFrame.B());
 		teamBoxes.front().setColor(tableColor);
 		for (int team = 1; team < nTeam; team++) {
 			cBox leftBox = teamBoxes.back();
 			teamBoxes.push_back(leftBox);
-			teamBoxes.back().setLeft(leftBox.right());
+			teamBoxes.back().setL(leftBox.R());
 		}
 
 		// set team member image boxes
 		for (int team = 0; team < nTeam; team++) {
-			cPlayer::instance()->teamMemberImageBox(team, 0).setUpperLeft(teamBoxes.at(team).upperLeft());
-			if (cPlayer::instance()->nTeamMember(team) == 2) {
-				cPlayer::instance()->teamMemberImageBox(team, 1).setUpperLeft(
-					cPlayer::instance()->teamMemberImageBox(team, 0).lowerLeft());
+			cPlayer::inst()->teamMemberImageBox(team, 0).setUL(teamBoxes.at(team).UL());
+			if (cPlayer::inst()->nTeamMember(team) == 2) {
+				cPlayer::inst()->teamMemberImageBox(team, 1).setUL(
+					cPlayer::inst()->teamMemberImageBox(team, 0).LL());
 			}
 		}
 
 		// set table boxes
-		tableBoxes.push_back(teamBoxes.front());
-		tableBoxes.front().setX(screen.centerX() + 10, teamBoxes.front().left());
+		tableBox = teamBoxes.front();
+		tableBox.setX(screen.CX() + 10, teamBoxes.front().L());
 
 		// set fill boxes
 		filledBoxes.push_back(sPosBox());
-		filledBoxes.front().posBox[0].setX(teamBoxes.front().left(), teamBoxes.back().right());
+		filledBoxes.front().posBox[0].setX(teamBoxes.front().L(), teamBoxes.back().R());
 		filledBoxes.front().posBox[0].setY1(
-			teamBoxes.front().top() + 100 * (cPlayer::instance()->teamType() + 1));
-		filledBoxes.front().posBox[0].setHeight(posBoxHeight);
+			teamBoxes.front().T() + 100 * (cPlayer::inst()->teamType() + 1));
+		filledBoxes.front().posBox[0].setH(posBoxHeight);
 		filledBoxes.front().posBox[0].setColor(gray);
-		filledBoxes.front().posBox[0].setDraw(false);
+		filledBoxes.front().posBox[0].setDrawFlag(false);
 		for (int pos = 1; pos < POS_NUM; pos++) {
 			cBox upperBox = filledBoxes.front().posBox[pos - 1];
 			filledBoxes.front().posBox[pos] = upperBox;
-			filledBoxes.front().posBox[pos].setTop(upperBox.bottom());
+			filledBoxes.front().posBox[pos].setT(upperBox.B());
 		}
 
 		// set team mark boxes
 		teamMarkBoxes.push_back(sPosBox());
-		teamMarkBoxes.front().posBox[0].setSize(LfontSize, LfontSize);
-		teamMarkBoxes.back().posBox[0].setCenter(
-			teamBoxes.front().centerX(), filledBoxes.front().posBox[0].centerY());
+		teamMarkBoxes.front().posBox[0].setS(LfontSize, LfontSize);
+		teamMarkBoxes.back().posBox[0].setC(teamBoxes.front().CX(), filledBoxes.front().posBox[0].CY());
 		for (int pos = 1; pos < POS_NUM; pos++) {
 			teamMarkBoxes.front().posBox[pos] = teamMarkBoxes.front().posBox[0];
-			teamMarkBoxes.front().posBox[pos].setCenterY(filledBoxes.front().posBox[pos].centerY());
+			teamMarkBoxes.front().posBox[pos].setCY(filledBoxes.front().posBox[pos].CY());
 		}
 		for (int team = 1; team < nTeam; team++) {
 			teamMarkBoxes.push_back(teamMarkBoxes.front());
 			for (int pos = 0; pos < POS_NUM; pos++) {
-				teamMarkBoxes.back().posBox[pos].setCenterX(teamBoxes.at(team).centerX());
+				teamMarkBoxes.back().posBox[pos].setCX(teamBoxes.at(team).CX());
 			}
 		}
 	}
@@ -85,51 +79,49 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 
 		// set team boxes
 		teamBoxes.push_back(cBox());
-		teamBoxes.front().setSize(100, 70 + POINT_NUM * posBoxHeight);
+		teamBoxes.front().setS(100, 70 + POINT_NUM * posBoxHeight);
 		teamBoxes.front().setColor(tableColor);
-		teamBoxes.front().setUpperLeft(
-			screen.right() - 100 * cPlayer::MAX_DUO_TEAM_NUM, upperFrame.bottom());
+		teamBoxes.front().setUL(screen.R() - 100 * cPlayer::MAX_DUO_TEAM_NUM, upperFrame.B());
 		for (int team = 1; team < cPlayer::MAX_DUO_TEAM_NUM; team++) {
 			cBox leftBox = teamBoxes.back();
 			teamBoxes.push_back(leftBox);
-			teamBoxes.back().setLeft(leftBox.right());
+			teamBoxes.back().setL(leftBox.R());
 		}
 		teamBoxes.push_back(teamBoxes.front());
-		teamBoxes.back().setTop(teamBoxes.front().bottom() + promptBoxHeight);
+		teamBoxes.back().setT(teamBoxes.front().B() + promptBoxHeight);
 		for (int team = cPlayer::MAX_DUO_TEAM_NUM + 1; team < nTeam; team++) {
 			cBox leftBox = teamBoxes.back();
 			teamBoxes.push_back(leftBox);
-			teamBoxes.back().setLeft(leftBox.right());
+			teamBoxes.back().setL(leftBox.R());
 		}
 
 		// set team member image boxes
 		for (int team = 0; team < nTeam; team++) {
-			cPlayer::instance()->teamMemberImageBox(team, 0).setHeight(70);
-			cPlayer::instance()->teamMemberImageBox(team, 0).setUpperLeft(teamBoxes.at(team).upperLeft());
+			cPlayer::inst()->teamMemberImageBox(team, 0).setH(70);
+			cPlayer::inst()->teamMemberImageBox(team, 0).setUL(teamBoxes.at(team).UL());
 		}
 
 		// set table boxes
-		for (int table = 0, team = 0; table < nTable; table++, team += cPlayer::MAX_DUO_TEAM_NUM) {
-			tableBoxes.push_back(teamBoxes.at(team));
-			tableBoxes.back().setX(screen.centerX() + 10, teamBoxes.at(team).left());
-		}
+		tableBox = teamBoxes.front();
+		tableBox.setX(screen.CX() + 10, teamBoxes.front().L());
+		tableBox.setY2(teamBoxes.back().B());
 
 		// set fill boxes
 		filledBoxes.push_back(sPosBox());
-		filledBoxes.front().posBox[0].setSize(100 * cPlayer::MAX_DUO_TEAM_NUM, SfontSize + space);
-		filledBoxes.front().posBox[0].setUpperLeft(screen.right() - 400, teamBoxes.at(0).top() + 70);
+		filledBoxes.front().posBox[0].setS(100 * cPlayer::MAX_DUO_TEAM_NUM, SfontSize + space);
+		filledBoxes.front().posBox[0].setUL(screen.R() - 400, teamBoxes.at(0).T() + 70);
 		filledBoxes.front().posBox[0].setColor(gray);
-		filledBoxes.front().posBox[0].setDraw(false);
+		filledBoxes.front().posBox[0].setDrawFlag(false);
 		for (int pos = 1; pos < POS_NUM; pos++) {
 			filledBoxes.front().posBox[pos] = filledBoxes.front().posBox[0];
-			filledBoxes.front().posBox[pos].setTop(filledBoxes.front().posBox[pos - 1].bottom());
+			filledBoxes.front().posBox[pos].setT(filledBoxes.front().posBox[pos - 1].B());
 		}
 		filledBoxes.push_back(filledBoxes.front());
-		filledBoxes.back().posBox[0].setWidth(100 * (nTeam - cPlayer::MAX_DUO_TEAM_NUM));
-		filledBoxes.back().posBox[0].setTop(teamBoxes.at(cPlayer::MAX_DUO_TEAM_NUM).top() + 70);
+		filledBoxes.back().posBox[0].setW(100 * (nTeam - cPlayer::MAX_DUO_TEAM_NUM));
+		filledBoxes.back().posBox[0].setT(teamBoxes.at(cPlayer::MAX_DUO_TEAM_NUM).T() + 70);
 		for (int pos = 1; pos < POS_NUM; pos++) {
 			filledBoxes.back().posBox[pos] = filledBoxes.back().posBox[0];
-			filledBoxes.back().posBox[pos].setTop(filledBoxes.back().posBox[pos - 1].bottom());
+			filledBoxes.back().posBox[pos].setT(filledBoxes.back().posBox[pos - 1].B());
 		}
 		for (int team = 0, table = 0; team < nTeam; team++) {
 			teamMarkBoxes.push_back(sPosBox());
@@ -137,29 +129,29 @@ cStandardCricket::cStandardCricket() : attempt(0), maxAttempt(0) {
 				table++;
 			}
 			for (int pos = 0; pos < POS_NUM; pos++) {
-				teamMarkBoxes.at(team).posBox[pos].setSize(SfontSize, SfontSize);
-				teamMarkBoxes.at(team).posBox[pos].setCenter(
-					teamBoxes.at(team).centerX(), filledBoxes.at(table).posBox[pos].centerY());
+				teamMarkBoxes.at(team).posBox[pos].setS(SfontSize, SfontSize);
+				teamMarkBoxes.at(team).posBox[pos].setC(
+					teamBoxes.at(team).CX(), filledBoxes.at(table).posBox[pos].CY());
 			}
 		}
 	}
 	teamBoxes.front().setColor(white);
-	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.centerX() + 10);
+	cControl::inst()->iconBox(cControl::SKIP).setR(screen.CX() + 10);
 	mem[attempt] = now;
 }
 
 void cStandardCricket::reset() {
 	cBaseScene::reset();
-	cDarts::instance()->reset();
+	cDarts::inst()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
 	now.arrow = cDarts::MAX_ARROW_NUM;
 	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
 	for (int point = cDarts::sPoint::MISS; point < cDarts::sPoint::MIN_CRICKET_POINT; point++)
-		cDarts::instance()->setPointValidation(point, false);
+		cDarts::inst()->setPointValidation(point, false);
 	for (int point = cDarts::sPoint::MIN_CRICKET_POINT; point < cDarts::sPoint::NUM; point++)
-		cDarts::instance()->setPointValidation(point, true);
+		cDarts::inst()->setPointValidation(point, true);
 	updateScoreBox();
 }
 
@@ -167,13 +159,13 @@ void cStandardCricket::draw() {
 	cBaseScene::draw();
 
 	// control icons
-	if (attempt < maxAttempt) cControl::instance()->icon(cControl::FORWARD).draw();
+	if (attempt < maxAttempt) cControl::inst()->icon(cControl::FORWARD).draw();
 
 	// darts board
-	cDarts::instance()->draw();
+	cDarts::inst()->draw();
 
 	// round
-	DrawFormatStringToHandle(screen.centerX() - 80, upperFrame.bottom() + 10,
+	DrawFormatStringToHandle(screen.CX() - 80, upperFrame.B() + 10,
 		white, Mfont, "Round%3d", now.round + 1);
 
 	// score table
@@ -181,96 +173,95 @@ void cStandardCricket::draw() {
 	unsigned int color = 0U;
 
 	// boxes
-	for (int table = 0; table < nTable; table++) tableBoxes.at(table).draw();
+	tableBox.draw();
 	for (int team = 0; team < nTeam; team++) teamBoxes.at(team).draw();
 	for (int table = 0; table < nTable; table++) {
 		for (int pos = 0; pos < POS_NUM; pos++) {
 			filledBoxes.at(table).posBox[pos].draw();
 		}
 	}
-	DrawBox(screen.centerX() + 10, teamBoxes.at(0).bottom(),
-		screen.right(), teamBoxes.at(0).bottom() + space + MfontSize, pressColor, TRUE);
+	DrawBox(screen.CX() + 10, teamBoxes.at(0).B(), screen.R(), teamBoxes.at(0).B() + space + MfontSize, 
+		pressColor, TRUE);
 	
 	if (nTeam <= cPlayer::MAX_DUO_TEAM_NUM) {
 		for (int team = 0; team < nTeam; team++) {
-			for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
-				chara = cPlayer::instance()->teamMember(team, member);
+			for (int member = 0; member < cPlayer::inst()->nTeamMember(team); member++) {
+				chara = cPlayer::inst()->teamMember(team, member);
 				chara.image.draw();
 				color = white;
 				if (!now.isGameFin && team == now.team &&
-					member == min(now.member, cPlayer::instance()->nTeamMember(team) - 1)) {
+					member == min(now.member, cPlayer::inst()->nTeamMember(team) - 1)) {
 					color = touchColor;
 					// arrows
-					for (int arrow = 0, x = chara.image.box().right() - 10, y = chara.image.box().top();
+					for (int arrow = 0, x = chara.image.box().R() - 10, y = chara.image.box().T();
 						arrow < now.arrow; arrow++, x -= 10) {
-						DrawGraph(x, y, cDarts::instance()->arrowImage(), TRUE);
+						DrawGraph(x, y, cDarts::inst()->arrowImage(), TRUE);
 					}
 					// prompt
-					DrawStringToHandle(screen.centerX() + 120, teamBoxes.at(0).bottom() + space / 2,
+					DrawStringToHandle(screen.CX() + 120, teamBoxes.at(0).B() + space / 2,
 						(chara.name + ", throw darts!").c_str(), white, Mfont);
 				}
-				DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
-					chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(), color, Sfont);
+				DrawStringToHandle(chara.image.box().L() + 5 * max(0, 10 - (int)chara.name.size()),
+					chara.image.box().B() - SfontSize - 6, chara.name.c_str(), color, Sfont);
 			}
-			DrawStringToHandle(teamBoxes.at(team).left(), teamBoxes.at(team).top(),
+			DrawStringToHandle(teamBoxes.at(team).L(), teamBoxes.at(team).T(),
 				RANK_NAME[now.rank[team]].c_str(), rankColor[now.rank[team]], Lfont);
 			DrawFormatStringToHandle(
-				chara.image.box().centerX() - 20, teamBoxes.at(team).bottom() - posBoxHeight + space / 2,
+				chara.image.box().CX() - 20, teamBoxes.at(team).B() - posBoxHeight + space / 2,
 				white, Lfont, "%4d", now.teamScore[team]);
 		}
-		int y = cPlayer::instance()->teamMemberImage(0, cPlayer::instance()->teamType()).box().bottom();
+		int y = cPlayer::inst()->teamMemberImage(0, cPlayer::inst()->teamType()).box().B();
 		for (int pos = 0; pos < POS_NUM - 1; pos++) {
 			color = white;
 			if (now.isPosFill[pos]) {
 				color = gray;
 			}
-			DrawStringToHandle(screen.centerX() + 18, filledBoxes.back().posBox[pos].top() + space / 2,
+			DrawStringToHandle(screen.CX() + 18, filledBoxes.back().posBox[pos].T() + space / 2,
 				POS_NAME[pos].c_str(), color, Lfont);
 		}
 		color = white;
 		if (now.isPosFill[POS_NUM - 1]) {
 			color = gray;
 		}
-		DrawStringToHandle(screen.centerX() + 10, 
-			filledBoxes.at(0).posBox[POS_NUM - 1].centerY() - MfontSize / 2, "Bull", color, Mfont);
-		DrawStringToHandle(screen.centerX() + 10, 
-			filledBoxes.at(0).posBox[POS_NUM - 1].bottom() + (posBoxHeight - SfontSize) / 2,
+		DrawStringToHandle(screen.CX() + 10, filledBoxes.at(0).posBox[POS_NUM - 1].CY() - MfontSize / 2, 
+			"Bull", color, Mfont);
+		DrawStringToHandle(
+			screen.CX() + 10, filledBoxes.at(0).posBox[POS_NUM - 1].B() + (posBoxHeight - SfontSize) / 2,
 			"Score", white, Sfont);
 	}
 	else {
 		for (int team = 0; team < nTeam; team++) {
-			chara = cPlayer::instance()->teamMember(team, 0);
-			DrawRotaGraph(chara.image.box().centerX(), chara.image.box().centerY(),
+			chara = cPlayer::inst()->teamMember(team, 0);
+			DrawRotaGraph(chara.image.box().CX(), chara.image.box().CY(),
 				0.7, 0.0, chara.image.handle(), TRUE);
 			color = white;
 			if (!now.isGameFin && team == now.team) {
 				color = touchColor;
 				// arrows
-				for (int arrow = 0, x = chara.image.box().right() - 10, y = chara.image.box().top();
+				for (int arrow = 0, x = chara.image.box().R() - 10, y = chara.image.box().T();
 					arrow < now.arrow; arrow++, x -= 10) {
-					DrawGraph(x, y, cDarts::instance()->arrowImage(), TRUE);
+					DrawGraph(x, y, cDarts::inst()->arrowImage(), TRUE);
 				}
 				// prompt
-				DrawStringToHandle(screen.centerX() + 120, teamBoxes.at(0).bottom() + space / 2,
+				DrawStringToHandle(screen.CX() + 120, teamBoxes.at(0).B() + space / 2,
 					(chara.name + ", throw darts!").c_str(), white, Mfont);
 			}
-			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
-				chara.image.box().bottom() - SfontSize - 6,
+			DrawStringToHandle(chara.image.box().L() + 5 * max(0, 10 - (int)chara.name.size()),
+				chara.image.box().B() - SfontSize - 6,
 				chara.name.c_str(), color, Sfont);
-			DrawStringToHandle(chara.image.box().left(), chara.image.box().top(),
+			DrawStringToHandle(chara.image.box().L(), chara.image.box().T(),
 				RANK_NAME[now.rank[team]].c_str(), rankColor[now.rank[team]], Lfont);
-			DrawFormatStringToHandle(chara.image.box().centerX() - 20,
-				teamBoxes.at(team).bottom() - posBoxHeight + space / 2,
+			DrawFormatStringToHandle(chara.image.box().CX() - 20,
+				teamBoxes.at(team).B() - posBoxHeight + space / 2,
 				white, Sfont, "%4d", now.teamScore[team]);
 		}
 		for (int table = 0; table < nTable; table++) {
 			for (int pos = 0; pos < POS_NUM; pos++) {
-				DrawStringToHandle(screen.centerX() + 26 - 3 * POS_NAME[pos].size(),
-					filledBoxes.at(table).posBox[pos].top() + space / 2,
+				DrawStringToHandle(screen.CX() + 26 - 3 * POS_NAME[pos].size(),
+					filledBoxes.at(table).posBox[pos].T() + space / 2,
 					POS_NAME[pos].c_str(), white, Sfont);
 			}
-			DrawStringToHandle(screen.centerX() + 10,
-				filledBoxes.at(table).posBox[POS_NUM - 1].bottom() + space / 2,
+			DrawStringToHandle(screen.CX() + 10, filledBoxes.at(table).posBox[POS_NUM - 1].B() + space / 2,
 				"Score", white, Sfont);
 		}
 	}
@@ -282,24 +273,24 @@ void cStandardCricket::draw() {
 		for (int pos = 0; pos < POS_NUM; pos++) {
 			for (int part = 0; part < MARK_PART_NUM; part++) {
 				if (now.teamPosPower[team][pos] >= MAX_POWER) {
-					DrawCircleAA(teamMarkBoxes.at(team).posBox[pos].centerX() + MARK_PART_ERROR[part],
-						teamMarkBoxes.at(team).posBox[pos].centerY(),
-						(teamMarkBoxes.at(team).posBox[pos].height() - 4) / 2.0,
+					DrawCircleAA(teamMarkBoxes.at(team).posBox[pos].CX() + MARK_PART_ERROR[part],
+						teamMarkBoxes.at(team).posBox[pos].CY(),
+						(teamMarkBoxes.at(team).posBox[pos].H() - 4) / 2.0,
 						100, colors[part], FALSE, MARK_PART_LINETHICK[part]);
 				}
 				if (now.teamPosPower[team][pos] >= 1) {
 					DrawLine(
-						teamMarkBoxes.at(team).posBox[pos].right() + MARK_PART_ERROR[part],
-						teamMarkBoxes.at(team).posBox[pos].top(),
-						teamMarkBoxes.at(team).posBox[pos].left() + MARK_PART_ERROR[part],
-						teamMarkBoxes.at(team).posBox[pos].bottom(), colors[part], MARK_PART_LINETHICK[part]);
+						teamMarkBoxes.at(team).posBox[pos].R() + MARK_PART_ERROR[part],
+						teamMarkBoxes.at(team).posBox[pos].T(),
+						teamMarkBoxes.at(team).posBox[pos].L() + MARK_PART_ERROR[part],
+						teamMarkBoxes.at(team).posBox[pos].B(), colors[part], MARK_PART_LINETHICK[part]);
 				}
 				if (now.teamPosPower[team][pos] >= 2) {
 					DrawLine(
-						teamMarkBoxes.at(team).posBox[pos].left() + MARK_PART_ERROR[part],
-						teamMarkBoxes.at(team).posBox[pos].top(),
-						teamMarkBoxes.at(team).posBox[pos].right() + MARK_PART_ERROR[part],
-						teamMarkBoxes.at(team).posBox[pos].bottom(), colors[part], MARK_PART_LINETHICK[part]);
+						teamMarkBoxes.at(team).posBox[pos].L() + MARK_PART_ERROR[part],
+						teamMarkBoxes.at(team).posBox[pos].T(),
+						teamMarkBoxes.at(team).posBox[pos].R() + MARK_PART_ERROR[part],
+						teamMarkBoxes.at(team).posBox[pos].B(), colors[part], MARK_PART_LINETHICK[part]);
 				}
 			}
 		}
@@ -307,38 +298,37 @@ void cStandardCricket::draw() {
 
 	// lines
 	for (int team = 0; team < nTeam; team++) 
-		DrawLine(teamBoxes.at(team).left(), teamBoxes.at(team).top(),
-			teamBoxes.at(team).left(), teamBoxes.at(team).bottom(), black);
+		DrawLine(teamBoxes.at(team).L(), teamBoxes.at(team).T(),
+			teamBoxes.at(team).L(), teamBoxes.at(team).B(), black);
 	for (int table = 0; table < nTable; table++) {
 		for (int pos = 0; pos < POS_NUM; pos++) {
-			DrawLine(screen.centerX() + 10, filledBoxes.at(table).posBox[pos].top(),
-				filledBoxes.at(table).posBox[0].right(), filledBoxes.at(table).posBox[pos].top(), black);
+			DrawLine(screen.CX() + 10, filledBoxes.at(table).posBox[pos].T(),
+				filledBoxes.at(table).posBox[0].R(), filledBoxes.at(table).posBox[pos].T(), black);
 		}
-		DrawLine(screen.centerX() + 10, filledBoxes.at(table).posBox[POS_NUM - 1].bottom(),
-			filledBoxes.at(table).posBox[0].right(), filledBoxes.at(table).posBox[POS_NUM - 1].bottom(), 
-			black);
+		DrawLine(screen.CX() + 10, filledBoxes.at(table).posBox[POS_NUM - 1].B(),
+			filledBoxes.at(table).posBox[0].R(), filledBoxes.at(table).posBox[POS_NUM - 1].B(), black);
 	}
 	// finish prompt
 	if (now.isGameFin) {
-		DrawStringToHandle(screen.centerX() + 120, teamBoxes.at(0).bottom() + space / 2,
+		DrawStringToHandle(screen.CX() + 120, teamBoxes.at(0).B() + space / 2,
 			(ranker.at(0).name + " Win!").c_str(), white, Mfont);
 	}
 }
 
 void cStandardCricket::update() {
 	cBaseScene::update();
-	cDarts::instance()->update();
+	cDarts::inst()->update();
 
-	if (cDarts::instance()->isThrowed()) throwDart();
-	else if (cControl::instance()->isRequested(cControl::SKIP)) skip();
-	else if (cControl::instance()->isRequested(cControl::FORWARD)) forward();
-	else if (cControl::instance()->isRequested(cControl::BACK)) back();
+	if (cDarts::inst()->isThrowed()) throwDart();
+	else if (cControl::inst()->isRequested(cControl::SKIP)) skip();
+	else if (cControl::inst()->isRequested(cControl::FORWARD)) forward();
+	else if (cControl::inst()->isRequested(cControl::BACK)) back();
 }
 
 bool cStandardCricket::throwDart() {
 	if (now.isTeamFin[now.team]) return false;
 	now.arrow--;
-	int point = cDarts::instance()->point();
+	int point = cDarts::inst()->point();
 	for (int pos = 0; pos < POS_NUM; pos++) {
 		if (point == POS_POINT[pos] && !now.isPosFill[pos]) {
 			addScore(pos); checkPosFill(pos); updateRank(); checkGameFin();
@@ -354,7 +344,7 @@ bool cStandardCricket::throwDart() {
 }
 
 bool cStandardCricket::back() {
-	if (attempt <= 0) { cScene::instance()->setScene(cScene::GAME_START); return false; }
+	if (attempt <= 0) { cScene::inst()->setScene(cScene::GAME_START); return false; }
 	attempt--; now = mem[attempt]; updateScoreBox();
 	return true;
 }
@@ -374,10 +364,10 @@ void cStandardCricket::updateScoreBox() {
 	// Update filled boxes
 	for (int pos = 0; pos < POS_NUM; pos++) {
 		// Update point validation
-		cDarts::instance()->setPointValidation(POS_POINT[pos], !now.isPosFill[pos]);
+		cDarts::inst()->setPointValidation(POS_POINT[pos], !now.isPosFill[pos]);
 		for (int table = 0; table < nTable; table++) {
 			// Update whether draw fill box
-			filledBoxes.at(table).posBox[pos].setDraw(now.isPosFill[pos]);
+			filledBoxes.at(table).posBox[pos].setDrawFlag(now.isPosFill[pos]);
 		}
 	}
 
@@ -401,7 +391,7 @@ bool cStandardCricket::record() {
 }
 
 bool cStandardCricket::addScore(int pos) {
-	now.teamPosPower[now.team][pos] += cDarts::instance()->power();
+	now.teamPosPower[now.team][pos] += cDarts::inst()->power();
 	int damage = POS_POINT[pos] * (now.teamPosPower[now.team][pos] - MAX_POWER);
 	if (damage >= 0) now.isTeamPosFill[now.team][pos] = true;
 	if (damage <= 0) return false;
@@ -436,10 +426,9 @@ void cStandardCricket::checkPosFill(int pos) {
 	}
 	// If all teams have filled this position,
 	now.isPosFill[pos] = true;
-	cDarts::instance()->setPointValidation(POS_POINT[pos], false); // disable point
-	for (int table = 0; table < nTable; table++) {
-		filledBoxes.at(table).posBox[pos].setDraw(true); // set filled box to draw
-	}
+	cDarts::inst()->setPointValidation(POS_POINT[pos], false); // disable point
+	for (int table = 0; table < nTable; table++) 
+		filledBoxes.at(table).posBox[pos].setDrawFlag(true); // set filled box to draw
 }
 
 bool cStandardCricket::changeTeam() {
@@ -451,7 +440,7 @@ bool cStandardCricket::changeTeam() {
 			now.round++;
 			now.member++;
 		}
-		if (now.member > cPlayer::instance()->teamType()) {
+		if (now.member > cPlayer::inst()->teamType()) {
 			now.member = 0;
 		}
 		if (!now.isTeamFin[now.team]) { // If the next team is not finished,
@@ -475,7 +464,7 @@ void cStandardCricket::updateRank() {
 			now.rank[now.team] = 1; now.rank[opponent] = 0;
 		}
 		for (int team = 0; team < 2; team++) {
-			ranker.at(now.rank[team]) = cPlayer::instance()->teams().at(team);
+			ranker.at(now.rank[team]) = cPlayer::inst()->teams().at(team);
 		}
 		return;
 	}
@@ -501,7 +490,7 @@ void cStandardCricket::updateRank() {
 				now.rank[team]++; // If opponent has lower score or is finished, increase rank
 			}
 		}
-		ranker.at(now.rank[team]) = cPlayer::instance()->teams().at(team);
+		ranker.at(now.rank[team]) = cPlayer::inst()->teams().at(team);
 	}
 }
 
@@ -538,10 +527,10 @@ void cStandardCricket::checkGameFin() {
 }
 
 cStandardCricket::~cStandardCricket() {
-	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.right());
+	cControl::inst()->iconBox(cControl::SKIP).setR(screen.R());
 	if (nTeam > cPlayer::MAX_DUO_TEAM_NUM) {
 		for (int team = 0; team < nTeam; team++) {
-			cPlayer::instance()->teams().at(team).members.at(0).image.box().setHeight(100);
+			cPlayer::inst()->teams().at(team).members.at(0).image.box().setH(100);
 		}
 	}
 }

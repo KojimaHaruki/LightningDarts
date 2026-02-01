@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseScene.hpp"
 
-class cCountUp : public cBaseScene {
+class cCricketCountUp : public cBaseScene {
 public:
-	cCountUp();
-	~cCountUp();
+	cCricketCountUp();
+	~cCricketCountUp();
 	void reset();
 	void draw();
 	void update();
@@ -27,6 +27,7 @@ private:
 	}; RecordData now, record[MAX_ATTEMPT];
 	cBox teamBox[cPlayer::MAX_SOLO_PLAYER_NUM];
 	int space = 0;
+	static constexpr int CRICKET_NUMBER_SCORE[CRICKET_NUMBER_NUM] = { 20, 19, 18, 17, 16, 15, 25 };
 	const std::string rankName[cPlayer::MAX_SOLO_PLAYER_NUM] = {
 		"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"
 	};

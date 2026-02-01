@@ -49,7 +49,8 @@ private:
 		cBox posBox[POS_NUM];
 	};
 	int space = 0, posBoxHeight = 0, promptBoxHeight = 0;
-	std::vector<cBox> teamBoxes, tableBoxes;
+	std::vector<cBox> teamBoxes;
+	cBox tableBox;
 	int nTable = 0;
 	std::vector<sPosBox> filledBoxes;
 	

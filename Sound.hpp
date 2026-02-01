@@ -53,6 +53,7 @@ public:
 	void update();
     int playShotSE(int shot);
     int playCartrigeSE(int cartrige);
+    int playSelectSE() { return PlaySoundMem(mSelectSE, DX_PLAYTYPE_BACK); }
 private:
     const std::string mName[sKind::NUM] = { "Total", "BGM", "SE" };
     int mIsBGMPlayed = TRUE;
@@ -72,6 +73,6 @@ private:
     int mPlayingBGMNo = 0;
     int mPlayingBGMHandle = 0;
 	std::string mPlayingBGMName = {};
-    int mShotSE[cDarts::sRadialPos::NUM] = {}, mCartrigeSE[sCartrigeKind::NUM] = {};
+    int mShotSE[cDarts::sRadialPos::NUM] = {}, mCartrigeSE[sCartrigeKind::NUM] = {}, mSelectSE;
     //int mComboSE[sComboKind::NUM] = {};
 };

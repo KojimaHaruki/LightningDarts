@@ -45,12 +45,11 @@ void cSound::load() {
         std::cout << err.message() << std::endl;
     }
     // load sound effect
-    for (int shot = 0; shot < cDarts::sRadialPos::NUM; shot++) {
+    for (int shot = 0; shot < cDarts::sRadialPos::NUM; shot++) 
         mShotSE[shot] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_MP3_1 + shot), "MP3");
-    }
-    for (int cartrige = 0; cartrige < sCartrigeKind::NUM; cartrige++) {
+    for (int cartrige = 0; cartrige < sCartrigeKind::NUM; cartrige++) 
         mCartrigeSE[cartrige] = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_MP3_8 + cartrige), "MP3");
-    }
+    mSelectSE = LoadSoundMemByResource(MAKEINTRESOURCE(IDR_MP3_13), "MP3");
 }
 
 void cSound::initSoundVol() {

@@ -8,22 +8,22 @@
 #include "Scene.hpp"
 
 cGameStart::cGameStart() {
-	nTeam = cPlayer::instance()->nTeam();
+	nTeam = cPlayer::inst()->nTeam();
 	nowTime = time(NULL);
 	startTime = nowTime + TIME_ENTRYtoSTART;
 	double theta = std::numbers::pi, phi = std::numbers::pi / (double)cPlayer::MAX_SOLO_PLAYER_NUM;
 	for (int team = 0; team < nTeam; team++, theta += 2.0 * std::numbers::pi / (double)nTeam) {
-		if (cPlayer::instance()->nTeamMember(team) == 1) {
-			cPlayer::instance()->teams().at(team).members.front().image.box().setCenter(
-				screen.center().x() + 150.0 * cos(theta), screen.center().y() - 150.0 * sin(theta));
+		if (cPlayer::inst()->nTeamMember(team) == 1) {
+			cPlayer::inst()->teams().at(team).members.front().image.box().setC(
+				screen.C().x() + 150.0 * cos(theta), screen.C().y() - 150.0 * sin(theta));
 			continue;
 		}
-		cPlayer::instance()->teams().at(team).members.front().image.box().setCenter(
-			screen.center().x() + 150.0 * cos(theta + phi),
-			screen.center().y() - 150.0 * sin(theta + phi));
-		cPlayer::instance()->teams().at(team).members.back().image.box().setCenter(
-			screen.center().x() + 150.0 * cos(theta - phi),
-			screen.center().y() - 150.0 * sin(theta - phi));
+		cPlayer::inst()->teams().at(team).members.front().image.box().setC(
+			screen.C().x() + 150.0 * cos(theta + phi),
+			screen.C().y() - 150.0 * sin(theta + phi));
+		cPlayer::inst()->teams().at(team).members.back().image.box().setC(
+			screen.C().x() + 150.0 * cos(theta - phi),
+			screen.C().y() - 150.0 * sin(theta - phi));
 	}
 }
 
@@ -36,38 +36,38 @@ void cGameStart::draw() {
 	cBaseScene::draw();
 
 	// draw icon
-	cControl::instance()->icon(cControl::PLAYER_SELECT).draw();
-	cControl::instance()->icon(cControl::GAME_SELECT).draw();
-	cControl::instance()->icon(cControl::SKIP).draw();
+	cControl::inst()->icon(cControl::PLAYER_SELECT).draw();
+	cControl::inst()->icon(cControl::GAME_SELECT).draw();
+	cControl::inst()->icon(cControl::SKIP).draw();
 
 	// draw scene name
-	DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
-		upperFrame.center().y() - MfontSize / 2,
-		(cGame::instance()->modeName() + " < Game Start").c_str(), white, Mfont);
+	DrawStringToHandle(cControl::inst()->icon(cControl::MUTE).box().R() + 5,
+		upperFrame.C().y() - MfontSize / 2,
+		(cGame::inst()->modeName() + " < Game Start").c_str(), white, Mfont);
 
 	// draw battle team
 	cPlayer::sChara player = {};
 	for (int team = 0; team < nTeam; team++) {
-		for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
-			player = cPlayer::instance()->teamMember(team, member);
+		for (int member = 0; member < cPlayer::inst()->nTeamMember(team); member++) {
+			player = cPlayer::inst()->teamMember(team, member);
 			player.image.draw();
-			DrawStringToHandle(player.image.box().left(), player.image.box().top(),
+			DrawStringToHandle(player.image.box().L(), player.image.box().T(),
 				RANK_NAME[team].c_str(), rankColor[team], Lfont);
-			DrawStringToHandle(player.image.box().left() + 5 * max(0, 10 - (int)player.name.size()),
-				player.image.box().bottom() - SfontSize - 10, player.name.c_str(), white, Sfont);
+			DrawStringToHandle(player.image.box().L() + 5 * max(0, 10 - (int)player.name.size()),
+				player.image.box().B() - SfontSize - 10, player.name.c_str(), white, Sfont);
 		}
 	}
-	DrawStringToHandle(screen.center().x() - 10, screen.center().y() - MfontSize / 2, "VS", white, Lfont);
+	DrawStringToHandle(screen.C().x() - 10, screen.C().y() - MfontSize / 2, "VS", white, Lfont);
 }
 
 void cGameStart::update() {
 	cBaseScene::update();
 	nowTime = time(NULL);
-	if (cControl::instance()->isRequested(cControl::BACK))
-		cScene::instance()->setScene(cScene::CORK);
-	else if (cControl::instance()->isRequested(cControl::SKIP) || nowTime >= startTime) {
-		cScene::instance()->setScene(cScene::GAME); cTimer::instance()->restart();
+	if (cControl::inst()->isRequested(cControl::BACK))
+		cScene::inst()->setScene(cScene::CORK);
+	else if (cControl::inst()->isRequested(cControl::SKIP) || nowTime >= startTime) {
+		cScene::inst()->setScene(cScene::GAME); cTimer::inst()->restart();
 	}
-	else if (cControl::instance()->isRequested(cControl::CONFIG))
-		cScene::instance()->setScene(cScene::CONFIG);
+	else if (cControl::inst()->isRequested(cControl::CONFIG))
+		cScene::inst()->setScene(cScene::CONFIG);
 }

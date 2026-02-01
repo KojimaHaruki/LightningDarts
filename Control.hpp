@@ -47,13 +47,15 @@ public:
     void initIconBox();
 
     // getter
-    cImage icon(int ctrl);
+    cImage& icon(int ctrl);
     cBox& iconBox(int ctrl);
     int keyCode(int ctrl);
     std::string name(int ctrl);
     
     // Functions
-    bool isIconClicked(int ctrl);
+    bool isValidCtrlIcon(int ctrl) { return 0 <= ctrl && ctrl < ICON_NUM; }
+    bool isValidCtrl(int ctrl) { return 0 <= ctrl && ctrl < NUM; }
+    bool isIconLclicked(int ctrl);
     bool isKeyTyped(int ctrl);
     bool isRequested(int ctrl);
 

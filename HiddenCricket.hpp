@@ -1,10 +1,10 @@
 #pragma once
 #include "BaseScene.hpp"
 
-class HiddenCricket : public cBaseScene {
+class cHiddenCricket : public cBaseScene {
 public:
-	HiddenCricket();
-	~HiddenCricket();
+	cHiddenCricket();
+	~cHiddenCricket();
 	void reset();
 	void draw();
 	void update();

@@ -3,6 +3,7 @@
 #include "Mouse.hpp"
 #include "Screen.hpp"
 #include "resource.h"
+#include "Sound.hpp"
 
 void cControl::init() {
     initKey();
@@ -47,76 +48,72 @@ void cControl::reloadIcon() {
 
 void cControl::initIconBox() {
     cCoordinate2d<int> DEFAULT_ICON_SIZE(DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT);
-    mIcon[HOME].box().setSize(30, DEFAULT_ICON_HEIGHT);
-    mIcon[HOME].box().setUpperLeft(cScreen::instance()->box().upperLeft());
-    mIcon[BACK].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[BACK].box().setUpperLeft(mIcon[HOME].box().upperRight());
-    mIcon[FORWARD].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[FORWARD].box().setUpperLeft(mIcon[BACK].box().upperRight());
+    mIcon[HOME].box().setS(30, DEFAULT_ICON_HEIGHT);
+    mIcon[HOME].box().setUL(cScreen::inst()->box().UL());
+    mIcon[BACK].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[BACK].box().setUL(mIcon[HOME].box().UR());
+    mIcon[FORWARD].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[FORWARD].box().setUL(mIcon[BACK].box().UR());
     for (int i = 0; i < 2; i++) {
-        mIcon[MUTE + i].box().setSize(DEFAULT_ICON_SIZE);
-        mIcon[MUTE + i].box().setUpperLeft(mIcon[FORWARD].box().upperRight());
+        mIcon[MUTE + i].box().setS(DEFAULT_ICON_SIZE);
+        mIcon[MUTE + i].box().setUL(mIcon[FORWARD].box().UR());
     }
-    mIcon[QUIT].box().setSize(DEFAULT_ICON_SIZE); mIcon[QUIT].box().setUpperRight(
-        cScreen::instance()->box().upperRight());
+    mIcon[QUIT].box().setS(DEFAULT_ICON_SIZE); mIcon[QUIT].box().setUR(
+        cScreen::inst()->box().UR());
     for (int i = 0; i < 2; i++) {
-        mIcon[ANOTHER_WINDOW + i].box().setSize(DEFAULT_ICON_SIZE);
-        mIcon[ANOTHER_WINDOW + i].box().setUpperRight(mIcon[QUIT].box().upperLeft());
+        mIcon[ANOTHER_WINDOW + i].box().setS(DEFAULT_ICON_SIZE);
+        mIcon[ANOTHER_WINDOW + i].box().setUR(mIcon[QUIT].box().UL());
     }
-    mIcon[CONFIG].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[CONFIG].box().setUpperRight(mIcon[ANOTHER_WINDOW + 0].box().upperLeft());
-    mIcon[GAME_SELECT].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[GAME_SELECT].box().setUpperRight(mIcon[CONFIG].box().upperLeft());
-    mIcon[PLAYER_SELECT].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[PLAYER_SELECT].box().setUpperRight(mIcon[GAME_SELECT].box().upperLeft());
+    mIcon[CONFIG].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[CONFIG].box().setUR(mIcon[ANOTHER_WINDOW + 0].box().UL());
+    mIcon[GAME_SELECT].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[GAME_SELECT].box().setUR(mIcon[CONFIG].box().UL());
+    mIcon[PLAYER_SELECT].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[PLAYER_SELECT].box().setUR(mIcon[GAME_SELECT].box().UL());
     for (int i = 0; i < 2; i++) {
-        mIcon[PAUSE + i].box().setSize(DEFAULT_ICON_SIZE);
-        mIcon[PAUSE + i].box().setUpperRight(mIcon[PLAYER_SELECT].box().upperLeft());
+        mIcon[PAUSE + i].box().setS(DEFAULT_ICON_SIZE);
+        mIcon[PAUSE + i].box().setUR(mIcon[PLAYER_SELECT].box().UL());
     }
-    mIcon[SKILL].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[SKILL].box().setUpperRight(mIcon[PAUSE].box().upperLeft());
-    mIcon[SKIP].box().setSize(76, DEFAULT_ICON_HEIGHT);
-    mIcon[SKIP].box().setLowerRight(cScreen::instance()->lowerFrame().upperRight());
-    mIcon[INITIALIZE].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[INITIALIZE].box().setLowerLeft(cScreen::instance()->box().lowerLeft());
-    mIcon[RESET].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[RESET].box().setLowerLeft(mIcon[INITIALIZE].box().lowerRight());
-    mIcon[CHANGE_BGM].box().setSize(DEFAULT_ICON_SIZE);
-    mIcon[CHANGE_BGM].box().setLowerLeft(mIcon[RESET].box().lowerRight());
+    mIcon[SKILL].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[SKILL].box().setUR(mIcon[PAUSE].box().UL());
+    mIcon[SKIP].box().setS(76, DEFAULT_ICON_HEIGHT);
+    mIcon[SKIP].box().setLR(cScreen::inst()->lowerFrame().UR());
+    mIcon[INITIALIZE].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[INITIALIZE].box().setLL(cScreen::inst()->box().LL());
+    mIcon[RESET].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[RESET].box().setLL(mIcon[INITIALIZE].box().LR());
+    mIcon[CHANGE_BGM].box().setS(DEFAULT_ICON_SIZE);
+    mIcon[CHANGE_BGM].box().setLL(mIcon[RESET].box().LR());
 }
 
-bool cControl::isIconClicked(int ctrl) {
-    if (ctrl >= 0 || ctrl < NUM)
-        return cMouse::instance()->clickBoxState(mIcon[ctrl].box()) == sKey::PRESSEDtoRELEASED;
-    return false;
+bool cControl::isIconLclicked(int ctrl) {
+    return isValidCtrlIcon(ctrl) ? cMouse::inst()->isBoxLclicked(mIcon[ctrl].box()) : false;
 }
 
 bool cControl::isKeyTyped(int ctrl) {
-    if (ctrl >= 0 || ctrl < NUM)
-        return cKeyboard::instance()->pressKeyState(mKeyCode[ctrl]) == sKey::RELEASEDtoPRESSED;
-    return false;
+    return isValidCtrl(ctrl) ? cKeyboard::inst()->isKeyTyped(mKeyCode[ctrl]) : false;
 }
 
 bool cControl::isRequested(int ctrl) {
-    return isIconClicked(ctrl) || isKeyTyped(ctrl);
+    return isIconLclicked(ctrl) || isKeyTyped(ctrl);
 }
 
-cImage cControl::icon(int ctrl) {
-    if (ctrl >= 0 && ctrl < ICON_NUM) return mIcon[ctrl];
-    cImage empty; return empty;
+cImage& cControl::icon(int ctrl) {
+    if (isValidCtrlIcon(ctrl)) return mIcon[ctrl];
+    return mIcon[0];
 }
 
 cBox& cControl::iconBox(int ctrl) {
-    if (ctrl >= 0 && ctrl < ICON_NUM) return mIcon[ctrl].box(); 
-	cBox empty; return empty;
+    if (isValidCtrlIcon(ctrl)) return mIcon[ctrl].box();
+	return mIcon[0].box();
 }
 
 int cControl::keyCode(int ctrl) { 
-    if (ctrl >= 0 && ctrl < NUM) return mKeyCode[ctrl]; 
+    if (isValidCtrl(ctrl)) return mKeyCode[ctrl];
 	return -1;
 }
 
 std::string cControl::name(int ctrl) { 
-    if (ctrl >= 0 && ctrl < NUM) return mName[ctrl];
+    if (isValidCtrl(ctrl)) return mName[ctrl];
     return "None";
 }

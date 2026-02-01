@@ -7,7 +7,9 @@
 #include "GameStart.hpp"
 #include "ZeroOne.hpp"
 #include "StandardCricket.hpp"
+#include "HiddenCricket.hpp"
 #include "CountUp.hpp"
+#include "CricketCountUp.hpp"
 #include "Config.hpp"
 #include "Game.hpp"
 #include "Camera.hpp"
@@ -28,18 +30,23 @@ bool cScene::setScene(int scene) {
     case cScene::CORK:          mScene = new cCork();         break;
     case cScene::GAME_START:    mScene = new cGameStart();    break;
     case cScene::GAME:      
-        switch (cGame::instance()->category()) {
-            case cGame::sCategory::ZERO_ONE:
-				mScene = new cZeroOne();         break;
-            case cGame::sCategory::CRICKET:
-                mScene = new cStandardCricket(); break;
-            case cGame::sCategory::COUNT_UP:
-				mScene = new cCountUp();         break;
-        default:
-            break;
+        if (cGame::inst()->category() == cGame::sCategory::ZERO_ONE) {
+            mScene = new cZeroOne();
+        }
+        else if (cGame::inst()->mode() == cGame::sMode::STANDARD_CRICKET) {
+            mScene = new cStandardCricket();
+        }
+        else if (cGame::inst()->mode() == cGame::sMode::COUNT_UP) {
+            mScene = new cCountUp();
+        }
+        else if (cGame::inst()->mode() == cGame::sMode::CRICKET_COUNT_UP) {
+            mScene = new cCricketCountUp();
+        }
+        else {
+            mScene = new cHiddenCricket();
         }
         break;
-    case cScene::QUIT: cCamera::instance()->fin(); break;
+    case cScene::QUIT: cCamera::inst()->fin(); break;
     default: return false;
     }
 	mLastScene = mCurrentScene;

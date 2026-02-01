@@ -21,7 +21,7 @@ bool cImage::reload() {
 
 int cImage::draw() {
     int transFlag = mTrans ? TRUE : FALSE;
-    return DrawGraph(mBox.left(), mBox.top(), mHandle, transFlag);
+    return DrawGraph(mBox.L(), mBox.T(), mHandle, transFlag);
 }
 
 cImage::~cImage() {

@@ -301,6 +301,8 @@ IDR_MP3_11               MP3                    "Sound\\SE\\cartrige\\single.mp3
 
 IDR_MP3_12              MP3                     "Sound\\SE\\cartrige\\multiple.mp3"
 
+IDR_MP3_13              MP3                     "Sound\\SE\\select.mp3"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

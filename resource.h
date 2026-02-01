@@ -126,6 +126,7 @@
 #define IDR_MP3_10                      418
 #define IDR_MP3_11                      419
 #define IDR_MP3_12                      420
+#define IDR_MP3_13                      421
 
 // Next default values for new objects
 // 

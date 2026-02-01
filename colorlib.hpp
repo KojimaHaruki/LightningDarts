@@ -9,7 +9,8 @@ namespace colorlib {
         if (colorName == "bw" || colorName == "Brown") return GetColor(115, 78, 49);
         if (colorName == "o" || colorName == "Orange") return GetColor(253, 126, 0);
         if (colorName == "bz" || colorName == "Bronze") return GetColor(129, 90, 43);
-        if (colorName == "y" || colorName == "Yellow" || colorName == "JauneBrillant") return GetColor(255, 204, 0);
+        if (colorName == "y" || colorName == "Yellow" || colorName == "JauneBrillant") 
+            return GetColor(255, 204, 0);
         if (colorName == "g" || colorName == "Green") return GetColor(42, 155, 80);
         if (colorName == "c" || colorName == "Cyan") return GetColor(33, 157, 221);
         if (colorName == "b" || colorName == "Blue") return GetColor(49, 112, 185);

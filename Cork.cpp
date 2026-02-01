@@ -8,15 +8,15 @@
 #include "Scene.hpp"
 
 cCork::cCork() {
-	nTeam = cPlayer::instance()->nTeam();
-	cDarts::instance()->reset();
+	nTeam = cPlayer::inst()->nTeam();
+	cDarts::inst()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
 	now.arrow = 3;
 	for (int team = 0; team < nTeam; team++) now.rank[team] = team;
 	for (int point = 0; point < cDarts::sPoint::NUM; point++)
-		cDarts::instance()->setPointValidation(point, true);
+		cDarts::inst()->setPointValidation(point, true);
 
 	space = 8;
 	scoreBoxHeight = LfontSize + space;
@@ -24,45 +24,45 @@ cCork::cCork() {
 
 	// set team & table boxes
 	teamBoxes.push_back(cBox());
-	teamBoxes.front().setSize(100, (cPlayer::instance()->teamType() + 1) * 100 + scoreBoxHeight);
-	teamBoxes.front().setUpperLeft(screen.right() - cPlayer::MAX_DUO_TEAM_NUM * 100, upperFrame.bottom());
+	teamBoxes.front().setS(100, (cPlayer::inst()->teamType() + 1) * 100 + scoreBoxHeight);
+	teamBoxes.front().setUL(screen.R() - cPlayer::MAX_DUO_TEAM_NUM * 100, upperFrame.B());
 	teamBoxes.front().setColor(teamColor[0]);
 	for (int team = 1, nTeam1 = min(nTeam, cPlayer::MAX_DUO_TEAM_NUM); team < nTeam1; team++) {
 		cBox leftBox = teamBoxes.back();
 		teamBoxes.push_back(leftBox);
-		teamBoxes.back().setLeft(leftBox.right());
+		teamBoxes.back().setL(leftBox.R());
 		teamBoxes.back().setColor(teamColor[team]);
 	}
 	tableBox = teamBoxes.front();
-	tableBox.setX(screen.centerX() + 10, teamBoxes.front().left());
+	tableBox.setX(screen.CX() + 10, teamBoxes.front().L());
 	tableBox.setColor(tableColor);
 	if (nTeam > cPlayer::MAX_DUO_TEAM_NUM) {
 		teamBoxes.push_back(teamBoxes.front());
-		teamBoxes.back().setTop(teamBoxes.front().bottom() + promptBoxHeight);
+		teamBoxes.back().setT(teamBoxes.front().B() + promptBoxHeight);
 		teamBoxes.back().setColor(teamColor[cPlayer::MAX_DUO_TEAM_NUM]);
 		for (int team = cPlayer::MAX_DUO_TEAM_NUM + 1; team < nTeam; team++) {
 			cBox leftBox = teamBoxes.back();
 			teamBoxes.push_back(leftBox);
-			teamBoxes.back().setLeft(leftBox.right());
+			teamBoxes.back().setL(leftBox.R());
 			teamBoxes.back().setColor(teamColor[team]);
 		}
-		tableBox.setY2(teamBoxes.back().bottom());
+		tableBox.setY2(teamBoxes.back().B());
 	}
 
 	// set team member image boxes
 	for (int team = 0; team < nTeam; team++) {
-		cPlayer::instance()->teamMemberImageBox(team, 0).setUpperLeft(teamBoxes.at(team).upperLeft());
-		if (cPlayer::instance()->nTeamMember(team) == 2) {
-			cPlayer::instance()->teamMemberImageBox(team, 1).setUpperLeft(
-				cPlayer::instance()->teamMemberImageBox(team, 0).lowerLeft());
+		cPlayer::inst()->teamMemberImageBox(team, 0).setUL(teamBoxes.at(team).UL());
+		if (cPlayer::inst()->nTeamMember(team) == 2) {
+			cPlayer::inst()->teamMemberImageBox(team, 1).setUL(
+				cPlayer::inst()->teamMemberImageBox(team, 0).LL());
 		}
 	}
-	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.centerX() + 10);
+	cControl::inst()->iconBox(cControl::SKIP).setR(screen.CX() + 10);
 }
 
 void cCork::reset() {
 	cBaseScene::reset();
-	cDarts::instance()->reset();
+	cDarts::inst()->reset();
 	attempt = 0;
 	maxAttempt = 0;
 	now = {};
@@ -74,97 +74,97 @@ void cCork::draw() {
 	cBaseScene::draw();
 
 	// control icons
-	if (attempt < maxAttempt) cControl::instance()->icon(cControl::FORWARD).draw();
+	if (attempt < maxAttempt) cControl::inst()->icon(cControl::FORWARD).draw();
 
 	// darts board
-	cDarts::instance()->draw();
+	cDarts::inst()->draw();
 
 	// darts positions
 	if (now.team < nTeam) {
-		DrawCircleAA(real(cDarts::instance()->arrowPos()), imag(cDarts::instance()->arrowPos()),
+		DrawCircleAA(real(cDarts::inst()->arrowPos()), imag(cDarts::inst()->arrowPos()),
 			5, 1000, teamColor[now.team]);
-		DrawCircleAA(real(cDarts::instance()->center()), imag(cDarts::instance()->center()),
-			cDarts::instance()->radius(), 1000, teamColor[now.team], FALSE);
+		DrawCircleAA(real(cDarts::inst()->center()), imag(cDarts::inst()->center()),
+			cDarts::inst()->radius(), 1000, teamColor[now.team], FALSE);
 	}
 	for (int team = 0; team < now.team; team++) {
 		DrawCircleAA(real(now.teamArrowPos[team]), imag(now.teamArrowPos[team]), 5, 1000, teamColor[team]);
-		DrawCircleAA(real(cDarts::instance()->center()), imag(cDarts::instance()->center()),
+		DrawCircleAA(real(cDarts::inst()->center()), imag(cDarts::inst()->center()),
 			now.teamScore[team], 1000, teamColor[team], FALSE);
 	}
 
 	// scene name
-	DrawStringToHandle(cControl::instance()->icon(cControl::MUTE).box().right() + 5,
-		upperFrame.center().y() - MfontSize / 2,
-		(cGame::instance()->modeName() + " < Cork").c_str(), white, Mfont);
+	DrawStringToHandle(cControl::inst()->icon(cControl::MUTE).box().R() + 5,
+		upperFrame.C().y() - MfontSize / 2,
+		(cGame::inst()->modeName() + " < Cork").c_str(), white, Mfont);
 
 	// boxes
 	tableBox.draw();
 	for (int team = 0; team < nTeam; team++) teamBoxes.at(team).draw();
-	DrawBox(screen.centerX() + 10, teamBoxes.front().bottom(),
-		screen.right(), teamBoxes.front().bottom() + promptBoxHeight, pressColor, TRUE);
+	DrawBox(screen.CX() + 10, teamBoxes.front().B(),
+		screen.R(), teamBoxes.front().B() + promptBoxHeight, pressColor, TRUE);
 
 	cPlayer::sChara chara = {};
 	unsigned int color = 0U;
 	for (int team = 0; team < nTeam; team++) {
-		for (int member = 0; member < cPlayer::instance()->nTeamMember(team); member++) {
-			chara = cPlayer::instance()->teamMember(team, member);
+		for (int member = 0; member < cPlayer::inst()->nTeamMember(team); member++) {
+			chara = cPlayer::inst()->teamMember(team, member);
 			chara.image.draw();
 			color = white;
 			if (team == now.team && !member) {
 				color = touchColor;
 				// arrows
-				DrawGraph(chara.image.box().right() - 10, chara.image.box().top(), 
-					cDarts::instance()->arrowImage(), TRUE);
+				DrawGraph(chara.image.box().R() - 10, chara.image.box().T(), 
+					cDarts::inst()->arrowImage(), TRUE);
 				// prompt
-				DrawStringToHandle(screen.centerX() + 120, teamBoxes.front().bottom() + space / 2,
+				DrawStringToHandle(screen.CX() + 120, teamBoxes.front().B() + space / 2,
 					(chara.name + ", throw darts!").c_str(), white, Lfont);
 			}
-			DrawStringToHandle(chara.image.box().left() + 5 * max(0, 10 - (int)chara.name.size()),
-				chara.image.box().bottom() - SfontSize - 6, chara.name.c_str(), color, Sfont);
+			DrawStringToHandle(chara.image.box().L() + 5 * max(0, 10 - (int)chara.name.size()),
+				chara.image.box().B() - SfontSize - 6, chara.name.c_str(), color, Sfont);
 		}
-		DrawStringToHandle(teamBoxes.at(team).left(), teamBoxes.at(team).top(),
+		DrawStringToHandle(teamBoxes.at(team).L(), teamBoxes.at(team).T(),
 			RANK_NAME[now.rank[team]].c_str(), rankColor[now.rank[team]], Mfont);
 		DrawFormatStringToHandle(
-			chara.image.box().centerX() - 20, teamBoxes.at(team).bottom() - scoreBoxHeight + space / 2,
+			chara.image.box().CX() - 20, teamBoxes.at(team).B() - scoreBoxHeight + space / 2,
 			white, Lfont, "%6.2f", now.teamScore[team]);
 	}
 	// finish prompt
 	if (now.team >= nTeam) {
-		DrawStringToHandle(screen.centerX() + 100, teamBoxes.front().bottom() + space / 2,
+		DrawStringToHandle(screen.CX() + 100, teamBoxes.front().B() + space / 2,
 			"The order has been decided!", white, Lfont);
 	}
 }
 
 void cCork::update() {
 	cBaseScene::update();
-	cDarts::instance()->update();
-	if (cDarts::instance()->isThrowed()) throwDart();
-	else if (cControl::instance()->isRequested(cControl::SKIP)) skip();
-	else if (cControl::instance()->isRequested(cControl::FORWARD)) forward();
-	else if (cControl::instance()->isRequested(cControl::BACK)) back();
-	else if (now.team >= nTeam && cControl::instance()->isRequested(cControl::YES)) {
-		std::vector<cPlayer::sGroup> tmpTeams = cPlayer::instance()->teams();
-		cPlayer::instance()->teams().clear();
+	cDarts::inst()->update();
+	if (cDarts::inst()->isThrowed()) throwDart();
+	else if (cControl::inst()->isRequested(cControl::SKIP)) skip();
+	else if (cControl::inst()->isRequested(cControl::FORWARD)) forward();
+	else if (cControl::inst()->isRequested(cControl::BACK)) back();
+	else if (now.team >= nTeam && cControl::inst()->isRequested(cControl::YES)) {
+		std::vector<cPlayer::sGroup> tmpTeams = cPlayer::inst()->teams();
+		cPlayer::inst()->teams().clear();
 		for (int rank = 0; rank < nTeam; rank++) {
 			for (int team = 0; team < nTeam; team++) {
 				if (now.rank[team] == rank) {
-					cPlayer::instance()->teams().push_back(tmpTeams.at(team));
+					cPlayer::inst()->teams().push_back(tmpTeams.at(team));
 				}
 			}
 		}
-		cScene::instance()->setScene(cScene::GAME_START);
+		cScene::inst()->setScene(cScene::GAME_START);
 	}
 }
 
 bool cCork::throwDart() {
 	if (now.team >= nTeam) return false;
-	now.teamScore[now.team] = cDarts::instance()->radius();
-	now.teamArrowPos[now.team] = cDarts::instance()->arrowPos();
+	now.teamScore[now.team] = cDarts::inst()->radius();
+	now.teamArrowPos[now.team] = cDarts::inst()->arrowPos();
 	changeTeam(); record(); return true;
 }
 
 bool cCork::back() {
-	if (attempt <= 0) { cScene::instance()->setScene(cScene::PLAYER_SELECT); return false; }
+	if (attempt <= 0) { cScene::inst()->setScene(cScene::PLAYER_SELECT); return false; }
 	attempt--; now = mem[attempt]; return true;
 }
 
@@ -179,7 +179,7 @@ bool cCork::skip() {
 		theta = rand() % 360 * std::numbers::pi / 180.0f;
 	now.teamScore[now.team] = radius;
 	std::complex<float> arrow(radius * cos(theta), -radius * sin(theta));
-	now.teamArrowPos[now.team] = cDarts::instance()->center() + arrow;
+	now.teamArrowPos[now.team] = cDarts::inst()->center() + arrow;
 	changeTeam();
 	record(); return true;
 }
@@ -213,5 +213,5 @@ bool cCork::changeTeam() {
 }
 
 cCork::~cCork() {
-	cControl::instance()->iconBox(cControl::SKIP).setRight(screen.right());
+	cControl::inst()->iconBox(cControl::SKIP).setR(screen.R());
 }
